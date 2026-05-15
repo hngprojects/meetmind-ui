@@ -89,7 +89,7 @@ export default function BlogPost() {
             "
             >
               <span className="block">Interview Better.</span>
-              <span className="block mt-6px">Remember Everything.</span>
+              <span className="block mt-6">Remember Everything.</span>
             </h2>
             </div>
 
