@@ -59,7 +59,9 @@ export default function BlogPost() {
               the session.
             </p>
 
-            <div className="relative py-10 border-t border-b border-gray-100 flex flex-row items-start gap-4 md:gap-8 px-4">
+            <div className="relative py-10 border-t border-b
+             border-gray-100 flex flex-row items-start
+              gap-4 md:gap-8 px-4">
               {/* The Quote Icon */}
               <Image
                 src="/icons/quote.svg"
