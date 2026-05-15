@@ -23,7 +23,7 @@ const footerColumns = [
     title: "Resources",
     links: [
       { label: "Blog", href: "#" },
-      { label: "Help Center", href: "#" },
+      { label: "Help Center", href: "/help" },
       { label: "Case Studies", href: "#" },
       { label: "Tutorials", href: "#" },
     ],
