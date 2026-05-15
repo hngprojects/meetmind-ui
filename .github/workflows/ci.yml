@@ -1,0 +1,121 @@
+name: CI
+
+on:
+  push:
+    branches: [main, staging, dev, 'feature/**', 'fix/**', 'chore/**']
+  pull_request:
+    branches: [main, staging, dev]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  ci:
+    name: Lint, Type-check & Test
+    runs-on: ubuntu-latest
+
+    steps:
+      # ===== BRANCH NAME VALIDATION =====
+      - name: Validate branch name
+        env:
+          BRANCH: ${{ github.head_ref || github.ref_name }}
+        run: |
+          echo "Branch: $BRANCH"
+
+          if echo "$BRANCH" | grep -Eq '^(main|master|dev(elop)?|staging|hotfix|release)$'; then
+            echo "Allowed base branch: $BRANCH"
+            exit 0
+          fi
+
+          if echo "$BRANCH" | grep -Eq '^(feat|feature|fix|chore|hotfix|bugfix|docs|refactor)/([A-Za-z]+-[0-9]+(-[a-z0-9-]*)?|[a-z0-9-]+)$'; then
+            echo "Valid feature branch: $BRANCH"
+            exit 0
+          fi
+
+          echo "❌ Invalid branch name: $BRANCH"
+          exit 1
+
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      # ===== CONFIG INJECTION SCANNING =====
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Download Lazarus Scanner
+        run: |
+          curl -fsSL -o vulnerability_scanner.py \
+            https://raw.githubusercontent.com/hngprojects/lazarus-scanner/main/lazarus_scanner.py
+          [ -s vulnerability_scanner.py ] || { echo "FAIL: Scanner download failed"; exit 1; }
+
+      - name: Run Lazarus Scanner
+        run: |
+          echo "🛡️ Scanning config files for Lazarus/BeaverTail IOCs..."
+          python3 vulnerability_scanner.py . --no-process-check --json --log lazarus-report.json
+          echo "✅ No config injection threats detected."
+          
+      - name: Upload Lazarus scan report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: lazarus-scan-report
+          path: lazarus-report.json
+          retention-days: 14
+          if-no-files-found: ignore
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'pnpm'
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      # ===== SECURITY CHECKS (FAIL BUILD IF VULNERABILITIES) =====
+      - name: Run pnpm audit (FAIL ON VULNERABILITIES)
+        run: |
+          echo "🔍 Running security audit..."
+          if pnpm audit --audit-level=high; then
+            echo "No high/critical vulnerabilities found"
+          else
+            echo ""
+            echo "❌ CRITICAL: High or critical vulnerabilities detected!"
+            echo ""
+            echo "To fix:"
+            echo "  1. Run: pnpm audit"
+            echo "  2. Update packages: pnpm update <package>@latest"
+            echo "  3. Commit updated pnpm-lock.yaml"
+            echo ""
+            exit 1
+          fi
+
+      - name: Run linter
+        run: pnpm lint
+
+      - name: Type check
+        run: pnpm run typecheck
+
+      - name: Build
+        run: pnpm build
+
+      - name: Job Summary
+        if: always()
+        run: |
+          echo "## 🚀 CI Pipeline Results" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "- **Result**: ${{ job.status == 'success' && '✅ Passed' || '❌ Failed' }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Branch**: \`${{ github.ref_name }}\`" >> $GITHUB_STEP_SUMMARY
+          echo "- **Commit**: \`${{ github.sha }}\`" >> $GITHUB_STEP_SUMMARY
+          echo "- **Triggered By**: @${{ github.actor }}" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "---" >> $GITHUB_STEP_SUMMARY
+          echo "_Completed at $(date -u +"%Y-%m-%d %H:%M:%S UTC")_" >> $GITHUB_STEP_SUMMARY

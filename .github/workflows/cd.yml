@@ -1,0 +1,107 @@
+name: Frontend CD
+
+on:
+  push:
+    branches: [staging, main]
+
+jobs:
+  # ─────────────────────────────────────────────────────────────────────────────
+  # Deploy Staging
+  # Builds the React app and rsyncs dist/ to Nginx web root on VPS
+  # URL: https://staging.meetmind.hng14.com
+  # ─────────────────────────────────────────────────────────────────────────────
+  deploy-staging:
+    name: Deploy → Staging
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/staging'
+    environment:
+      name: staging
+      url: https://staging.meetmind.hng14.com
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build (staging)
+        env:
+          VITE_API_BASE_URL: https://api.staging.meetmind.hng14.com/api
+        run: pnpm build
+
+      - name: Setup SSH
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.STAGING_SSH_KEY }}" | tr -d '\r' > ~/.ssh/deploy_key
+          chmod 600 ~/.ssh/deploy_key
+          ssh-keyscan -H ${{ secrets.STAGING_HOST }} >> ~/.ssh/known_hosts
+
+      - name: Deploy dist/ to VPS
+        run: |
+          rsync -avz --delete \
+            -e "ssh -i ~/.ssh/deploy_key" \
+            dist/ \
+            ${{ secrets.STAGING_USER }}@${{ secrets.STAGING_HOST }}:/opt/meetmind/staging/frontend/
+
+          echo "Staging frontend deployed successfully"
+
+  # ─────────────────────────────────────────────────────────────────────────────
+  # Deploy Production
+  # URL: https://meetmind.hng14.com
+  # ─────────────────────────────────────────────────────────────────────────────
+  deploy-production:
+    name: Deploy → Production
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'
+    environment:
+      name: production
+      url: https://meetmind.hng14.com
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build (production)
+        env:
+          VITE_API_BASE_URL: https://api.meetmind.hng14.com/api
+        run: pnpm build
+
+      - name: Setup SSH
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.PROD_SSH_KEY }}" | tr -d '\r' > ~/.ssh/deploy_key
+          chmod 600 ~/.ssh/deploy_key
+          ssh-keyscan -H ${{ secrets.PROD_HOST }} >> ~/.ssh/known_hosts
+
+      - name: Deploy dist/ to VPS
+        run: |
+          rsync -avz --delete \
+            -e "ssh -i ~/.ssh/deploy_key" \
+            dist/ \
+            ${{ secrets.PROD_USER }}@${{ secrets.PROD_HOST }}:/opt/meetmind/production/frontend/
+
+          echo "Production frontend deployed successfully"
