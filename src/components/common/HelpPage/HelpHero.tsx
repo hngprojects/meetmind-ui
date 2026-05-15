@@ -97,7 +97,7 @@ export function HelpHero() {
           <input
             type="text"
             placeholder="Search for help articles, guides, and FAQs..."
-            className="w-full pl-10 pr-4 py-3.5 rounded-lg border border-[#E1E3E4] bg-white text-[#0F172A] placeholder:text-[#94a3b8] text-sm focus:outline-none focus:ring-1 focus:ring-[#02505E] trans
+            className="w-full pl-10 pr-4 py-3.5 rounded-lg border border-[#E1E3E4] bg-white text-[#0F172A] placeholder:text-[#94a3b8] text-sm focus:outline-none focus:ring-1 focus:ring-[#02505E] transition"
           />
         </div>
       </div>
