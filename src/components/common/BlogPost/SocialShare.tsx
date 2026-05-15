@@ -13,6 +13,7 @@ export default function SocialShare() {
           text-[#3b5998]
           hover:bg-gray-50
           transition-colors
+          text-nowrap
           text-sm font-medium uppercase tracking-wider
           cursor-pointer
         "

@@ -9,7 +9,7 @@ import Testimonials from "./Testimonials";
 import CTASection from "./CTASection";
 import Footer from "./footer";
 
-type Props = {};
+
 
 const LandingPage = () => {
   return (

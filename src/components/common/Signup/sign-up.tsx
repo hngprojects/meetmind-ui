@@ -102,7 +102,7 @@ const SignUp = () => {
   return (
     <section className="relative w-full h-screen flex overflow-hidden">
       {/* LEFT — fixed background image */}
-      <div className="hidden lg:block lg:w-[45%] h-full flex-shrink-0 relative">
+      <div className="hidden lg:block lg:w-[45%] h-full shrink-0 relative">
         <img
           src="/images/signupBg.png"
           alt="Signup"
@@ -123,7 +123,7 @@ const SignUp = () => {
       {/* RIGHT — scrollable form panel */}
       <div
         className="w-full lg:w-[55%] h-full bg-[#F7F9FB]
-          overflow-y-auto flex-shrink-0"
+          overflow-y-auto shrink-0"
       >
         {isSuccess ? (
           <div className="min-h-full flex flex-col items-center justify-center gap-3 text-center p-6">

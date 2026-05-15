@@ -82,9 +82,9 @@ export default function Testimonials() {
               </div>
 
               <p className="text-sm leading-5 text-[#0F172A]">
-                "We use Polio on a daily basis for several internal processes,
+                &quot;We use Polio on a daily basis for several internal processes,
                 and I cannot rave enough about them. Incredible flexibility and
-                features combined with super intuitive UI."
+                features combined with super intuitive UI.&quot;
               </p>
             </div>
 
@@ -114,8 +114,8 @@ export default function Testimonials() {
             </div>
 
             <p className="text-sm leading-5 text-[#0F172A]">
-              "We use Polio on a daily basis for several internal processes, and
-              I cannot rave enough about them."
+               &quot;We use Polio on a daily basis for several internal processes, and
+              I cannot rave enough about them.&quot;
             </p>
           </div>
 
@@ -141,9 +141,9 @@ export default function Testimonials() {
               </div>
 
               <p className="text-sm leading-5 text-[#0F172A]">
-                "We use Polio on a daily basis for several internal processes,
+                &quot;We use Polio on a daily basis for several internal processes,
                 and I cannot rave enough about them. Incredible flexibility and
-                features combined with super intuitive UI."
+                features combined with super intuitive UI.&quot;
               </p>
             </div>
 
@@ -173,8 +173,8 @@ export default function Testimonials() {
             </div>
 
             <p className="text-sm leading-5 text-[#0F172A]">
-              "We use Polio on a daily basis for several internal processes, and
-              I cannot rave enough about them."
+              &quot;We use Polio on a daily basis for several internal processes, and
+              I cannot rave enough about them.&quot;
             </p>
           </div>
         </div>
