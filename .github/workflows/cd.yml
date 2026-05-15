@@ -7,7 +7,7 @@ on:
 jobs:
   # ─────────────────────────────────────────────────────────────────────────────
   # Deploy Staging
-  # Builds the React app and rsyncs dist/ to Nginx web root on VPS
+  # SSHs into VPS, pulls latest, rebuilds Next.js app, restarts PM2
   # URL: https://staging.meetmind.hng14.com
   # ─────────────────────────────────────────────────────────────────────────────
   deploy-staging:
@@ -19,27 +19,6 @@ jobs:
       url: https://staging.meetmind.hng14.com
 
     steps:
-      - uses: actions/checkout@v4
-
-      - name: Setup pnpm
-        uses: pnpm/action-setup@v4
-        with:
-          version: 10
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: 20
-          cache: pnpm
-
-      - name: Install dependencies
-        run: pnpm install --frozen-lockfile
-
-      - name: Build (staging)
-        env:
-          VITE_API_BASE_URL: https://api.staging.meetmind.hng14.com/api
-        run: pnpm build
-
       - name: Setup SSH
         run: |
           mkdir -p ~/.ssh
@@ -47,14 +26,32 @@ jobs:
           chmod 600 ~/.ssh/deploy_key
           ssh-keyscan -H ${{ secrets.STAGING_HOST }} >> ~/.ssh/known_hosts
 
-      - name: Deploy dist/ to VPS
+      - name: Deploy to VPS
         run: |
-          rsync -avz --delete \
-            -e "ssh -i ~/.ssh/deploy_key" \
-            dist/ \
-            ${{ secrets.STAGING_USER }}@${{ secrets.STAGING_HOST }}:/opt/meetmind/staging/frontend/
+          ssh -i ~/.ssh/deploy_key \
+            ${{ secrets.STAGING_USER }}@${{ secrets.STAGING_HOST }} << 'ENDSSH'
 
-          echo "Staging frontend deployed successfully"
+            set -e
+            cd /opt/meetmind/frontend-staging
+
+            echo "→ Pulling latest code..."
+            git pull origin staging
+
+            echo "→ Installing dependencies..."
+            pnpm install --frozen-lockfile
+
+            echo "→ Building..."
+            NEXT_PUBLIC_APP_URL=https://staging.meetmind.hng14.com \
+            NEXT_PUBLIC_APP_NAME="MeetMind" \
+            API_BASE_URL=http://127.0.0.1:8001 \
+            pnpm build
+
+            echo "→ Restarting PM2 process..."
+            pm2 restart meetmind-fe-staging || pm2 start pnpm --name "meetmind-fe-staging" -- start -- -p 3001
+            pm2 save
+
+            echo "✅ Staging deployed successfully"
+          ENDSSH
 
   # ─────────────────────────────────────────────────────────────────────────────
   # Deploy Production
@@ -69,27 +66,6 @@ jobs:
       url: https://meetmind.hng14.com
 
     steps:
-      - uses: actions/checkout@v4
-
-      - name: Setup pnpm
-        uses: pnpm/action-setup@v4
-        with:
-          version: 10
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: 20
-          cache: pnpm
-
-      - name: Install dependencies
-        run: pnpm install --frozen-lockfile
-
-      - name: Build (production)
-        env:
-          VITE_API_BASE_URL: https://api.meetmind.hng14.com/api
-        run: pnpm build
-
       - name: Setup SSH
         run: |
           mkdir -p ~/.ssh
@@ -97,11 +73,29 @@ jobs:
           chmod 600 ~/.ssh/deploy_key
           ssh-keyscan -H ${{ secrets.PROD_HOST }} >> ~/.ssh/known_hosts
 
-      - name: Deploy dist/ to VPS
+      - name: Deploy to VPS
         run: |
-          rsync -avz --delete \
-            -e "ssh -i ~/.ssh/deploy_key" \
-            dist/ \
-            ${{ secrets.PROD_USER }}@${{ secrets.PROD_HOST }}:/opt/meetmind/production/frontend/
+          ssh -i ~/.ssh/deploy_key \
+            ${{ secrets.PROD_USER }}@${{ secrets.PROD_HOST }} << 'ENDSSH'
 
-          echo "Production frontend deployed successfully"
+            set -e
+            cd /opt/meetmind/frontend-prod
+
+            echo "→ Pulling latest code..."
+            git pull origin main
+
+            echo "→ Installing dependencies..."
+            pnpm install --frozen-lockfile
+
+            echo "→ Building..."
+            NEXT_PUBLIC_APP_URL=https://meetmind.hng14.com \
+            NEXT_PUBLIC_APP_NAME="MeetMind" \
+            API_BASE_URL=http://127.0.0.1:8000 \
+            pnpm build
+
+            echo "→ Restarting PM2 process..."
+            pm2 restart meetmind-fe-prod || pm2 start pnpm --name "meetmind-fe-prod" -- start -- -p 3000
+            pm2 save
+
+            echo "✅ Production deployed successfully"
+          ENDSSH
