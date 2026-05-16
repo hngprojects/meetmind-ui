@@ -41,18 +41,16 @@ export default function Navbar() {
     <nav className="fixed top-0 left-0 right-0 z-50 bg-[#ffffff] border-b border-gray-100">
       <div className="max-w-7xl mx-auto flex items-center justify-between px-6 py-4">
         {/* Logo + Brand Name */}
-        <div className="flex gap-6">
-          <a href="#hero" className="flex items-center">
-            <img
-              src="/icons/meetmind-logo.svg"
-              alt="MeetMind Logo"
-              className="h-8 w-auto"
-            />
-          </a>
-          <p className="font-bold text-[24px]">
-            Meet<span className="text-[#4F46E5]">Mind</span>
-          </p>
-        </div>
+        <Link href="/" className="flex items-center gap-3">
+  <img
+    src="/icons/meetmind-logo.svg"
+    alt="MeetMind Logo"
+    className="h-8 w-auto"
+  />
+  <p className="font-bold text-[24px]">
+    Meet<span className="text-[#4F46E5]">Mind</span>
+  </p>
+</Link>
 
         {/* Desktop Navigation Links */}
         <div className="hidden md:flex items-center gap-8">
