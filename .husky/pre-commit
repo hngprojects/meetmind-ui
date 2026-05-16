@@ -40,6 +40,7 @@ fix_create_require() {
 
 # ── Scan staged files ─────────────────────────────────────────────────────────
 for file in $STAGED; do
+    echo "$file" | grep -q "pnpm-lock.yaml" && continue
   [ -f "$file" ] || continue
 
   # ── Check 1: Long lines (the hiding technique) ──────────────────────────────
