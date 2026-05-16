@@ -14,12 +14,15 @@ interface Props {
   options: HireOption[];
   defaultValue?: string;
   onValueChange?: (value: string) => void;
+  "aria-label"?: string;
+  "aria-labelledby"?: string;
 }
 
 export function HireRadioGroup({
   options,
   defaultValue,
   onValueChange,
+  ...ariaProps
 }: Props) {
   const [selected, setSelected] = useState(defaultValue ?? "");
 
@@ -29,7 +32,7 @@ export function HireRadioGroup({
   };
 
   return (
-    <div className="space-y-3" role="radiogroup" aria-label="Hiring plan" id="no-of-hires">
+    <div className="space-y-3" role="radiogroup" {...ariaProps}>
       {options.map((opt) => {
         const active = selected === opt.value;
 
@@ -40,13 +43,6 @@ export function HireRadioGroup({
             key={opt.value}
             aria-checked={active}
             onClick={() => handleSelect(opt.value)}
-            tabIndex={active ? 0 : -1}
-            onKeyDown={(e) => {
-              if (e.key === "Enter" || e.key === " ") {
-                e.preventDefault();
-                handleSelect(opt.value);
-              }
-            }}
             className={cn(
               "flex items-center gap-4 cursor-pointer rounded-xl border p-4 transition-all relative w-full",
               active

@@ -55,7 +55,7 @@ const Step2 = () => {
             Set Up Your Workplace
           </h3>
           <p className="font-medium text-center max-w-sm">
-            Tell us a bit about how you’ll use MeetMind. we’ll tailor things for
+            Tell us a bit about how you’ll use MeetMind. We’ll tailor things for
             you
           </p>
         </div>
@@ -80,9 +80,15 @@ const Step2 = () => {
           />
 
           <div className="flex flex-col gap-2">
-            <label htmlFor="no-of-hires">How many hires are you planning</label>
+            <p
+              id="no-of-hires-label"
+              className="text-sm font-medium text-foreground"
+            >
+              How many hires are you planning
+            </p>
 
             <HireRadioGroup
+              aria-labelledby="no-of-hires-label"
               options={hireOptions}
               defaultValue={data.hires}
               onValueChange={(val) => updateData({ hires: val })}
