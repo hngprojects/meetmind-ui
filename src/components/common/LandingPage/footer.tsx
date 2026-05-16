@@ -54,18 +54,16 @@ export default function Footer() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-12 lg:px-24 py-12 border-t border-[#E1E3E4]">
         <div className="flex flex-col lg:flex-row items-start md:items-center lg:items-start lg:justify-between gap-12">
           <div className="max-w-xs md:max-w-lg lg:max-w-xs md:flex flex-col md:items-center lg:items-start">
-            <div className="flex gap-6">
-              <a href="#hero" className="flex items-center">
-                <img
-                  src="/icons/meetmind-logo.svg"
-                  alt="MeetMind Logo"
-                  className="h-8 w-auto"
-                />
-              </a>
-              <p className="font-bold text-[24px]">
-                Meet<span className="text-[#4F46E5]">Mind</span>
-              </p>
-            </div>
+            <Link href="/" className="flex items-center gap-3">
+  <img
+    src="/icons/meetmind-logo.svg"
+    alt="MeetMind Logo"
+    className="h-8 w-auto"
+  />
+  <p className="font-bold text-[24px]">
+    Meet<span className="text-[#4F46E5]">Mind</span>
+  </p>
+</Link>
             <p className="mt-4 text-sm text-[#3F4555] md:text-center lg:text-start leading-relaxed">
               MeetMind joins your call, tracks coverage, and delivers a
               structured summary instantly.
