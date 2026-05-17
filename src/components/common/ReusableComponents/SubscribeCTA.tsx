@@ -91,7 +91,7 @@ export default function SubscribeCTA() {
                   <button
                     type="submit"
                     disabled={isSubmitting}
-                    className="inline-block px-6 py-3 bg-[#D9E8EA] text-[#035A69] hover:bg-[#F7F9F8] hover:text-[#02505E] font-bold rounded-lg text-base cursor-pointer disabled:opacity-60 disabled:cur
+                    className="inline-block px-6 py-3 bg-[#D9E8EA] text-[#035A69] hover:bg-[#F7F9F8] hover:text-[#02505E] font-bold rounded-lg text-base cursor-pointer disabled:opacity-60 disabled:cursor-not-allowed transition-colors"
                   >
                     {isSubmitting ? "Subscribing..." : "Subscribe"}
                   </button>
