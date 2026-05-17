@@ -1,4 +1,6 @@
-const wideTestimonials = [
+import TestimonialCard from "./TestimonialCard";
+
+const mobileTestimonials = [
   {
     name: "Theresa Webb",
     role: "Product Manager",
@@ -12,171 +14,99 @@ const wideTestimonials = [
     role: "Product Manager",
     company: "Circle",
     quote:
-      '"We use Polio on a daily basis for several internal processes, and I cannot rave enough about them. Incredible flexibility and features combined with super intuitive UI."',
+      "We use Polio on a daily basis for several internal processes, and I cannot rave enough about them. Incredible flexibility and features combined with super intuitive UI.",
     image: "/images/darlene-robertson.png",
   },
+  {
+    name: "Kathryn Murphy",
+    role: "Product Manager",
+    company: "Circle",
+    quote:
+      "We use Polio on a daily basis for several internal processes, and I cannot rave enough about them. Incredible flexibility and features combined with super intuitive UI.",
+    image: "/images/kathryn-murphy.png",
+    quoteIcon: "/icons/quote.svg",
+    isWide: true,
+  },
+  {
+    name: "Darrell Steward",
+    role: "Product Manager",
+    company: "Circle",
+    quote:
+      "We use Polio on a daily basis for several internal processes, and I cannot rave enough about them.",
+    image: "/images/darrell-steward.png",
+  },
+  {
+    name: "Kristin Watson",
+    role: "Product Manager",
+    company: "Circle",
+    quote:
+      "We use Polio on a daily basis for several internal processes, and I cannot rave enough about them.",
+    image: "/images/kristin-watson.png",
+  },
+  {
+    name: "Bessie Cooper",
+    role: "Product Manager",
+    company: "Circle",
+    quote:
+      "We use Polio on a daily basis for several internal processes, and I cannot rave enough about them. Incredible flexibility and features combined with super intuitive UI.",
+    image: "/images/bessie-cooper.png",
+    quoteIcon: "/icons/quote.svg",
+    isWide: true,
+  },
+];
+
+const desktopTestimonials = [
+  mobileTestimonials[0], // Theresa
+  mobileTestimonials[1], // Darlene
+  mobileTestimonials[4], // Kristin
+  mobileTestimonials[2], // Kathryn
+  mobileTestimonials[3], // Darrell
+  mobileTestimonials[5], // Bessie
 ];
 
 export default function Testimonials() {
   return (
-    <section id="temperature" className="py-16">
-      <div className="max-w-7xl mx-auto px-6 md:px-16">
-        <div className="flex flex-col items-center gap-4">
-          <p className="text-[#3F4555] text-xs">Testimonials</p>
-          <h2 className="text-[#0F172A] text-3xl font-semibold text-center">
+    <section id="temperature" className="py-16 bg-[#E6F0F1]">
+      <div className="max-w-97.5 md:max-w-360 mx-auto px-6 md:px-10 lg:px-20">
+        <div className="flex flex-col items-center gap-2">
+          <p className="text-[#3F4555] text-[14px]">Testimonials</p>
+          <h2 className="text-[#0F172A] text-[36px] font-semibold text-center mb-2">
             Loved by Remote Teams
           </h2>
-          <p className="text-[#3F4555] text-xs text-center max-w-md">
+          <p className="text-[#3F4555] max-w-md md:max-w-179 text-[16px] lg:text-[18px] text-center">
             Polio is the customer relationship management tool for everyone who
             values collaboration.
           </p>
         </div>
 
-        {/* Two wide cards */}
-        <div className="mt-12 grid grid-cols-1 md:grid-cols-2 gap-6">
-          {wideTestimonials.map((person) => (
-            <div
+        {/* Desktop: 2x3 equal grid */}
+        <div className="mt-12 hidden md:max-w-315 md:grid md:grid-cols-3 md:grid-rows-2 gap-6">
+          {desktopTestimonials.map((person) => (
+            <TestimonialCard
               key={person.name}
-              className="bg-[#FFFFFF] rounded-2xl p-6 flex flex-col"
-            >
-              <div className="flex items-center gap-3 mb-6 pt-4">
-                <img
-                  src={person.image}
-                  alt={person.name}
-                  className="w-10 h-10 rounded-full object-cover"
-                />
-                <div>
-                  <p className="text-[#030712] text-sm font-semibold">
-                    {person.name}
-                  </p>
-                  <p className="text-[#3F4555] text-xs">
-                    {person.role}, {person.company}
-                  </p>
-                </div>
-              </div>
-              <p className="text-sm leading-5 text-[#0F172A]">{person.quote}</p>
-            </div>
+              name={person.name}
+              role={person.role}
+              company={person.company}
+              quote={person.quote}
+              image={person.image}
+            />
           ))}
         </div>
 
-        <div className="mt-6 grid grid-cols-1 md:grid-cols-3 md:grid-rows-2 gap-6">
-          {/* Kathryn Murphy */}
-          <div className="md:row-span-2 bg-[#FFFFFF] rounded-2xl p-6 flex flex-col justify-between">
-            <div>
-              <div className="flex items-center gap-3 mb-6">
-                <img
-                  src="/images/kathryn-murphy.png"
-                  alt="Kathryn Murphy"
-                  className="w-12 h-12 rounded-full object-cover"
-                />
-
-                <div>
-                  <p className="text-[#030712] text-sm font-semibold">
-                    Kathryn Murphy
-                  </p>
-
-                  <p className="text-[#3F4555] text-xs">
-                    Product Manager, Circle
-                  </p>
-                </div>
-              </div>
-
-              <p className="text-sm leading-5 text-[#0F172A]">
-                &quot;We use Polio on a daily basis for several internal
-                processes, and I cannot rave enough about them. Incredible
-                flexibility and features combined with super intuitive UI.&quot;
-              </p>
-            </div>
-
-            <div className="flex justify-end mt-8">
-              <img src="/icons/quote.svg" alt="" className="w-47.5 h-50" />
-            </div>
-          </div>
-
-          {/* Darrell Steward */}
-          <div className="md:row-start-1 md:col-start-2 bg-[#FFFFFF] rounded-2xl p-6 flex flex-col">
-            <div className="flex items-center gap-3 mb-6">
-              <img
-                src="/images/darrell-steward.png"
-                alt="Darrell Steward"
-                className="w-12 h-12 rounded-full object-cover"
-              />
-
-              <div>
-                <p className="text-[#030712] text-sm font-semibold">
-                  Darrell Steward
-                </p>
-
-                <p className="text-[#3F4555] text-xs">
-                  Product Manager, Circle
-                </p>
-              </div>
-            </div>
-
-            <p className="text-sm leading-5 text-[#0F172A]">
-              &quot;We use Polio on a daily basis for several internal
-              processes, and I cannot rave enough about them.&quot;
-            </p>
-          </div>
-
-          {/* Bessie Cooper */}
-          <div className="row-start-4 md:row-start-1 md:row-span-2 bg-[#FFFFFF] rounded-2xl p-6 flex flex-col justify-between">
-            <div>
-              <div className="flex items-center gap-3 mb-6">
-                <img
-                  src="/images/bessie-cooper.png"
-                  alt="Bessie Cooper"
-                  className="w-12 h-12 rounded-full object-cover"
-                />
-
-                <div>
-                  <p className="text-[#030712] text-sm font-semibold">
-                    Bessie Cooper
-                  </p>
-
-                  <p className="text-[#3F4555] text-xs">
-                    Product Manager, Circle
-                  </p>
-                </div>
-              </div>
-
-              <p className="text-sm leading-5 text-[#0F172A]">
-                &quot;We use Polio on a daily basis for several internal
-                processes, and I cannot rave enough about them. Incredible
-                flexibility and features combined with super intuitive UI.&quot;
-              </p>
-            </div>
-
-            <div className="flex justify-end mt-8">
-              <img src="/icons/quote.svg" alt="" className="w-47.5 h-50" />
-            </div>
-          </div>
-
-          {/* Kristin Watson */}
-          <div className="row-start-3 md:row-start-2 bg-[#FFFFFF] rounded-2xl p-6 flex flex-col">
-            <div className="flex items-center gap-3 mb-6">
-              <img
-                src="/images/kristin-watson.png"
-                alt="Kristin Watson"
-                className="w-12 h-12 rounded-full object-cover"
-              />
-
-              <div>
-                <p className="text-[#030712] text-sm font-semibold">
-                  Kristin Watson
-                </p>
-
-                <p className="text-[#3F4555] text-xs">
-                  Product Manager, Circle
-                </p>
-              </div>
-            </div>
-
-            <p className="text-sm leading-5 text-[#0F172A]">
-              &quot;We use Polio on a daily basis for several internal
-              processes, and I cannot rave enough about them.&quot;
-            </p>
-          </div>
+        {/* Mobile View: 8x1 grid */}
+        <div className="mt-12 max-w-85.5 grid grid-cols-1 gap-6 md:hidden">
+          {mobileTestimonials.map((person) => (
+            <TestimonialCard
+              key={person.name}
+              name={person.name}
+              role={person.role}
+              company={person.company}
+              quote={person.quote}
+              image={person.image}
+              quoteIcon={person.quoteIcon}
+              isWide={person.isWide}
+            />
+          ))}
         </div>
       </div>
     </section>

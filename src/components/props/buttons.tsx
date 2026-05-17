@@ -5,7 +5,7 @@ interface Props {
   style?: string;
   style2?: string;
   text: string;
-  onClick?: () => void;
+  onClick?: (() => void | undefined) | undefined;
   disabled?: boolean;
   icon?: ReactNode;
   type: "reset" | "submit" | "button";

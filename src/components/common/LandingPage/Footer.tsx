@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 
 const footerColumns = [
@@ -50,23 +51,34 @@ export default function Footer() {
   const currentYear = new Date().getFullYear();
 
   return (
-    <footer className="bg-white pt-16 pb-8">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-12 lg:px-24 py-12 border-t border-[#E1E3E4]">
-        <div className="flex flex-col lg:flex-row items-start md:items-center lg:items-start lg:justify-between gap-12">
-          <div className="max-w-xs md:max-w-lg lg:max-w-xs md:flex flex-col md:items-center lg:items-start">
-            <div className="flex gap-6">
-              <a href="#hero" className="flex items-center">
-                <img
+    <footer className="bg-white pt-16 pb-8 border-t border-[#E1E3E4]">
+      <div className="max-w-7xl mx-auto px-8 md:px-10 lg:px-22.5">
+        <div
+          className="flex flex-col lg:flex-row items-start md:items-center 
+                lg:items-start lg:justify-between gap-12"
+        >
+          <div
+            className="max-w-xs md:max-w-lg lg:max-w-xs md:flex flex-col 
+                  md:items-center lg:items-start"
+          >
+            <div className="flex gap-3">
+              <Link href="/" className="flex items-center">
+                <Image
                   src="/icons/meetmind-logo.svg"
-                  alt="MeetMind Logo"
-                  className="h-8 w-auto"
+                  alt="MeetMind logo"
+                  width={42}
+                  height={42}
+                  className="h-10 w-auto"
                 />
-              </a>
+              </Link>
               <p className="font-bold text-[24px]">
                 Meet<span className="text-[#4F46E5]">Mind</span>
               </p>
             </div>
-            <p className="mt-4 text-sm text-[#3F4555] md:text-center lg:text-start leading-relaxed">
+            <p
+              className="mt-4 text-sm text-[#3F4555] md:text-center lg:text-start 
+                leading-relaxed"
+            >
               MeetMind joins your call, tracks coverage, and delivers a
               structured summary instantly.
             </p>
@@ -79,14 +91,20 @@ export default function Footer() {
                   aria-label={social.name}
                   className="opacity-60 hover:opacity-100 transition-opacity"
                 >
-                  <img src={social.icon} alt="" className="w-5 h-5" />
+                  <Image
+                    src={social.icon}
+                    alt=""
+                    width={20}
+                    height={20}
+                    className="w-5 h-5"
+                  />
                 </a>
               ))}
             </div>
           </div>
 
           {/* Link columns */}
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-8 md:gap-20 lg:gap-20">
             {footerColumns.map((column) => (
               <div key={column.title}>
                 <h4 className="text-[#0F172A] text-sm font-semibold mb-4">
@@ -97,7 +115,8 @@ export default function Footer() {
                     <li key={link.label}>
                       <Link
                         href={link.href}
-                        className="text-[#3F4555] text-sm hover:text-[#3F4555]/40 transition-colors text-left cursor-pointer block"
+                        className="text-[#3F4555] text-sm hover:text-[#3F4555]/40 
+                          transition-colors text-left cursor-pointer block"
                       >
                         {link.label}
                       </Link>

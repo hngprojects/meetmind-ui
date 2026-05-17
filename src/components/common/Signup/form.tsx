@@ -8,8 +8,8 @@ import Buttons from "@/components/props/buttons";
 import axios from "axios";
 import api from "@/lib/api";
 import { useSignupStore } from "@/store/signupStore";
-// import logo from "@/assets/icons/favicon.svg";
 import { useRouter } from "next/navigation";
+import Image from "next/image";
 
 const Signform = () => {
   const router = useRouter();
@@ -60,7 +60,7 @@ const Signform = () => {
       setServerError(null);
       setIsSuccess(false);
 
-      const response = await api.post(
+      await api.post(
         "https://api.staging.meetmind.hng14.com/api/v1/auth/signup",
         data,
       );
@@ -85,13 +85,22 @@ const Signform = () => {
   };
 
   return (
-    <section className="lg:pt-12 flex flex-col  gap-3.5">
+    <section
+      className="lg:pt-12 flex flex-col items-center 
+    justify-center  gap-3.5"
+    >
       {/* logo */}
-      <div className="flex justify-center ">
-        <img
+      <div
+        className="flex  h-10 w-10 hover:cursor-pointer"
+        onClick={() => router.push("/")}
+      >
+        <Image
           src="/icons/meetmind-logo.svg"
           alt="MeetMind logo"
-          className="h-10 w-10"
+          width={40}
+          height={40}
+          // fill
+          // className=" object-contain"
         />
       </div>
 
