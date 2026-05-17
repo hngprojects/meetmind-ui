@@ -1,0 +1,101 @@
+name: Frontend CD
+
+on:
+  push:
+    branches: [staging, main]
+
+jobs:
+  # ─────────────────────────────────────────────────────────────────────────────
+  # Deploy Staging
+  # SSHs into VPS, pulls latest, rebuilds Next.js app, restarts PM2
+  # URL: https://staging.meetmind.hng14.com
+  # ─────────────────────────────────────────────────────────────────────────────
+  deploy-staging:
+    name: Deploy → Staging
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/staging'
+    environment:
+      name: staging
+      url: https://staging.meetmind.hng14.com
+
+    steps:
+      - name: Setup SSH
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.STAGING_SSH_KEY }}" | tr -d '\r' > ~/.ssh/deploy_key
+          chmod 600 ~/.ssh/deploy_key
+          ssh-keyscan -H ${{ secrets.STAGING_HOST }} >> ~/.ssh/known_hosts
+
+      - name: Deploy to VPS
+        run: |
+          ssh -i ~/.ssh/deploy_key \
+            ${{ secrets.STAGING_USER }}@${{ secrets.STAGING_HOST }} << 'ENDSSH'
+
+            set -e
+            cd /opt/meetmind/frontend-staging
+
+            echo "→ Pulling latest code..."
+            git pull origin staging
+
+            echo "→ Installing dependencies..."
+            pnpm install --frozen-lockfile
+
+            echo "→ Building..."
+            NEXT_PUBLIC_APP_URL=https://staging.meetmind.hng14.com \
+            NEXT_PUBLIC_APP_NAME="MeetMind" \
+            API_BASE_URL=http://127.0.0.1:8001 \
+            pnpm build
+
+            echo "→ Restarting PM2 process..."
+            pm2 restart meetmind-fe-staging || pm2 start pnpm --name "meetmind-fe-staging" -- start -- -p 3001
+            pm2 save
+
+            echo "✅ Staging deployed successfully"
+          ENDSSH
+
+  # ─────────────────────────────────────────────────────────────────────────────
+  # Deploy Production
+  # URL: https://meetmind.hng14.com
+  # ─────────────────────────────────────────────────────────────────────────────
+  deploy-production:
+    name: Deploy → Production
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'
+    environment:
+      name: production
+      url: https://meetmind.hng14.com
+
+    steps:
+      - name: Setup SSH
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.PROD_SSH_KEY }}" | tr -d '\r' > ~/.ssh/deploy_key
+          chmod 600 ~/.ssh/deploy_key
+          ssh-keyscan -H ${{ secrets.PROD_HOST }} >> ~/.ssh/known_hosts
+
+      - name: Deploy to VPS
+        run: |
+          ssh -i ~/.ssh/deploy_key \
+            ${{ secrets.PROD_USER }}@${{ secrets.PROD_HOST }} << 'ENDSSH'
+
+            set -e
+            cd /opt/meetmind/frontend-prod
+
+            echo "→ Pulling latest code..."
+            git pull origin main
+
+            echo "→ Installing dependencies..."
+            pnpm install --frozen-lockfile
+
+            echo "→ Building..."
+            NEXT_PUBLIC_APP_URL=https://meetmind.hng14.com \
+            NEXT_PUBLIC_APP_NAME="MeetMind" \
+            API_BASE_URL=http://127.0.0.1:8000 \
+            pnpm build
+
+            echo "→ Restarting PM2 process..."
+            pm2 restart meetmind-fe-prod || pm2 start pnpm --name "meetmind-fe-prod" -- start -- -p 3000
+            pm2 save
+
+            echo "✅ Production deployed successfully"
+          ENDSSH

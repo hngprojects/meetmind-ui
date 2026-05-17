@@ -1,3 +1,11 @@
+allowBuilds:
+  core-js: false
+  msw: false
+  sharp: false
+  unrs-resolver: false
 ignoredBuiltDependencies:
   - sharp
   - unrs-resolver
+auditConfig:
+  ignoreGhsas:
+    - "GHSA-qx2v-qp2m-jg93"
