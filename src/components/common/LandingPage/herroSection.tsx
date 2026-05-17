@@ -45,7 +45,9 @@ export default function HeroSection() {
           <div className="hidden mt-10 md:flex md:flex-col lg:flex-row items-center justify-center gap-6">
             <Link
               href="/signup"
-              className="px-6 py-3 bg-[#02505E] text-white font-semibold rounded-lg text-base hover:bg-[#FFFFFF] hover:text-[#013A44] hover:border hover:border-[#DADADA] transition-colors cursor-point
+              className="px-6 py-3 bg-[#02505E] text-white font-semibold rounded-lg text-base
+               hover:bg-[#FFFFFF] hover:text-[#013A44] hover:border hover:border-[#DADADA] 
+               transition-colors cursor-pointer"
             >
               Get early access
             </Link>
@@ -53,14 +55,15 @@ export default function HeroSection() {
             <button
               type="button"
               onClick={() => console.log("Watch Demo clicked")}
-              className="px-8 py-3 border border-[#DADADA] text-[#02505E] font-semibold rounded-lg text-base hover:bg-[#02505E] hover:text-white transition-colors inline-flex items-center gap-2 cursor
+              className="px-8 py-3 border border-[#DADADA] text-[#02505E] font-semibold rounded-lg text-base hover:bg-[#02505E] hover:text-white
+               transition-colors inline-flex items-center gap-2 cursor-pointer"
             >
               Watch a Demo
             </button>
           </div>
 
           {/* Mobile view */}
-          <div className="mt-10 mx-auto flex md:hidden items-start justify-center relative w-full px-16">
+          <div className="mt-10 mx-auto flex md:hidden items-start justify-center relative w-full px-16 ">
             <Image
               src="/icons/google-chat.svg"
               alt="Google Chat Icon"
@@ -71,7 +74,8 @@ export default function HeroSection() {
             <div className="flex flex-col items-center gap-6">
               <Link
                 href="/signup"
-                className="px-6 py-3 bg-[#02505E] text-white font-semibold rounded-lg text-base hover:bg-[#FFFFFF] hover:text-[#013A44] hover:border hover:border-[#DADADA] transition-colors cursor-poi
+                className="px-6 py-3 bg-[#02505E] text-white font-semibold rounded-lg text-base hover:bg-[#FFFFFF] hover:text-[#013A44] hover:border
+                 hover:border-[#DADADA] transition-colors cursor-pointer"
               >
                 Get early access
               </Link>
@@ -79,7 +83,9 @@ export default function HeroSection() {
               <button
                 type="button"
                 onClick={() => console.log("Watch Demo clicked")}
-                className="px-8 py-3 border border-[#DADADA] text-[#02505E] font-semibold rounded-lg text-base hover:bg-[#02505E] hover:text-white transition-colors inline-flex items-center gap-2 curs
+                className="px-8 py-3 border border-[#DADADA] text-[#02505E] 
+                font-semibold rounded-lg text-base hover:bg-[#02505E] hover:text-white 
+                transition-colors inline-flex items-center gap-2 cursor-pointer"
               >
                 Watch a Demo
               </button>

@@ -32,8 +32,8 @@ export default function FeaturesGrid() {
               </h3>
               <p className="text-sm md:text-lg text-[#3F4555] mt-2">
                 Live coverage bars for every competency on your scorecard. Know
-                exactly what's been covered and what hasn't - without taking
-                notes
+                exactly what&apos;s been covered and what hasn&apos;t - without
+                taking notes
               </p>
             </div>
           </div>
