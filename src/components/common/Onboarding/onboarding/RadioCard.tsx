@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { cn } from "@/lib/utils";
-import { User } from "lucide-react";
+import { FaRegUser } from "react-icons/fa";
 
 export interface HireOption {
   value: string;
@@ -51,7 +51,7 @@ export function HireRadioGroup({
             )}
           >
             <div className="shrink-0 text-slate-400">
-              <User size={20} />
+              <FaRegUser size={20} />
             </div>
 
             <div className="grow">

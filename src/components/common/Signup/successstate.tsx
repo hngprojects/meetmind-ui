@@ -1,4 +1,4 @@
-import Buttons from "@/components/props/buttons";
+import Buttons from "@/components/reuseable-component/buttons";
 import { useSignupStore } from "@/store/signupStore";
 import Image from "next/image";
 import Link from "next/link";

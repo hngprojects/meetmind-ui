@@ -1,12 +1,11 @@
-import Buttons from '@/components/props/buttons';
-import { FcGoogle } from 'react-icons/fc';
-// import { IoLogoGithub } from 'react-icons/io5';
+import Buttons from "@/components/reuseable-component/buttons";
+import { FcGoogle } from "react-icons/fc";
 
 const Authwith = () => {
   // handle Google sign-in
   const handleGoogleSignIn = () => {
     window.location.href =
-      'https://api.staging.meetmind.hng14.com/api/v1/auth/google';
+      "https://api.staging.meetmind.hng14.com/api/v1/auth/google";
   };
 
   return (
