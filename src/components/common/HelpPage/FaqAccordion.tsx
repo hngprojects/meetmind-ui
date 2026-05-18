@@ -27,7 +27,7 @@ const faqs: FaqGroup[] = [
       },
       {
         question: "How does the AI agent join my meetings?",
-        answer: "Once you connect your calendar or paste a meeting link, MeetMind's AI agent joins as a participant a few minutes before the meeting starts. It introduces itself and begins the session
+        answer: "Once you connect your calendar or paste a meeting link, MeetMind AI agent joins as a participant a few minutes before the meeting starts. It introduces itself and begins the session b
       },
     ],
   },
@@ -35,7 +35,7 @@ const faqs: FaqGroup[] = [
     group: "Billing & Plans",
     items: [
       {
-        question: "What's included in the Free plan?",
+        question: "What is included in the Free plan?",
         answer: "The Free plan includes up to 3 meetings per month, basic transcription, and standard AI summaries. Upgrade to Pro or Team for unlimited meetings, advanced analytics, and priority supp
       },
       {
@@ -44,7 +44,7 @@ const faqs: FaqGroup[] = [
       },
       {
         question: "What happens if I exceed my meeting limit?",
-        answer: "You will receive an email notification when you approach your limit. Once reached, new meetings won't be processed until the next billing cycle or until you upgrade your plan.",
+        answer: "You will receive an email notification when you approach your limit. Once reached, new meetings will not be processed until the next billing cycle or until you upgrade your plan.",
       },
     ],
   },
@@ -56,7 +56,7 @@ const faqs: FaqGroup[] = [
         answer: "MeetMind uses natural language understanding to detect pauses, question prompts, and context cues. You can also configure the AI speaking sensitivity in your interview settings under 
       },
       {
-        question: "Can I customize the AI's behavior?",
+        question: "Can I customize the AI behavior?",
         answer: "Absolutely. From your interview configuration, you can set the tone, adjust follow-up question logic, define off-limit topics, and upload a custom persona or script for the AI to foll
       },
       {
@@ -70,11 +70,11 @@ const faqs: FaqGroup[] = [
     items: [
       {
         question: "How do I connect my Zoom account?",
-        answer: "Go to Settings, then Integrations, then Zoom and click Connect. You will be redirected to Zoom's OAuth page to authorize MeetMind. Once connected, your upcoming Zoom meetings will be 
+        answer: "Go to Settings then Integrations then Zoom and click Connect. You will be redirected to Zoom OAuth page to authorize MeetMind. Once connected, your upcoming Zoom meetings will be avai
       },
       {
         question: "Can I disconnect an integration?",
-        answer: "Yes. Visit Settings, then Integrations, find the connected platform, and click Disconnect. This will revoke MeetMind's access without affecting your existing meeting data.",
+        answer: "Yes. Visit Settings then Integrations, find the connected platform, and click Disconnect. This will revoke MeetMind access without affecting your existing meeting data.",
       },
     ],
   },
@@ -82,7 +82,7 @@ const faqs: FaqGroup[] = [
     group: "Troubleshooting",
     items: [
       {
-        question: "The AI didn't join my meeting. What should I do?",
+        question: "The AI did not join my meeting. What should I do?",
         answer: "First, check that the meeting link was correctly added and your integration is still connected. Ensure the meeting was not rescheduled. If the issue persists, contact support with you
       },
       {

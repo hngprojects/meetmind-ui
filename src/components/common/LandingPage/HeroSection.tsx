@@ -22,7 +22,7 @@ export default function HeroSection() {
         <div className="flex justify-start gap-16 mt-4 items-start md:justify-center md:items-end md:mt-0 md:gap-42">
           <Image src="/icons/google-chat.svg" alt="Google Chat" width={88} height={88} className="hidden md:block md:w-22" />
 
-          {/* Desktop & Tablet */}
+          {/* Desktop and Tablet */}
           <div className="hidden mt-10 md:flex md:flex-col lg:flex-row items-center justify-center gap-6">
             <Link
               href="/signup"

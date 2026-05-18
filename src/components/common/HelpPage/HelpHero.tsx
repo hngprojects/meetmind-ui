@@ -16,7 +16,7 @@ export function HelpHero({ onSearch }: HelpHeroProps) {
             href="/"
             className="inline-flex items-center gap-1 text-sm text-[#0F172A] mb-4 hover:text-[#02505E]"
           >
-            ← Back
+            &larr; Back
           </Link>
           <div className="flex items-start justify-between gap-4">
             <div>
