@@ -19,15 +19,15 @@ const faqs: FaqGroup[] = [
     items: [
       {
         question: "How do I create my first AI-powered interview?",
-        answer: "Navigate to your dashboard and click New Interview. Choose a template or build from scratch, set your questions, and MeetMind will handle the rest - joining your call and conducting t
+        answer: "Navigate to your dashboard and click New Interview. Choose a template or build from scratch and MeetMind will handle the rest.",
       },
       {
         question: "Which meeting platforms are supported?",
-        answer: "MeetMind currently supports Zoom, Google Meet, and Microsoft Teams. More platforms are on our roadmap. You can connect your accounts from the Integrations tab in Settings.",
+        answer: "MeetMind supports Zoom, Google Meet, and Microsoft Teams. Connect accounts from the Integrations tab in Settings.",
       },
       {
         question: "How does the AI agent join my meetings?",
-        answer: "Once you connect your calendar or paste a meeting link, MeetMind AI agent joins as a participant a few minutes before the meeting starts. It introduces itself and begins the session b
+        answer: "Once you paste a meeting link, MeetMind AI agent joins as a participant a few minutes before the meeting starts.",
       },
     ],
   },
@@ -36,15 +36,15 @@ const faqs: FaqGroup[] = [
     items: [
       {
         question: "What is included in the Free plan?",
-        answer: "The Free plan includes up to 3 meetings per month, basic transcription, and standard AI summaries. Upgrade to Pro or Team for unlimited meetings, advanced analytics, and priority supp
+        answer: "The Free plan includes up to 3 meetings per month, basic transcription, and standard AI summaries.",
       },
       {
         question: "Can I upgrade or downgrade my plan anytime?",
-        answer: "Yes. You can change your plan at any time from the Billing section in your account settings. Upgrades take effect immediately; downgrades apply at the end of your current billing cycl
+        answer: "Yes. You can change your plan from the Billing section in your account settings at any time.",
       },
       {
         question: "What happens if I exceed my meeting limit?",
-        answer: "You will receive an email notification when you approach your limit. Once reached, new meetings will not be processed until the next billing cycle or until you upgrade your plan.",
+        answer: "You will receive an email notification. New meetings will not be processed until the next billing cycle or until you upgrade.",
       },
     ],
   },
@@ -53,15 +53,15 @@ const faqs: FaqGroup[] = [
     items: [
       {
         question: "How does the AI determine when to speak?",
-        answer: "MeetMind uses natural language understanding to detect pauses, question prompts, and context cues. You can also configure the AI speaking sensitivity in your interview settings under 
+        answer: "MeetMind uses natural language understanding to detect pauses and context cues. Configure sensitivity in your interview settings.",
       },
       {
         question: "Can I customize the AI behavior?",
-        answer: "Absolutely. From your interview configuration, you can set the tone, adjust follow-up question logic, define off-limit topics, and upload a custom persona or script for the AI to foll
+        answer: "Yes. From your interview configuration, set the tone, adjust follow-up logic, and upload a custom persona or script.",
       },
       {
         question: "What happens to my meeting data?",
-        answer: "All meeting data is encrypted at rest and in transit. Transcripts and summaries are stored securely and are only accessible to you and your team. You can delete any meeting data at an
+        answer: "All data is encrypted at rest and in transit. Transcripts are only accessible to you and your team.",
       },
     ],
   },
@@ -70,11 +70,11 @@ const faqs: FaqGroup[] = [
     items: [
       {
         question: "How do I connect my Zoom account?",
-        answer: "Go to Settings then Integrations then Zoom and click Connect. You will be redirected to Zoom OAuth page to authorize MeetMind. Once connected, your upcoming Zoom meetings will be avai
+        answer: "Go to Settings then Integrations then Zoom and click Connect. You will be redirected to the Zoom OAuth page.",
       },
       {
         question: "Can I disconnect an integration?",
-        answer: "Yes. Visit Settings then Integrations, find the connected platform, and click Disconnect. This will revoke MeetMind access without affecting your existing meeting data.",
+        answer: "Yes. Visit Settings then Integrations, find the platform, and click Disconnect.",
       },
     ],
   },
@@ -83,23 +83,28 @@ const faqs: FaqGroup[] = [
     items: [
       {
         question: "The AI did not join my meeting. What should I do?",
-        answer: "First, check that the meeting link was correctly added and your integration is still connected. Ensure the meeting was not rescheduled. If the issue persists, contact support with you
+        answer: "Check the meeting link and integration status. If the issue persists, contact support with your meeting ID.",
       },
       {
         question: "The transcript quality is poor. How can I improve it?",
-        answer: "Transcript accuracy depends on audio quality. Ensure participants use headsets or quiet environments. You can also enable speaker labeling in your settings to help the AI differentiat
+        answer: "Ensure participants use headsets or quiet environments. Enable speaker labeling in your settings.",
       },
       {
         question: "Can I edit the AI-generated summary?",
-        answer: "Yes. After a meeting, open the summary from your dashboard and click Edit. You can revise any section, add notes, and re-export the updated summary to your connected tools like Notion
+        answer: "Yes. Open the summary from your dashboard, click Edit, revise any section, and re-export to Notion or Slack.",
       },
     ],
   },
 ];
 
-function AccordionItem({ question, answer }: { question: string; answer: string }) {
+function AccordionItem({
+  question,
+  answer,
+}: {
+  question: string;
+  answer: string;
+}) {
   const [open, setOpen] = useState(false);
-
   return (
     <div className="border-b border-[#E1E3E4] last:border-0">
       <button
@@ -110,7 +115,9 @@ function AccordionItem({ question, answer }: { question: string; answer: string 
         <span>{question}</span>
         <ChevronDown
           size={18}
-          className={`shrink-0 text-[#64748b] transition-transform duration-200 ${open ? "rotate-180" : ""}`}
+          className={`shrink-0 text-[#64748b] transition-transform duration-200 ${
+            open ? "rotate-180" : ""
+          }`}
         />
       </button>
       {open && (
@@ -128,7 +135,6 @@ interface FaqAccordionProps {
 
 export function FaqAccordion({ searchQuery = "" }: FaqAccordionProps) {
   const query = searchQuery.toLowerCase().trim();
-
   const filteredFaqs = faqs
     .map((group) => ({
       ...group,
@@ -165,13 +171,14 @@ export function FaqAccordion({ searchQuery = "" }: FaqAccordionProps) {
             Find quick answers to common questions
           </p>
         </div>
-
         {filteredFaqs.length === 0 ? (
           <div className="text-center py-12 text-sm text-[#64748b]">
-            No results found for &quot;{searchQuery}&quot;. Try a different keyword or{" "}
+            No results found for &quot;{searchQuery}&quot;. Try a different
+            keyword or{" "}
             <a href="/contact" className="text-[#02505E] hover:underline">
               contact support
-            </a>.
+            </a>
+            .
           </div>
         ) : (
           filteredFaqs.map((group, i) => (
@@ -181,7 +188,11 @@ export function FaqAccordion({ searchQuery = "" }: FaqAccordionProps) {
               </h4>
               <div className="border border-[#E1E3E4] rounded-xl px-5 overflow-hidden">
                 {group.items.map((item, j) => (
-                  <AccordionItem key={j} question={item.question} answer={item.answer} />
+                  <AccordionItem
+                    key={j}
+                    question={item.question}
+                    answer={item.answer}
+                  />
                 ))}
               </div>
             </div>

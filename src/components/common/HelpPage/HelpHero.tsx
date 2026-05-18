@@ -43,7 +43,6 @@ export function HelpHero({ onSearch }: HelpHeroProps) {
           </div>
         </div>
       </section>
-
       <section className="w-full bg-white py-6">
         <div className="max-w-[930px] mx-auto px-6">
           <div className="relative">
@@ -55,7 +54,7 @@ export function HelpHero({ onSearch }: HelpHeroProps) {
               type="text"
               placeholder="Search for help articles, guides, and FAQs..."
               onChange={(e) => onSearch?.(e.target.value)}
-              className="w-full pl-10 pr-4 py-3 rounded-full border border-[#E1E3E4] bg-white text-[#0F172A] placeholder:text-[#94a3b8] text-sm focus:outline-none focus:ring-1 focus:ring-[#02505E] tra
+              className="w-full pl-10 pr-4 py-3 rounded-full border border-[#E1E3E4] bg-white text-[#0F172A] placeholder:text-[#94a3b8] text-sm focus:outline-none focus:ring-1 focus:ring-[#02505E] transition-colors"
             />
           </div>
         </div>
