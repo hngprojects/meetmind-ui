@@ -16,13 +16,13 @@ export function NewsletterForm({ variant = "dark" }: NewsletterFormProps) {
 
   const inputClass =
     variant === "dark"
-      ? "flex-1 px-4 py-3 rounded-lg bg-white/10 border border-white/20 text-white placeholder:text-white/50 text-sm focus:outline-none focus:border-white/60 transition"
-      : "flex-1 px-4 py-3 rounded-lg border border-[#E1E3E4] text-[#0F172A] placeholder:text-[#94a3b8] text-sm focus:outline-none focus:ring-1 focus:ring-[#02505E] transition";
+      ? "w-full md:flex-1 px-4 py-3 rounded-lg bg-white text-[#0F172A] placeholder:text-[#94a3b8] text-sm focus:outline-none transition border border-transparent"
+      : "w-full md:flex-1 px-4 py-3 rounded-lg border border-[#E1E3E4] text-[#0F172A] placeholder:text-[#94a3b8] text-sm focus:outline-none focus:ring-1 focus:ring-[#02505E] transition";
 
   const buttonClass =
     variant === "dark"
-      ? "px-7 py-3 rounded-lg bg-[#e8f0ef] text-[#1a6b6b] font-semibold text-sm hover:bg-white transition-colors shrink-0 disabled:opacity-50"
-      : "px-7 py-3 rounded-lg bg-[#02505E] text-white font-semibold text-sm hover:bg-[#02505E]/80 transition-colors shrink-0 disabled:opacity-50";
+      ? "w-full md:w-auto px-7 py-3 rounded-lg bg-[#e8f0ef] text-[#1a6b6b] font-bold text-sm hover:bg-white transition-colors disabled:opacity-50 whitespace-nowrap"
+      : "w-full md:w-auto px-7 py-3 rounded-lg bg-[#02505E] text-white font-bold text-sm hover:bg-[#02505E]/80 transition-colors disabled:opacity-50 whitespace-nowrap";
 
   const errorClass =
     variant === "dark"
@@ -36,9 +36,7 @@ export function NewsletterForm({ variant = "dark" }: NewsletterFormProps) {
     try {
       setIsLoading(true);
       setError(null);
-
       await api.post("/api/v1/newsletter/subscribe", { email });
-
       setIsSuccess(true);
       setEmail("");
     } catch (err) {
@@ -58,13 +56,7 @@ export function NewsletterForm({ variant = "dark" }: NewsletterFormProps) {
 
   if (isSuccess) {
     return (
-      <p
-        className={
-          variant === "dark"
-            ? "text-white font-medium text-sm text-center"
-            : "text-[#02505E] font-medium text-sm text-center"
-        }
-      >
+      <p className={variant === "dark" ? "text-white font-medium text-sm text-center" : "text-[#02505E] font-medium text-sm text-center"}>
         ✓ You are subscribed! We&apos;ll keep you updated.
       </p>
     );
@@ -72,10 +64,7 @@ export function NewsletterForm({ variant = "dark" }: NewsletterFormProps) {
 
   return (
     <div className="w-full max-w-md mx-auto">
-      <form
-        onSubmit={handleSubmit}
-        className="flex flex-col sm:flex-row gap-3"
-      >
+      <form onSubmit={handleSubmit} className="flex flex-col md:flex-row gap-3 items-center w-full">
         <input
           type="email"
           value={email}
