@@ -1,6 +1,6 @@
 "use client";
 
-import { Search } from "lucide-react";
+import { BsSearch } from "react-icons/bs";
 import Link from "next/link";
 import { BsFileEarmarkText } from "react-icons/bs";
 
@@ -37,7 +37,7 @@ export function HelpHero({ onSearch }: HelpHeroProps) {
       <section className="w-full bg-white py-6">
         <div className="max-w-[930px] mx-auto px-6">
           <div className="relative">
-            <Search
+            <BsSearch
               className="absolute left-4 top-1/2 -translate-y-1/2 text-[#94a3b8] pointer-events-none"
               size={16}
             />

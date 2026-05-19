@@ -1,10 +1,10 @@
-import { FileText, ExternalLink, MessageCircle, Globe } from "lucide-react";
+import { BsFileText, BsBoxArrowUpRight, BsChatSquare, BsGlobe } from "react-icons/bs";
 
 const resources = [
-  { icon: <FileText size={22} className="text-[#3B82F6]" />, title: "Getting Started Guide", description: "Learn the basics of MeetMind" },
-  { icon: <Globe size={22} className="text-[#3B82F6]" />, title: "API Documentation", description: "Developer reference and SDK docs" },
-  { icon: <ExternalLink size={22} className="text-[#3B82F6]" />, title: "Video Tutorials", description: "Watch step-by-step tutorials" },
-  { icon: <MessageCircle size={22} className="text-[#3B82F6]" />, title: "Community Forum", description: "Connect with other users" },
+  { icon: <BsFileText size={22} className="text-[#3B82F6]" />, title: "Getting Started Guide", description: "Learn the basics of MeetMind" },
+  { icon: <BsGlobe size={22} className="text-[#3B82F6]" />, title: "API Documentation", description: "Developer reference and SDK docs" },
+  { icon: <BsBoxArrowUpRight size={22} className="text-[#3B82F6]" />, title: "Video Tutorials", description: "Watch step-by-step tutorials" },
+  { icon: <BsChatSquare size={22} className="text-[#3B82F6]" />, title: "Community Forum", description: "Connect with other users" },
 ];
 
 export function QuickResources() {

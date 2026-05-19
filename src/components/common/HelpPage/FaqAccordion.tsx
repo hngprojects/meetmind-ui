@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { ChevronDown } from "lucide-react";
+import { BsChevronDown } from "react-icons/bs";
 import { BsQuestionCircle } from "react-icons/bs";
 
 interface FaqItem {
@@ -114,7 +114,7 @@ function AccordionItem({
         aria-expanded={open}
       >
         <span>{question}</span>
-        <ChevronDown
+        <BsChevronDown
           size={18}
           className={`shrink-0 text-[#64748b] transition-transform duration-200 ${
             open ? "rotate-180" : ""
