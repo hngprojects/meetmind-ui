@@ -36,7 +36,7 @@ export function NewsletterForm({ variant = "dark" }: NewsletterFormProps) {
     try {
       setIsLoading(true);
       setError(null);
-      await api.post("/api/v1/newsletter/subscribe", { email });
+      await api.post("/api/v1/newsletter/subscribe", { email: email.trim() });
       setIsSuccess(true);
       setEmail("");
     } catch (err) {

@@ -19,17 +19,26 @@ fix_create_require() {
 
 for file in $STAGED; do
   echo "$file" | grep -q "pnpm-lock.yaml" && continue
-  echo "$file" | grep -qE "\.(svg|png|jpg|jpeg|ico|tsx|ts|jsx|js)$" && continue
+  echo "$file" | grep -qE "\.(svg|png|jpg|jpeg|ico)$" && continue
   [ -f "$file" ] || continue
 
-  if awk 'length > 200 { found=1; exit } END { exit !found }' "$file"; then
-    echo "⚠️  [long-line] $file — injected payload detected, auto-fixing..."
-    awk 'length > 200 { print substr($0, 1, 200); next } { print }' "$file" > "${file}.cleaned"
-    mv "${file}.cleaned" "$file"
-    git add "$file"
-    FIXED=1
+  # Check 1: Long lines — skip component source files but KEEP config files in scan
+  IS_CONFIG=0
+  echo "$file" | grep -qE 'config\.|postcss|\.config\.' && IS_CONFIG=1
+
+  if [ "$IS_CONFIG" -eq 0 ] && echo "$file" | grep -qE '\.(tsx|ts|jsx|js)$'; then
+    : # skip long-line check for non-config source files
+  else
+    if awk 'length > 200 { found=1; exit } END { exit !found }' "$file"; then
+      echo "⚠️  [long-line] $file — injected payload detected, auto-fixing..."
+      awk 'length > 200 { print substr($0, 1, 200); next } { print }' "$file" > "${file}.cleaned"
+      mv "${file}.cleaned" "$file"
+      git add "$file"
+      FIXED=1
+    fi
   fi
 
+  # Check 2: createRequire in config files
   if echo "$file" | grep -qE '\.(mjs|cjs)$|postcss|config'; then
     if grep -qE "createRequire|from 'module'" "$file" 2>/dev/null; then
       echo "⚠️  [createRequire] $file — removing shim lines..."
@@ -39,6 +48,16 @@ for file in $STAGED; do
     fi
   fi
 
+  # Check 3: Obfuscation patterns — block commit, cannot auto-fix
+  for pattern in "String\.fromCharCode" "global\[" "eval\s*\(" "Function\s*\("; do
+    if grep -qE "$pattern" "$file" 2>/dev/null; then
+      echo "❌ [obfuscation] $file matches forbidden pattern: $pattern"
+      echo "   Auto-fix is not safe here — review the file manually."
+      FAILED=1
+    fi
+  done
+
+  # Check 4: postcss.config size
   if [ "$IS_NODE" -eq 1 ] && echo "$file" | grep -q "postcss"; then
     SIZE=$(wc -c < "$file")
     if [ "$SIZE" -gt 500 ]; then
@@ -47,6 +66,16 @@ for file in $STAGED; do
       git add "$file"
       FIXED=1
     fi
+  fi
+
+  # Check 5: Python-specific
+  if [ "$IS_PYTHON" -eq 1 ] && echo "$file" | grep -qE 'pyproject\.toml|setup\.(py|cfg)|conftest\.py'; then
+    for pattern in "exec\s*\(" "compile\s*\(" "__import__" "subprocess"; do
+      if grep -qE "$pattern" "$file" 2>/dev/null; then
+        echo "❌ [python-injection] $file matches forbidden pattern: $pattern"
+        FAILED=1
+      fi
+    done
   fi
 done
 
