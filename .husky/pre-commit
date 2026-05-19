@@ -1,6 +1,9 @@
 #!/bin/sh
 set -e
 
+# Run lint-staged first to ensure code quality
+npx lint-staged
+
 FIXED=0
 FAILED=0
 

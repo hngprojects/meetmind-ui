@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { cn } from "@/lib/utils";
-import { User } from "lucide-react";
+import { FaRegUser } from "react-icons/fa";
 
 export interface HireOption {
   value: string;
@@ -29,7 +29,12 @@ export function HireRadioGroup({
   };
 
   return (
-    <div className="space-y-3" role="radiogroup" aria-label="Hiring plan" id="no-of-hires">
+    <div
+      className="space-y-3"
+      role="radiogroup"
+      aria-label="Hiring plan"
+      id="no-of-hires"
+    >
       {options.map((opt) => {
         const active = selected === opt.value;
 
@@ -55,7 +60,7 @@ export function HireRadioGroup({
             )}
           >
             <div className="shrink-0 text-slate-400">
-              <User size={20} />
+              <FaRegUser size={20} />
             </div>
 
             <div className="grow">
