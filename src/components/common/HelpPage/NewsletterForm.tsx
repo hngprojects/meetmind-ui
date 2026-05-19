@@ -41,11 +41,11 @@ export function NewsletterForm({ variant = "dark" }: NewsletterFormProps) {
       setEmail("");
     } catch (err) {
       if (axios.isAxiosError(err)) {
-        const message =
+        const raw =
           err.response?.data?.message ||
           err.response?.data?.error?.details?.[0]?.msg ||
           "Something went wrong. Please try again.";
-        setError(message);
+        setError(typeof raw === "string" ? raw : JSON.stringify(raw));
       } else {
         setError("Unexpected error. Please try again.");
       }
@@ -65,7 +65,11 @@ export function NewsletterForm({ variant = "dark" }: NewsletterFormProps) {
   return (
     <div className="w-full max-w-md mx-auto">
       <form onSubmit={handleSubmit} className="flex flex-col md:flex-row gap-3 items-center w-full">
+        <label htmlFor="newsletter-email" className="sr-only">
+          Email address
+        </label>
         <input
+          id="newsletter-email"
           type="email"
           value={email}
           onChange={(e) => setEmail(e.target.value)}

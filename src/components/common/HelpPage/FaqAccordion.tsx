@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { BsChevronDown } from "react-icons/bs";
 import { BsQuestionCircle } from "react-icons/bs";
+import Link from "next/link";
 
 interface FaqItem {
   question: string;
@@ -163,13 +164,12 @@ export function FaqAccordion({ searchQuery = "" }: FaqAccordionProps) {
         </div>
         {filteredFaqs.length === 0 ? (
           <div className="text-center py-12 text-sm text-[#64748b]">
-            No results found for &quot;{searchQuery}&quot;. Try a different
-            keyword or{" "}
-            <a href="/contact" className="text-[#02505E] hover:underline">
-              contact support
-            </a>
-            .
-          </div>
+  No results found for &quot;{searchQuery}&quot;. Try a different keyword or{" "}
+  <Link href="/contact" className="text-[#02505E] hover:underline">
+    contact support
+  </Link>
+  .
+</div>
         ) : (
           filteredFaqs.map((group, i) => (
             <div key={i} className="mb-6">

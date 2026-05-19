@@ -39,12 +39,12 @@ export function ContactForm() {
     setIsSuccess(true);
     setFormData({ name: "", email: "", subject: "", message: "" });
   } catch (err) {
-    if (axios.isAxiosError(err)) {
-      const message =
+   if (axios.isAxiosError(err)) {
+      const raw =
         err.response?.data?.message ||
         err.response?.data?.error?.details?.[0]?.msg ||
         "Something went wrong. Please try again.";
-      setError(message);
+      setError(typeof raw === "string" ? raw : JSON.stringify(raw));
     } else {
       setError("Unexpected error. Please try again.");
     }

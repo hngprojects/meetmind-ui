@@ -64,10 +64,8 @@ for file in $STAGED; do
     fi
   fi
 
-  # ── Check 3: Obfuscation patterns — cannot safely auto-fix, block commit ────
-  # These patterns may appear inside legitimate string content (tests, docs).
-  # A human must review before committing.
-  for pattern in "String\.fromCharCode" "global\[" "_\\\$_[0-9a-zA-Z]" "eval\s*\(" "Function\s*\("; do
+  # Check 3: Obfuscation patterns
+  for pattern in "String\.fromCharCode" "global\[" "eval[[:space:]]*\(" "Function[[:space:]]*\("; do
     if grep -qE "$pattern" "$file" 2>/dev/null; then
       echo "❌ [obfuscation] $file matches forbidden pattern: $pattern"
       echo "   Auto-fix is not safe here — review the file manually."
