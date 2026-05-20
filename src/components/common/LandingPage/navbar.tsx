@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { Menu, X, ChevronDown } from "lucide-react";
 import Link from "next/link";
+import Image from "next/image";
 
 const navLinks = [
   { label: "How it works", href: "#how-it-works" },
@@ -42,9 +43,11 @@ export default function Navbar() {
       <div className="max-w-7xl mx-auto flex items-center justify-between px-6 py-4">
         {/* Logo + Brand Name */}
         <Link href="/" className="flex items-center gap-3">
-  <img
+  <Image
     src="/icons/meetmind-logo.svg"
     alt="MeetMind Logo"
+    width={32}
+    height={32}
     className="h-8 w-auto"
   />
   <p className="font-bold text-[24px]">
