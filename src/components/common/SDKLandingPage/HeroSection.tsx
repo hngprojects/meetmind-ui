@@ -34,7 +34,7 @@ export default function HeroSection() {
             Try Demo
           </Link>
           <Link
-            href="/api"
+            href="#"
             className="inline-block min-w-56 text-center py-2 border border-[#035A69] text-[#02505E] hover:text-[#FEFEFF] hover:bg-[#02505E]
              font-bold rounded-lg text-base cursor-pointer"
           >
