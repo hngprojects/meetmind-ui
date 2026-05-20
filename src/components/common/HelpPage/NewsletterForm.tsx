@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useRef, useState } from "react";
 import axios from "axios";
 import api from "@/lib/api";
 
@@ -13,6 +13,7 @@ export function NewsletterForm({ variant = "dark" }: NewsletterFormProps) {
   const [isLoading, setIsLoading] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const isSubmittingRef = useRef(false);
 
   const inputClass =
     variant === "dark"
@@ -32,33 +33,37 @@ export function NewsletterForm({ variant = "dark" }: NewsletterFormProps) {
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     if (!email.trim()) return;
+    if (isSubmittingRef.current) return;
+
+    isSubmittingRef.current = true;
 
     try {
       setIsLoading(true);
       setError(null);
-
-      await api.post("/api/v1/newsletter/subscribe", { email });
-
+      await api.post("/api/v1/newsletter/subscribe", { email: email.trim() });
       setIsSuccess(true);
       setEmail("");
     } catch (err) {
       if (axios.isAxiosError(err)) {
-        const message =
+        const raw =
           err.response?.data?.message ||
           err.response?.data?.error?.details?.[0]?.msg ||
           "Something went wrong. Please try again.";
-        setError(message);
+        setError(typeof raw === "string" ? raw : JSON.stringify(raw));
       } else {
         setError("Unexpected error. Please try again.");
       }
     } finally {
       setIsLoading(false);
+      isSubmittingRef.current = false;
     }
   }
 
   if (isSuccess) {
     return (
       <p
+        role="status"
+        aria-live="polite"
         className={
           variant === "dark"
             ? "text-white font-medium text-sm text-center"
@@ -76,7 +81,11 @@ export function NewsletterForm({ variant = "dark" }: NewsletterFormProps) {
         onSubmit={handleSubmit}
         className="flex flex-col sm:flex-row gap-3"
       >
+        <label htmlFor="newsletter-email" className="sr-only">
+          Email address
+        </label>
         <input
+          id="newsletter-email"
           type="email"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
@@ -93,7 +102,11 @@ export function NewsletterForm({ variant = "dark" }: NewsletterFormProps) {
           {isLoading ? "Subscribing..." : "Subscribe"}
         </button>
       </form>
-      {error && <p className={errorClass}>{error}</p>}
+      {error && (
+        <p role="alert" aria-live="assertive" className={errorClass}>
+          {error}
+        </p>
+      )}
     </div>
   );
 }
