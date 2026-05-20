@@ -14,13 +14,13 @@ export default function Footer() {
   return (
     <footer
       id="footer"
-      className="w-full bg-[#0F172A] text-[#FEFEFF] py-12 md:py-16 px-4 md:px-8 flex flex-col gap-12 items-center"
+      className="w-full bg-[#0F172A] text-[#FEFEFF] py-4 md:py-24 px-4 md:px-20 flex flex-col  items-center"
     >
-      <div className="w-full lg:max-w-272 flex flex-col gap-12">
+      <div className="w-full  flex flex-col gap-4">
         {/* Top Section: Link Menu */}
         <nav
           aria-label="footer nav links"
-          className="flex flex-col sm:flex-row items-start sm:items-center gap-6 font-normal text-lg  pb-8 border-b border-gray-800/50"
+          className="flex flex-col sm:flex-row items-start sm:items-center gap-4 font-normal text-base"
         >
           {footerLinks.map((link) => (
             <Link
@@ -34,12 +34,12 @@ export default function Footer() {
         </nav>
 
         {/* Bottom Section */}
-        <div className="w-full flex flex-col md:flex-row justify-between gap-6 items-start md:items-center">
+        <div className="w-full flex flex-col md:flex-row justify-between gap-4 items-start md:items-center">
           {/* Logo Brand Frame */}
           <Link
             href="#sdkhero"
             aria-label="Go to SDK hero section"
-            className="flex items-center gap-3  shrink-0"
+            className="flex items-center gap-4  shrink-0"
           >
             <Image
               src="/icons/meetmind-logo.svg"
@@ -59,7 +59,7 @@ export default function Footer() {
           </Link>
 
           {/* Copyright Tag */}
-          <p className="text-sm md:text-base font-normal text-gray-400 md:text-right">
+          <p className="text-sm md:text-base font-normal text-[#FEFEFF] md:text-right">
             &copy; {new Date().getFullYear()} MeetMind LTD. All rights reserved.
           </p>
         </div>
