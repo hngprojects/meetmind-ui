@@ -1,9 +1,12 @@
 import Onboarding from "@/components/common/Onboarding/Onboarding";
+import ProtectedRoute from "@/components/providers/ProtectedRoute";
 
 const OnboardingPage = () => {
   return (
-    <div><Onboarding/></div>
-  )
-}
+    <ProtectedRoute>
+      <Onboarding />
+    </ProtectedRoute>
+  );
+};
 
-export default OnboardingPage
+export default OnboardingPage;

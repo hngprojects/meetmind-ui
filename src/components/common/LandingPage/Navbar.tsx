@@ -1,9 +1,11 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Menu, X, ChevronDown } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
+import { RiArrowDropDownLine } from "react-icons/ri";
+import { IoIosMenu } from "react-icons/io";
+import { MdOutlineCancel } from "react-icons/md";
 
 const navLinks = [
   { label: "How it works", href: "#how-it-works" },
@@ -71,14 +73,14 @@ export default function Navbar() {
 
           {/* SDK */}
           <div className="relative flex items-center">
-            <button
-              type="button"
+            <Link
+              href="/sdk"
               className="flex items-center gap-1 text-[#0F172A] text-sm font-medium cursor-pointer"
               onClick={() => console.log("SDK menu clicked")}
             >
               <span>SDK</span>
-              <ChevronDown className="w-4 h-4" />
-            </button>
+              <RiArrowDropDownLine className="w-4 h-4" />
+            </Link>
           </div>
         </div>
 
@@ -96,7 +98,11 @@ export default function Navbar() {
           onClick={() => setIsMobileMenuOpen((prev) => !prev)}
           aria-label="Toggle menu"
         >
-          {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
+          {isMobileMenuOpen ? (
+            <MdOutlineCancel size={24} />
+          ) : (
+            <IoIosMenu size={24} />
+          )}
         </button>
       </div>
 

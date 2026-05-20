@@ -1,5 +1,5 @@
 import { ReactNode } from "react";
-import { Check } from "lucide-react";
+import { FaCheck } from "react-icons/fa";
 
 interface IntegrationCardProps {
   name: string;
@@ -23,7 +23,7 @@ export function IntegrationCard({
 
       {isConnected ? (
         <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-emerald-50 text-emerald-600 border border-emerald-100">
-          <Check size={14} strokeWidth={3} />
+          <FaCheck size={14} strokeWidth={3} />
           <span className="text-xs font-bold">Done</span>
         </div>
       ) : (

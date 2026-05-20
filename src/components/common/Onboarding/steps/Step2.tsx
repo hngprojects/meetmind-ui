@@ -1,10 +1,10 @@
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { onboardingStore } from "../../../../store/onboardingStore";
-import { ArrowLeft } from "lucide-react";
 import { HireRadioGroup, type HireOption } from "../onboarding/RadioCard";
 import Input from "../onboarding/Input";
 import Select from "../onboarding/Select";
+import { GoArrowLeft } from "react-icons/go";
 
 const hireOptions: HireOption[] = [
   {
@@ -106,7 +106,7 @@ const Step2 = () => {
             Continue
           </Button>
           <Button onClick={prevStep} variant="ghost" className="w-fit">
-            <ArrowLeft></ArrowLeft>
+            <GoArrowLeft />
             Back
           </Button>
         </div>

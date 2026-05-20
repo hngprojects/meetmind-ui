@@ -1,8 +1,8 @@
 import { Button } from "@/components/ui/button";
 import { onboardingStore } from "../../../../store/onboardingStore";
-import { ArrowLeft } from "lucide-react";
 import { IntegrationCard } from "../onboarding/IntegrationCard";
 import Image from "next/image";
+import { GoArrowLeft } from "react-icons/go";
 
 const Step4 = () => {
   const data = onboardingStore((state) => state.data);
@@ -82,7 +82,7 @@ const Step4 = () => {
             Continue
           </Button>
           <Button onClick={prevStep} variant="ghost" className="w-fit">
-            <ArrowLeft></ArrowLeft>
+            <GoArrowLeft />
             Back
           </Button>
         </div>

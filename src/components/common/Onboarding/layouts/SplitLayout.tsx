@@ -1,5 +1,7 @@
-import type { ReactNode } from 'react';
-import { Brain, BellDot, ClipboardCheck, Notebook } from 'lucide-react';
+import type { ReactNode } from "react";
+import { RiFileCheckLine } from "react-icons/ri";
+import { ImFileText2 } from "react-icons/im";
+import { LuBellDot, LuBrain } from "react-icons/lu";
 
 const SplitLayout = ({ children }: { children: ReactNode }) => {
   return (
@@ -12,7 +14,7 @@ const SplitLayout = ({ children }: { children: ReactNode }) => {
           <div className="w-full flex flex-col gap-4 md:grid md:grid-cols-2 md:gap-6 lg:flex lg:flex-col">
             <div className="w-full flex gap-2.5 bg-card rounded-3xl p-4 sm:p-5 md:p-6">
               <div className="p-2.5">
-                <Brain size={24} />
+                <LuBrain size={24} />
               </div>
 
               <div className="flex flex-col gap-4 ">
@@ -20,14 +22,14 @@ const SplitLayout = ({ children }: { children: ReactNode }) => {
                   Fully autonomous
                 </h3>
                 <p className="text-[hsla(220, 9%, 40%, 1)]">
-                  Meet Mind conducts the interview on your behalf. You don&apos;t
-                  need to be on the call.
+                  Meet Mind conducts the interview on your behalf. You
+                  don&apos;t need to be on the call.
                 </p>
               </div>
             </div>
             <div className="flex w-full gap-2.5 bg-card rounded-3xl p-4 sm:p-5 md:p-6">
               <div className="p-2.5">
-                <BellDot size={24} />
+                <LuBellDot size={24} />
               </div>
 
               <div className="flex flex-col gap-4 ">
@@ -42,7 +44,7 @@ const SplitLayout = ({ children }: { children: ReactNode }) => {
             </div>
             <div className="flex gap-2.5 bg-card rounded-3xl p-4 sm:p-5 md:p-6">
               <div className="p-2.5">
-                <ClipboardCheck size={24} />
+                <RiFileCheckLine size={24} />
               </div>
 
               <div className="flex flex-col gap-4">
@@ -57,7 +59,7 @@ const SplitLayout = ({ children }: { children: ReactNode }) => {
             </div>
             <div className="flex gap-2.5 bg-card rounded-3xl p-4 sm:p-5 md:p-6">
               <div className="p-2.5">
-                <Notebook size={24} />
+                <ImFileText2 size={24} />
               </div>
 
               <div className="flex flex-col gap-4">
