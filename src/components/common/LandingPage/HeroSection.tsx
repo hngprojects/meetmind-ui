@@ -20,7 +20,7 @@ export default function HeroSection() {
           </h1>
           <Image
             src="/icons/google-duo.svg"
-            alt="Google Meet"
+            alt="Google Duo"
             width={72}
             height={72}
             className="w-10 md:w-18"
@@ -44,14 +44,13 @@ export default function HeroSection() {
           {/* Desktop and Tablet */}
           <div className="hidden mt-10 md:flex md:flex-col lg:flex-row items-center justify-center gap-6">
             <Link
-              href="/signup"
+              href="/sign-up"
               className="px-6 py-3 bg-[#02505E] text-white font-semibold rounded-lg text-base hover:bg-[#FFFFFF] hover:text-[#013A44] hover:border hover:border-[#DADADA] transition-colors cursor-pointer"
             >
               Get early access
             </Link>
             <button
               type="button"
-              onClick={() => console.log("Watch Demo clicked")}
               className="px-8 py-3 border border-[#DADADA] text-[#02505E] font-semibold rounded-lg text-base hover:bg-[#02505E] hover:text-white transition-colors inline-flex items-center gap-2 cursor-pointer"
             >
               Watch a Demo
@@ -69,14 +68,13 @@ export default function HeroSection() {
             />
             <div className="flex flex-col items-center gap-6">
               <Link
-                href="/signup"
+                href="/sign-up"
                 className="px-6 py-3 bg-[#02505E] text-white font-semibold rounded-lg text-base hover:bg-[#FFFFFF] hover:text-[#013A44] hover:border hover:border-[#DADADA] transition-colors cursor-pointer"
               >
                 Get early access
               </Link>
               <button
                 type="button"
-                onClick={() => console.log("Watch Demo clicked")}
                 className="px-8 py-3 border border-[#DADADA] text-[#02505E] font-semibold rounded-lg text-base hover:bg-[#02505E] hover:text-white transition-colors inline-flex items-center gap-2 cursor-pointer"
               >
                 Watch a Demo
