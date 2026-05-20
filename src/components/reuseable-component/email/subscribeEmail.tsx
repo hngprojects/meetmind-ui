@@ -13,9 +13,19 @@ type Props = {
   style: string;
   label?: string;
   labelStyle?: string;
+  buttonText?: string;
+  loadingText?: string;
+  buttonStyle?: string;
 };
 
-const SubscribeEmail = ({ style, label, labelStyle }: Props) => {
+const SubscribeEmail = ({
+  style,
+  label,
+  labelStyle,
+  buttonText,
+  loadingText,
+  buttonStyle,
+}: Props) => {
   const {
     focusedFields,
     handleFocus,
@@ -104,9 +114,13 @@ const SubscribeEmail = ({ style, label, labelStyle }: Props) => {
         </div>
 
         <Buttons
-          text={isLoading ? "Signing up..." : "Get early access"}
+          text={
+            isLoading
+              ? loadingText || "Signing up..."
+              : buttonText || "Get early access"
+          }
           type="submit"
-          style="bg-[#02505E] hover:bg-[#02505e]/80 h-12"
+          style={buttonStyle || "bg-[#02505E] hover:bg-[#02505e]/80 h-12"}
           disabled={isLoading}
         />
       </form>
