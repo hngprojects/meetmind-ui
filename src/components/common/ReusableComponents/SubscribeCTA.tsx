@@ -4,13 +4,10 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import axios from "axios";
 import Image from "next/image";
-import api from "@/lib/api";
-const SUBSCRIBE_API_URL = process.env.NEXT_PUBLIC_API_EMAIL;
 
 const subscribeSchema = z.object({
-  email: z.email("Please enter a valid email address"),
+  email: z.string().email("Please enter a valid email address"),
 });
 
 type SubscribeFormData = z.infer<typeof subscribeSchema>;
@@ -31,34 +28,25 @@ export default function SubscribeCTA() {
   });
 
   const onSubmit = async (data: SubscribeFormData) => {
-    try {
-      await api.post(SUBSCRIBE_API_URL || "", { email: data.email });
-      setStatus("success");
-      reset();
-    } catch (error) {
-      if (axios.isAxiosError(error)) {
-        console.error(
-          "Subscription failed:",
-          error.response?.data ?? error.message,
-        );
-      }
-      setStatus("error");
-    }
+    // Simulate a network request
+    await new Promise((resolve) => setTimeout(resolve, 1500));
+    setStatus("success");
+    reset();
   };
 
   return (
     <section
       id="subscribe-email"
-      className="w-full py-10 md:py-[3.75rem] lg:py-20 bg-[#FEFEFF]"
+      className="w-full py-10 md:py-15 lg:py-20 bg-[#FEFEFF]"
     >
       <div className="px-4 md:px-6 max-w-7xl mx-auto w-full">
-        <div className="relative overflow-hidden max-w-sm md:max-w-7xl lg:max-w-7xl rounded-2xl mx-auto px-16 md:px-24 py-8 md:py-16 bg-[#036475] text-center">
+        <div className="relative overflow-hidden w-full max-w-sm md:max-w-7xl lg:max-w-7xl rounded-2xl mx-auto px-6 sm:px-16 md:px-24 py-8 md:py-16 bg-[#036475] text-center">
           <Image
             src="/icons/meetmind-logo.svg"
             alt="MeetMind logo"
             width={300}
             height={300}
-            className="absolute -bottom-20 -right-[12.5rem] md:-bottom-[12.5rem] md:-right-[7.5rem] w-[18.75rem] opacity-40 pointer-events-none"
+            className="absolute -bottom-20 -right-50 md:-bottom-50 md:-right-30 w-75 opacity-40 pointer-events-none"
           />
 
           <div className="relative z-10">
@@ -72,7 +60,7 @@ export default function SubscribeCTA() {
 
             {status === "success" ? (
               <p className="text-[#D9E8EA] font-medium text-sm md:text-base animate-pulse">
-                🎉 You&apos;re subscribed! We&apos;ll be in touch.
+                waiting for backend team to give me api
               </p>
             ) : (
               <form
@@ -86,12 +74,12 @@ export default function SubscribeCTA() {
                     type="email"
                     placeholder="Enter your email"
                     disabled={isSubmitting}
-                    className="flex-1 p-3 max-w-xs text-center bg-white rounded-md focus:outline-none disabled:opacity-60"
+                    className="md:text-left flex-1 p-3 max-w-xs text-center bg-white rounded-md focus:outline-none disabled:opacity-60"
                   />
                   <button
-                    type="submit"
+                    type="submit" // or "button"
                     disabled={isSubmitting}
-                    className="inline-block px-6 py-3 bg-[#D9E8EA] text-[#035A69] hover:bg-[#F7F9F8] hover:text-[#02505E] font-bold rounded-lg text-base cursor-pointer disabled:opacity-60 disabled:cursor-not-allowed transition-colors"
+                    className="inline-block px-6 py-3 bg-[#D9E8EA] text-[#035A69] hover:bg-[#F7F9F8] hover:text-[#02505E] font-bold rounded-lg text-base cursor-pointer disabled:opacity-60"
                   >
                     {isSubmitting ? "Subscribing..." : "Subscribe"}
                   </button>

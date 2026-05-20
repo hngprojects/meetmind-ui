@@ -6,12 +6,10 @@ export const metadata: Metadata = {
   description: "Privacy Policy for MeetMind platform",
 };
 
-const PrivacyPolicyPage = () => {
+export default function PrivacyPolicyPage() {
   return (
     <main>
       <PrivacyPolicyPageView />
     </main>
   );
-};
-
-export default PrivacyPolicyPage;
+}

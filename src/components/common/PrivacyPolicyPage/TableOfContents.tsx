@@ -1,6 +1,6 @@
-"use client"
+"use client";
 
-import { useState, type MouseEvent } from 'react';
+import { useState, useEffect, type MouseEvent } from "react";
 
 interface ToCItem {
   id: string;
@@ -8,24 +8,76 @@ interface ToCItem {
 }
 
 const items: ToCItem[] = [
-  { id: 'introduction', label: 'Introduction' },
-  { id: 'information-collection', label: 'Information Collection' },
-  { id: 'use-of-information', label: 'Use of Information' },
-  { id: 'information-disclosure', label: 'Information Disclosure' },
-  { id: 'data-security', label: 'Data Security' },
-  { id: 'changes-to-policy', label: 'Changes to This Policy' },
+  { id: "introduction", label: "Introduction" },
+  { id: "information-collection", label: "Information Collection" },
+  { id: "use-of-information", label: "Use of Information" },
+  { id: "information-disclosure", label: "Information Disclosure" },
+  { id: "data-security", label: "Data Security" },
+  { id: "changes-to-policy", label: "Changes to This Policy" },
 ];
 
 export default function TableOfContents() {
   const [activeId, setActiveId] = useState<string>(items[0].id);
+
+  // Click handler: scrolls smoothly and silently pushes the state hash
   const handleClick = (e: MouseEvent<HTMLAnchorElement>, id: string) => {
     e.preventDefault();
     const element = document.getElementById(id);
     if (element) {
-      element.scrollIntoView({ behavior: 'smooth' });
+      element.scrollIntoView({ behavior: "smooth" });
       setActiveId(id);
+      window.history.pushState(null, "", `#${id}`);
     }
   };
+
+  // Scroll Spy: dynamically highlights active section as the user scrolls
+  useEffect(() => {
+    const observerOptions = {
+      root: null,
+      rootMargin: "-20% 0px -55% 0px", // Trigger when section is in the middle of viewport
+      threshold: 0,
+    };
+
+    const observerCallback = (entries: IntersectionObserverEntry[]) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          setActiveId(entry.target.id);
+        }
+      });
+    };
+
+    const observer = new IntersectionObserver(
+      observerCallback,
+      observerOptions,
+    );
+
+    items.forEach((item) => {
+      const element = document.getElementById(item.id);
+      if (element) {
+        observer.observe(element);
+      }
+    });
+
+    return () => {
+      observer.disconnect();
+    };
+  }, []);
+
+  // Mounting listener: smooth scrolls if a direct hash link was visited
+  useEffect(() => {
+    const hash = window.location.hash;
+    if (hash) {
+      const id = hash.replace("#", "");
+      const element = document.getElementById(id);
+      if (element) {
+        const timer = setTimeout(() => {
+          element.scrollIntoView({ behavior: "smooth" });
+          setActiveId(id);
+        }, 150);
+        return () => clearTimeout(timer);
+      }
+    }
+  }, []);
 
   return (
     <div className="w-full bg-white p-6 rounded-2xl">
@@ -43,8 +95,8 @@ export default function TableOfContents() {
                 onClick={(e) => handleClick(e, item.id)}
                 className={`text-sm transition-colors pl-4 ${
                   isActive
-                    ? 'text-[#0A4C57] font-medium'
-                    : 'text-[#3F4555] hover:text-gray-900'
+                    ? "text-[#0A4C57] font-medium"
+                    : "text-[#3F4555] hover:text-gray-900"
                 }`}
               >
                 {item.label}

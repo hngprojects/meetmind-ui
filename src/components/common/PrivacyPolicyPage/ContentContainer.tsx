@@ -1,13 +1,13 @@
-import TableOfContents from './TableOfContents';
-import PolicySection from './PolicySection';
-import ContactCTA from './ContactCTA';
+import TableOfContents from "./TableOfContents";
+import PolicySection from "./PolicySection";
+import ContactCTA from "./ContactCTA";
 
 export default function ContentContainer() {
   return (
     <section className="px-4 md:px-6 max-w-7xl mx-auto w-full mb-20 overflow-visible">
-      <div className="flex flex-col md:flex-row gap-8 md:gap-10 relative">
+      <div className="flex flex-col lg:flex-row gap-8 lg:gap-10 relative">
         {/* Left Column: Table of Contents */}
-        <aside className="hidden lg:block w-64 shrink-0 sticky top-24 self-start h-fit">
+        <aside className="w-full lg:w-64 shrink-0 lg:sticky lg:top-24 lg:self-start h-fit">
           <TableOfContents />
         </aside>
 
