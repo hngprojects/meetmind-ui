@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 
 const footerColumns = [
   {
@@ -55,20 +56,21 @@ export default function Footer() {
         <div className="flex flex-col lg:flex-row items-start md:items-center lg:items-start lg:justify-between gap-12">
           <div className="max-w-xs md:max-w-lg lg:max-w-xs md:flex flex-col md:items-center lg:items-start">
             <Link href="/" className="flex items-center gap-3">
-  <img
-    src="/icons/meetmind-logo.svg"
-    alt="MeetMind Logo"
-    className="h-8 w-auto"
-  />
-  <p className="font-bold text-[24px]">
-    Meet<span className="text-[#4F46E5]">Mind</span>
-  </p>
-</Link>
+              <Image
+                src="/icons/meetmind-logo.svg"
+                alt="MeetMind Logo"
+                width={32}
+                height={32}
+                className="h-8 w-auto"
+              />
+              <p className="font-bold text-[24px]">
+                Meet<span className="text-[#4F46E5]">Mind</span>
+              </p>
+            </Link>
             <p className="mt-4 text-sm text-[#3F4555] md:text-center lg:text-start leading-relaxed">
               MeetMind joins your call, tracks coverage, and delivers a
               structured summary instantly.
             </p>
-            {/* Social icons */}
             <div className="flex items-center gap-4 mt-6">
               {socialLinks.map((social) => (
                 <a
@@ -77,13 +79,18 @@ export default function Footer() {
                   aria-label={social.name}
                   className="opacity-60 hover:opacity-100 transition-opacity"
                 >
-                  <img src={social.icon} alt="" className="w-5 h-5" />
+                  <Image
+                    src={social.icon}
+                    alt=""
+                    width={20}
+                    height={20}
+                    className="w-5 h-5"
+                  />
                 </a>
               ))}
             </div>
           </div>
 
-          {/* Link columns */}
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
             {footerColumns.map((column) => (
               <div key={column.title}>
@@ -107,10 +114,8 @@ export default function Footer() {
           </div>
         </div>
 
-        {/* Divider */}
         <hr className="mt-12 border border-[#E1E3E4]" />
 
-        {/* Copyright */}
         <p className="mt-8 text-center text-[#64748B] text-xs">
           ©{currentYear} MeetMind LTD. All rights reserved.
         </p>
