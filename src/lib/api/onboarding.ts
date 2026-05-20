@@ -5,6 +5,7 @@ export async function submitOnboarding(data: OnboardingData) {
     "https://api.staging.meetmind.hng14.com/api/onboarding",
     {
       method: "POST",
+      credentials: "include",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(data),
     },
