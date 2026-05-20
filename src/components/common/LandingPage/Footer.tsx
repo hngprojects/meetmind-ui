@@ -14,7 +14,7 @@ const footerColumns = [
   {
     title: "Developers",
     links: [
-      { label: "SDK", href: "#" },
+      { label: "SDK", href: "/sdk" },
       { label: "Documentation", href: "#" },
       { label: "API Reference", href: "#" },
       { label: "GitHub", href: "#" },

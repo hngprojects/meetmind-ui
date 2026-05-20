@@ -73,14 +73,14 @@ export default function Navbar() {
 
           {/* SDK */}
           <div className="relative flex items-center">
-            <button
-              type="button"
+            <Link
+              href="/sdk"
               className="flex items-center gap-1 text-[#0F172A] text-sm font-medium cursor-pointer"
               onClick={() => console.log("SDK menu clicked")}
             >
               <span>SDK</span>
               <RiArrowDropDownLine className="w-4 h-4" />
-            </button>
+            </Link>
           </div>
         </div>
 

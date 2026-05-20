@@ -12,10 +12,12 @@ import AuthDivider from "@/components/common/SignIn/AuthDivider";
 import GoogleAuthButton from "./GoogleAuthButton";
 import AuthFooter from "@/components/common/SignIn/AuthFooter";
 import { useRouter } from "next/navigation";
+import { useAuthStore } from "@/store/authStore";
 
 const SignInForm = () => {
   const [serverError, setServerError] = useState("");
   const router = useRouter();
+  const setAuth = useAuthStore((state) => state.setAuth);
 
   const {
     register,
@@ -35,8 +37,27 @@ const SignInForm = () => {
   const onSubmit = async (data: SignInFormData) => {
     setServerError("");
     try {
-      await loginUser(data);
-      router.push("/");
+      const response = await loginUser(data);
+
+      if (!response.success) {
+        setServerError(response.message || "Invalid credentials");
+        return;
+      }
+
+      // Save access token in browser storage under the key "token"
+      localStorage.setItem("token", response.data.access_token);
+
+      const authUser = {
+        id: response.data.id,
+        email: response.data.email,
+        name: response.data.name,
+      };
+
+      localStorage.setItem("user", JSON.stringify(authUser));
+
+      setAuth(authUser, response.data.access_token);
+
+      router.push("/onboarding");
     } catch (error) {
       if (axios.isAxiosError(error)) {
         setServerError(error.response?.data?.detail || "Something went wrong");

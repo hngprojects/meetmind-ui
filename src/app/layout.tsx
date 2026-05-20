@@ -3,6 +3,7 @@ import { Geist, Geist_Mono, Figtree, Instrument_Serif } from "next/font/google";
 import "./globals.css";
 import { cn } from "@/lib/utils";
 import Providers from "./providers";
+import AuthProvider from "@/components/providers/AuthProvider";
 
 const figtree = Figtree({ subsets: ["latin"], variable: "--font-sans" });
 
@@ -31,7 +32,7 @@ export const metadata: Metadata = {
     default: appName,
     template: `%s · ${appName}`,
   },
-  description: `${appName} — a Next.js 16 starter.`,
+  description: `${appName} — Interview better with Meetmind.`,
 };
 
 export default function RootLayout({
@@ -53,7 +54,9 @@ export default function RootLayout({
       )}
     >
       <body className="min-h-full flex flex-col">
-        <Providers>{children}</Providers>
+        <AuthProvider>
+          <Providers>{children}</Providers>
+        </AuthProvider>
       </body>
     </html>
   );
