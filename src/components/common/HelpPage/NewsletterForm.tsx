@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useRef, useState } from "react";
 import axios from "axios";
 import api from "@/lib/api";
 
@@ -13,6 +13,7 @@ export function NewsletterForm({ variant = "dark" }: NewsletterFormProps) {
   const [isLoading, setIsLoading] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const isSubmittingRef = useRef(false);
 
   const inputClass =
     variant === "dark"
@@ -32,6 +33,9 @@ export function NewsletterForm({ variant = "dark" }: NewsletterFormProps) {
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     if (!email.trim()) return;
+    if (isSubmittingRef.current) return;
+
+    isSubmittingRef.current = true;
 
     try {
       setIsLoading(true);
@@ -51,12 +55,21 @@ export function NewsletterForm({ variant = "dark" }: NewsletterFormProps) {
       }
     } finally {
       setIsLoading(false);
+      isSubmittingRef.current = false;
     }
   }
 
   if (isSuccess) {
     return (
-      <p className={variant === "dark" ? "text-white font-medium text-sm text-center" : "text-[#02505E] font-medium text-sm text-center"}>
+      <p
+        role="status"
+        aria-live="polite"
+        className={
+          variant === "dark"
+            ? "text-white font-medium text-sm text-center"
+            : "text-[#02505E] font-medium text-sm text-center"
+        }
+      >
         ✓ You are subscribed! We&apos;ll keep you updated.
       </p>
     );
@@ -64,7 +77,10 @@ export function NewsletterForm({ variant = "dark" }: NewsletterFormProps) {
 
   return (
     <div className="w-full max-w-md mx-auto">
-      <form onSubmit={handleSubmit} className="flex flex-col md:flex-row gap-3 items-center w-full">
+      <form
+        onSubmit={handleSubmit}
+        className="flex flex-col md:flex-row gap-3 items-center w-full"
+      >
         <label htmlFor="newsletter-email" className="sr-only">
           Email address
         </label>
@@ -86,7 +102,11 @@ export function NewsletterForm({ variant = "dark" }: NewsletterFormProps) {
           {isLoading ? "Subscribing..." : "Subscribe"}
         </button>
       </form>
-      {error && <p className={errorClass}>{error}</p>}
+      {error && (
+        <p role="alert" aria-live="assertive" className={errorClass}>
+          {error}
+        </p>
+      )}
     </div>
   );
 }

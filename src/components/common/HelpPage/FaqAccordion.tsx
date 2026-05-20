@@ -1,8 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { BsChevronDown } from "react-icons/bs";
-import { BsQuestionCircle } from "react-icons/bs";
+import { BsChevronDown, BsQuestionCircle } from "react-icons/bs";
 import Link from "next/link";
 
 interface FaqItem {
@@ -162,24 +161,25 @@ export function FaqAccordion({ searchQuery = "" }: FaqAccordionProps) {
             Find quick answers to common questions
           </p>
         </div>
+
         {filteredFaqs.length === 0 ? (
           <div className="text-center py-12 text-sm text-[#64748b]">
-  No results found for &quot;{searchQuery}&quot;. Try a different keyword or{" "}
-  <Link href="/contact" className="text-[#02505E] hover:underline">
-    contact support
-  </Link>
-  .
-</div>
+            No results found for &quot;{searchQuery}&quot;. Try a different keyword or{" "}
+            <Link href="/contact" className="text-[#02505E] hover:underline">
+              contact support
+            </Link>
+            .
+          </div>
         ) : (
-          filteredFaqs.map((group, i) => (
-            <div key={i} className="mb-6">
+          filteredFaqs.map((group) => (
+            <div key={group.group} className="mb-6">
               <h4 className="text-xs font-semibold text-[#02505E] uppercase tracking-wide mb-3">
                 {group.group}
               </h4>
               <div className="border border-[#E1E3E4] rounded-xl px-5 overflow-hidden">
-                {group.items.map((item, j) => (
+                {group.items.map((item) => (
                   <AccordionItem
-                    key={j}
+                    key={item.question}
                     question={item.question}
                     answer={item.answer}
                   />
