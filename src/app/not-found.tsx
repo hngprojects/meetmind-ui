@@ -1,5 +1,5 @@
-import Link from 'next/link';
-import Image from 'next/image';
+import Link from "next/link";
+import Image from "next/image";
 
 function SimpleHeader() {
   return (
@@ -35,11 +35,11 @@ function SimpleHeader() {
 function ErrorCodeMark() {
   return (
     <div className="flex items-center justify-center mb-6" aria-hidden="true">
-      <Image 
-        src="/icons/error-404-off.svg" 
-        alt="404 Graphic" 
-        width={160} 
-        height={160} 
+      <Image
+        src="/icons/error-404-off.svg"
+        alt="404 Graphic"
+        width={160}
+        height={160}
         priority
         className="h-32 w-32 sm:h-40 sm:w-40"
       />

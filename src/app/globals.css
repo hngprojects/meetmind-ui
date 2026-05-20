@@ -5,13 +5,97 @@
 @custom-variant dark (&:is(.dark *));
 
 @theme inline {
-  --color-surface: var(--color-dashnav);
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
+  /* =============== FONTS =============== */
   --font-sans: var(--font-sans);
   --font-mono: var(--font-geist-mono);
   --font-heading: var(--font-sans);
   --font-serif: var(--font-serif);
+
+  /* =============== BACKGROUND COLORS =============== */
+  --color-bg-primary: #ffffff;
+  --color-bg-secondary: #f7f9fb;
+  --color-bg-tertiary: #e6f0f1;
+
+  /* =============== TEXT COLORS =============== */
+  --color-text-color-primary: #0f172a;
+  --color-text-color-secondary: #111827;
+  --color-text-primary: #035a69;
+  --color-text-secondary: #6b7280;
+  --color-text-body: #5e6470;
+  --color-text-subtext: #3f4555;
+  --color-text-divider: #91949d;
+  --color-text-white-primary: #fefeff;
+  --color-text-white-secondary: #e1e3e4;
+  --color-text-link: #3f4555;
+  --color-text-color-label: #0f0d0b;
+  --color-text-placeholder: #b5b7bd;
+  --color-text-disabled: #d1d5db;
+
+  /* =============== BUTTON COLORS =============== */
+  --color-button-primary-bg: #02505e;
+  --color-button-primary-text: #fefeff;
+  --color-button-primary-bg-hover: #f7f9fb;
+  --color-button-primary-text-hover: #0f172a;
+  --color-button-primary-active: #1d4ed8;
+
+  --color-button-secondary-bg: #035a69;
+  --color-button-secondary-text: #ffffff;
+
+  --color-button-outline-border: #dadada;
+
+  /* =============== FORM ELEMENT COLORS =============== */
+  --color-input-bg: #fefeff;
+  --color-input-border: #dadada;
+  --color-input-border-focus: #0f766e;
+  --color-input-text: #b5b7bd;
+  --color-input-placeholder: #9ca3af;
+
+  /* =============== STATUS & FEEDBACK COLORS =============== */
+  --color-success: #25b788;
+  --color-bg-success: #ecfdf3;
+  --color-success-bg: #fefeff;
+  --color-text-success: #12b76a;
+
+  --color-error: #ef4444;
+  --color-error-bg: #fee2e2;
+  --color-error-text: #991b1b;
+
+  --color-warning: #f59e0b;
+  --color-warning-bg: #fef3c7;
+  --color-warning-text: #78350f;
+
+  --color-info: #3b82f6;
+  --color-info-bg: #dbeafe;
+  --color-info-text: #1e3a8a;
+
+  /* =============== BORDER & DIVIDER COLORS =============== */
+  --color-bg-divider: #d1d5db;
+
+  /* =============== CARD & CONTAINER COLORS =============== */
+  --color-card-bg: #ffffff;
+  --color-card-border: #e5e7eb;
+  --color-card-text: #9ca3af;
+  --color-card-shadow: rgba(0, 0, 0, 0.05);
+
+  --color-icon-bg: #fef3f2;
+  --color-icon-text: #f04438;
+
+  /* =============== SCROLLBAR COLORS =============== */
+  --color-scrollbar-track: #f3f4f6;
+  --color-scrollbar-thumb: #d1d5db;
+
+  /* =============== RADIUS =============== */
+  --radius-sm: calc(var(--radius) * 0.6);
+  --radius-md: calc(var(--radius) * 0.8);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) * 1.4);
+  --radius-2xl: calc(var(--radius) * 1.8);
+  --radius-3xl: calc(var(--radius) * 2.2);
+  --radius-4xl: calc(var(--radius) * 2.6);
+
+  --color-surface: var(--color-dashnav);
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
   --color-sidebar-ring: var(--sidebar-ring);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
@@ -39,15 +123,6 @@
   --color-primary: var(--primary);
   --color-popover-foreground: var(--popover-foreground);
   --color-popover: var(--popover);
-  --color-card-foreground: var(--card-foreground);
-  --color-card: var(--card);
-  --radius-sm: calc(var(--radius) * 0.6);
-  --radius-md: calc(var(--radius) * 0.8);
-  --radius-lg: var(--radius);
-  --radius-xl: calc(var(--radius) * 1.4);
-  --radius-2xl: calc(var(--radius) * 1.8);
-  --radius-3xl: calc(var(--radius) * 2.2);
-  --radius-4xl: calc(var(--radius) * 2.6);
 }
 
 :root {

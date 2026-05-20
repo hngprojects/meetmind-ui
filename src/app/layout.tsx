@@ -30,7 +30,7 @@ export const metadata: Metadata = {
     default: appName,
     template: `%s · ${appName}`,
   },
-  description: `${appName} — a Next.js 16 starter.`,
+  description: `${appName} — Interview better with Meetmind.`,
 };
 
 export default function RootLayout({
