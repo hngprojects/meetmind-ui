@@ -7,14 +7,14 @@ const footerColumns = [
     links: [
       { label: "Features", href: "#" },
       { label: "Use Cases", href: "#" },
-      { label: "Pricing", href: "#" },
+      { label: "Pricing", href: "/pricing" },
       { label: "ChangeLog", href: "#" },
     ],
   },
   {
     title: "Developers",
     links: [
-      { label: "SDK", href: "#" },
+      { label: "SDK", href: "/sdk" },
       { label: "Documentation", href: "#" },
       { label: "API Reference", href: "#" },
       { label: "GitHub", href: "#" },
@@ -23,7 +23,7 @@ const footerColumns = [
   {
     title: "Resources",
     links: [
-      { label: "Blog", href: "#" },
+      { label: "Blog", href: "/blogpost" },
       { label: "Help Center", href: "#" },
       { label: "Case Studies", href: "#" },
       { label: "Tutorials", href: "#" },
@@ -35,7 +35,7 @@ const footerColumns = [
       { label: "About Us", href: "#" },
       { label: "Contact", href: "/contact" },
       { label: "Privacy Policy", href: "/privacy-policy" },
-      { label: "Terms of Service", href: "#" },
+      { label: "Terms of Service", href: "/terms-of-service" },
     ],
   },
 ];

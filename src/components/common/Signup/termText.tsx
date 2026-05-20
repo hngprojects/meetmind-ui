@@ -7,7 +7,7 @@ const TermText = () => {
     <div>
       <p className="text-[#5E6470] text-base flex flex-row gap-3">
         <span> Already have an account?</span>
-        <Link href="/signIn" className="text-[#035A69]">
+        <Link href="/sign-in" className="text-[#035A69]">
           Sign In
         </Link>
       </p>

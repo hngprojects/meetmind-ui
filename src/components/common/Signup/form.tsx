@@ -2,14 +2,15 @@
 import { Signupschema, type SignUpType } from "@/schemas/signUpSchema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import { Eye, EyeOff } from "lucide-react";
 import { useState } from "react";
-import Buttons from "@/components/props/buttons";
 import axios from "axios";
 import api from "@/lib/api";
 import { useSignupStore } from "@/store/signupStore";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
+import { FaRegEyeSlash } from "react-icons/fa";
+import { IoEyeOutline } from "react-icons/io5";
+import Buttons from "@/components/reuseable-component/buttons";
 
 const Signform = () => {
   const router = useRouter();
@@ -183,7 +184,11 @@ const Signform = () => {
                 onClick={() => setShowPassword((prev) => !prev)}
                 className="absolute text-gray-400 right-2 top-4 hover:cursor-pointer"
               >
-                {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                {showPassword ? (
+                  <FaRegEyeSlash size={18} />
+                ) : (
+                  <IoEyeOutline size={18} />
+                )}
               </button>
             </div>
             {errors.password && (

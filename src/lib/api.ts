@@ -32,7 +32,10 @@ api.interceptors.response.use(
     if (error.response?.status === 401) {
       if (typeof window !== "undefined") {
         localStorage.removeItem("token");
-        window.location.href = "/login";
+
+        if (window.location.pathname !== "/sign-in") {
+          window.location.href = "/sign-in";
+        }
       }
     }
     return Promise.reject(error);
