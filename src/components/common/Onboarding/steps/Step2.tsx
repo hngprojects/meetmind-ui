@@ -86,11 +86,7 @@ const Step2 = () => {
           <Select
             value={data.role}
             onChange={(e) => updateData({ role: e.target.value })}
-            options={[
-              { value: "ceo", label: "CEO" },
-              { value: "founder", label: "Founder" },
-              { value: "engineer", label: "Engineer" },
-            ]}
+            options={[{ value: "Recruiter", label: "Recruiter" }]}
           />
 
           <div className="flex flex-col gap-2">
