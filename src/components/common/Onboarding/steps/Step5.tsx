@@ -82,10 +82,20 @@ const Step5 = () => {
         >
           {mutation.isPending ? "Setting things up..." : "Take the tour"}
         </Button>
-        <Button onClick={prevStep} variant="ghost" className="w-fit">
+        <Button
+          onClick={prevStep}
+          variant="ghost"
+          disabled={mutation.isPending}
+          className="w-fit"
+        >
           <GoArrowLeft />
           Back
         </Button>
+        {mutation.isError && (
+          <p role="alert" className="text-sm text-destructive">
+            We couldn’t complete onboarding. Please try again.
+          </p>
+        )}
       </div>
     </div>
   );
