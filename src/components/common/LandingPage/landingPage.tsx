@@ -1,6 +1,6 @@
 import React from "react";
 import Navbar from "./navbar";
-import HeroSection from "./herroSection";
+import HeroSection from "./HeroSection";
 import DashboardPreview from "./dashboardReview";
 import HowItWorks from "./HowItWorks";
 import FeaturesGrid from "./FeaturesGrid";
