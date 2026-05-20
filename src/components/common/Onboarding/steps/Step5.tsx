@@ -13,14 +13,16 @@ import { FiFolderMinus } from "react-icons/fi";
 const Step5 = () => {
   const router = useRouter();
   const prevStep = onboardingStore((s) => s.prevStep);
+  const addToast = onboardingStore((s) => s.addToast);
 
   const mutation = useMutation({
     mutationFn: onboardingAPI.completeOnboarding,
     onSuccess: () => {
+      addToast("Onboarding completed successfully", "success");
       router.push("/Dashboard");
     },
-    onError: (error) => {
-      console.error(error);
+    onError: () => {
+      addToast("Onboarding failed. Try again.", "error");
     },
   });
 
@@ -91,11 +93,6 @@ const Step5 = () => {
           <GoArrowLeft />
           Back
         </Button>
-        {mutation.isError && (
-          <p role="alert" className="text-sm text-destructive">
-            We couldn’t complete onboarding. Please try again.
-          </p>
-        )}
       </div>
     </div>
   );

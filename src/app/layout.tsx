@@ -4,6 +4,7 @@ import "./globals.css";
 import { cn } from "@/lib/utils";
 import Providers from "./providers";
 import AuthProvider from "@/components/providers/AuthProvider";
+import ToastContainer from "@/components/common/Onboarding/onboarding/Toast";
 
 const figtree = Figtree({ subsets: ["latin"], variable: "--font-sans" });
 
@@ -55,7 +56,10 @@ export default function RootLayout({
     >
       <body className="min-h-full flex flex-col">
         <AuthProvider>
-          <Providers>{children}</Providers>
+          <Providers>
+            {children}
+            <ToastContainer />
+          </Providers>
         </AuthProvider>
       </body>
     </html>

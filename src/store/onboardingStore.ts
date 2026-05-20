@@ -1,6 +1,14 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 
+type ToastType = "success" | "error" | "info";
+
+interface Toast {
+  id: string;
+  message: string;
+  type: ToastType;
+}
+
 export interface OnboardingData {
   companyName: string;
   role: string;
@@ -21,6 +29,9 @@ interface OnboardingState {
   nextStep: () => void;
   prevStep: () => void;
   updateData: (partial: Partial<OnboardingData>) => void;
+  toasts: Toast[];
+  addToast: (message: string, type?: ToastType) => void;
+  removeToast: (id: string) => void;
   validateStep: () => boolean;
   hasAttemptedStep: boolean;
   setHasAttemptedStep: (value: boolean) => void;
@@ -47,6 +58,7 @@ export const onboardingStore = create<OnboardingState>()(
     (set, get) => ({
       step: 1,
       data: initialData,
+      toasts: [],
       hasAttemptedStep: false,
       setHasAttemptedStep: (value) => set({ hasAttemptedStep: value }),
       setStep: (step) => set({ step }),
@@ -77,6 +89,22 @@ export const onboardingStore = create<OnboardingState>()(
             },
           },
         })),
+      addToast: (message, type = "info") => {
+        const id = Date.now().toString();
+
+        set((state) => ({
+          toasts: [...state.toasts, { id, message, type }],
+        }));
+
+        setTimeout(() => {
+          get().removeToast(id);
+        }, 3000);
+      },
+      removeToast: (id) => {
+        set((state) => ({
+          toasts: state.toasts.filter((t) => t.id !== id),
+        }));
+      },
       validateStep: () => {
         const { step, data } = get();
 

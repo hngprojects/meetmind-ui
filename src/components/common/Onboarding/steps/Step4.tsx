@@ -12,14 +12,15 @@ const Step4 = () => {
   const updateData = onboardingStore((state) => state.updateData);
   const nextStep = onboardingStore((state) => state.nextStep);
   const prevStep = onboardingStore((state) => state.prevStep);
+  const addToast = onboardingStore((s) => s.addToast);
   const isValid = data.integrations !== null;
   const mutation = useMutation({
     mutationFn: onboardingAPI.setIntegrations,
     onSuccess: () => {
       nextStep();
     },
-    onError: (error) => {
-      console.error(error);
+    onError: () => {
+      addToast("Failed to save meeting tool", "error");
     },
   });
   return (

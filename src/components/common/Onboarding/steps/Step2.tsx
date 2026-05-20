@@ -34,6 +34,7 @@ const Step2 = () => {
   const nextStep = onboardingStore((state) => state.nextStep);
   const prevStep = onboardingStore((state) => state.prevStep);
   const hasAttemptedStep = onboardingStore((state) => state.hasAttemptedStep);
+  const addToast = onboardingStore((s) => s.addToast);
   const isValid =
     data.companyName.trim() !== "" &&
     data.role.trim() !== "" &&
@@ -44,8 +45,8 @@ const Step2 = () => {
     onSuccess: () => {
       nextStep();
     },
-    onError: (error) => {
-      console.error(error);
+    onError: () => {
+      addToast("Failed to save role", "error");
     },
   });
   return (
