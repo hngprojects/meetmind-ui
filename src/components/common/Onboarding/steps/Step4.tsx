@@ -1,8 +1,11 @@
+"use client";
 import { Button } from "@/components/ui/button";
 import { onboardingStore } from "../../../../store/onboardingStore";
 import { IntegrationCard } from "../onboarding/IntegrationCard";
 import Image from "next/image";
 import { GoArrowLeft } from "react-icons/go";
+import { useMutation } from "@tanstack/react-query";
+import { onboardingAPI } from "@/lib/api/onboarding";
 
 const Step4 = () => {
   const data = onboardingStore((state) => state.data);
@@ -10,6 +13,15 @@ const Step4 = () => {
   const nextStep = onboardingStore((state) => state.nextStep);
   const prevStep = onboardingStore((state) => state.prevStep);
   const isValid = data.integrations !== null;
+  const mutation = useMutation({
+    mutationFn: onboardingAPI.setIntegrations,
+    onSuccess: () => {
+      nextStep();
+    },
+    onError: (error) => {
+      console.error(error);
+    },
+  });
   return (
     <div className="flex flex-col justify-center gap-6 md:w-full lg:w-auto">
       <div className="flex flex-col items-center justify-center">
@@ -74,12 +86,16 @@ const Step4 = () => {
         </div>
         <div className="flex flex-col gap-2 items-center">
           <Button
-            onClick={nextStep}
-            disabled={!isValid}
+            onClick={() =>
+              mutation.mutate({
+                integrations: data.integrations,
+              })
+            }
+            disabled={!isValid || mutation.isPending}
             size="lg"
             className="w-full bg-primary hover:bg-primary/90 text-primary-foreground"
           >
-            Continue
+            {mutation.isPending ? "Saving..." : "Continue"}
           </Button>
           <Button onClick={prevStep} variant="ghost" className="w-fit">
             <GoArrowLeft />

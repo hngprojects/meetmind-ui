@@ -17,7 +17,7 @@ const Step5 = () => {
   const mutation = useMutation({
     mutationFn: onboardingAPI.completeOnboarding,
     onSuccess: () => {
-      router.push("/dashboard");
+      router.push("/Dashboard");
     },
     onError: (error) => {
       console.error(error);

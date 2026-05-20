@@ -1,3 +1,5 @@
+"use client";
+
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { onboardingStore } from "../../../../store/onboardingStore";
@@ -5,6 +7,8 @@ import { HireRadioGroup, type HireOption } from "../onboarding/RadioCard";
 import Input from "../onboarding/Input";
 import Select from "../onboarding/Select";
 import { GoArrowLeft } from "react-icons/go";
+import { onboardingAPI } from "@/lib/api/onboarding";
+import { useMutation } from "@tanstack/react-query";
 
 const hireOptions: HireOption[] = [
   {
@@ -34,6 +38,16 @@ const Step2 = () => {
     data.companyName.trim() !== "" &&
     data.role.trim() !== "" &&
     data.hires.trim() !== "";
+
+  const mutation = useMutation({
+    mutationFn: onboardingAPI.setRole,
+    onSuccess: () => {
+      nextStep();
+    },
+    onError: (error) => {
+      console.error(error);
+    },
+  });
   return (
     <div className="flex flex-col justify-center gap-6 md:w-full lg:w-auto">
       <div className="flex flex-col items-center justify-center">
@@ -104,12 +118,18 @@ const Step2 = () => {
 
         <div className="flex flex-col gap-2 items-center">
           <Button
-            onClick={nextStep}
-            disabled={!isValid}
+            onClick={() =>
+              mutation.mutate({
+                companyName: data.companyName,
+                role: data.role,
+                hires: data.hires,
+              })
+            }
+            disabled={!isValid || mutation.isPending}
             size="lg"
             className="w-full bg-primary hover:bg-primary/90 text-primary-foreground"
           >
-            Continue
+            {mutation.isPending ? "Saving..." : "Continue"}
           </Button>
           <Button onClick={prevStep} variant="ghost" className="w-fit">
             <GoArrowLeft />

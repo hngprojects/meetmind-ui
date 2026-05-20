@@ -29,7 +29,7 @@ const setIntegrations = async (data: {
 };
 
 const completeOnboarding = async () => {
-  const res = await api.post("/api/v1/onboarding/complete");
+  const res = await api.post("/api/v1/onboarding/submission");
   return res.data;
 };
 
