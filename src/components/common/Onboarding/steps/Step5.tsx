@@ -2,7 +2,7 @@ import { Button } from "@/components/ui/button";
 import { onboardingStore } from "../../../../store/onboardingStore";
 import { useMutation } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
-import { submitOnboarding } from "@/lib/api/onboarding";
+import { onboardingAPI } from "@/lib/api/onboarding";
 import Card from "../onboarding/Card";
 import Image from "next/image";
 import { GoArrowLeft, GoZap } from "react-icons/go";
@@ -12,11 +12,10 @@ import { FiFolderMinus } from "react-icons/fi";
 
 const Step5 = () => {
   const router = useRouter();
-  const data = onboardingStore((s) => s.data);
   const prevStep = onboardingStore((s) => s.prevStep);
 
   const mutation = useMutation({
-    mutationFn: submitOnboarding,
+    mutationFn: onboardingAPI.completeOnboarding,
     onSuccess: () => {
       router.push("/dashboard");
     },
@@ -76,7 +75,7 @@ const Step5 = () => {
       </div>
       <div className="flex flex-col gap-2 items-center">
         <Button
-          onClick={() => mutation.mutate(data)}
+          onClick={() => mutation.mutate()}
           disabled={mutation.isPending}
           size="lg"
           className="w-full bg-primary hover:bg-primary/90 text-primary-foreground"
