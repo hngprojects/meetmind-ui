@@ -1,7 +1,7 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 
-interface OnboardingData {
+export interface OnboardingData {
   companyName: string;
   role: string;
   hires: string;
@@ -17,7 +17,6 @@ interface OnboardingData {
 interface OnboardingState {
   step: StepNumber;
   data: OnboardingData;
-  isSubmitting: boolean;
   setStep: (step: StepNumber) => void;
   nextStep: () => void;
   prevStep: () => void;
@@ -25,7 +24,6 @@ interface OnboardingState {
   validateStep: () => boolean;
   hasAttemptedStep: boolean;
   setHasAttemptedStep: (value: boolean) => void;
-  submitOnboarding: () => Promise<void>;
   reset: () => void;
 }
 
@@ -49,7 +47,6 @@ export const onboardingStore = create<OnboardingState>()(
     (set, get) => ({
       step: 1,
       data: initialData,
-      isSubmitting: false,
       hasAttemptedStep: false,
       setHasAttemptedStep: (value) => set({ hasAttemptedStep: value }),
       setStep: (step) => set({ step }),
@@ -58,7 +55,7 @@ export const onboardingStore = create<OnboardingState>()(
         if (!validateStep()) {
           set({ hasAttemptedStep: true });
           return;
-        } 
+        }
         set({
           step: Math.min(step + 1, 5) as StepNumber,
           hasAttemptedStep: false,
@@ -95,31 +92,6 @@ export const onboardingStore = create<OnboardingState>()(
         };
 
         return validators[step]();
-      },
-      submitOnboarding: async () => {
-        const { data, isSubmitting } = get();
-        if (isSubmitting) return;
-
-        set({ isSubmitting: true });
-
-        try {
-          const response = await fetch(
-            "the actual api route. For when you talk to the backend",
-            {
-              method: "POST",
-              headers: { "Content-Type": "application/json" },
-              body: JSON.stringify(data),
-            },
-          );
-          if (!response.ok) throw new Error("Failed to submit onboarding");
-          const result = await response.json();
-          return result;
-          // NOTE TO ANYONE REVIEWING THIS PART: The api call is not complete. I just wanted to put it in place so that I wont forget.
-        } catch (error) {
-          console.error("Onboarding failed:", error);
-        } finally {
-          set({ isSubmitting: false });
-        }
       },
       reset: () =>
         set({

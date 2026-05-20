@@ -1,5 +1,8 @@
 import { Button } from "@/components/ui/button";
 import { onboardingStore } from "../../../../store/onboardingStore";
+import { useMutation } from "@tanstack/react-query";
+import { useRouter } from "next/navigation";
+import { submitOnboarding } from "@/lib/api/onboarding";
 import Card from "../onboarding/Card";
 import Image from "next/image";
 import { GoArrowLeft, GoZap } from "react-icons/go";
@@ -8,9 +11,20 @@ import { FaRobot } from "react-icons/fa";
 import { FiFolderMinus } from "react-icons/fi";
 
 const Step5 = () => {
-  const submitOnboarding = onboardingStore((s) => s.submitOnboarding);
-  const isSubmitting = onboardingStore((s) => s.isSubmitting);
+  const router = useRouter();
+  const data = onboardingStore((s) => s.data);
   const prevStep = onboardingStore((s) => s.prevStep);
+
+  const mutation = useMutation({
+    mutationFn: submitOnboarding,
+    onSuccess: () => {
+      router.push("/dashboard");
+    },
+    onError: (error) => {
+      console.error(error);
+    },
+  });
+
   return (
     <div className="flex flex-col justify-center gap-6 lg:max-w-md md:w-full lg:w-auto">
       <div className="flex flex-col items-center justify-center">
@@ -62,12 +76,12 @@ const Step5 = () => {
       </div>
       <div className="flex flex-col gap-2 items-center">
         <Button
-          onClick={submitOnboarding}
-          disabled={isSubmitting}
+          onClick={() => mutation.mutate(data)}
+          disabled={mutation.isPending}
           size="lg"
           className="w-full bg-primary hover:bg-primary/90 text-primary-foreground"
         >
-          {isSubmitting ? "Setting things up..." : "Take the tour"}
+          {mutation.isPending ? "Setting things up..." : "Take the tour"}
         </Button>
         <Button onClick={prevStep} variant="ghost" className="w-fit">
           <GoArrowLeft />
