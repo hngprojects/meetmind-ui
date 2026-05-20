@@ -1,6 +1,7 @@
 import Navbar from "@/components/common/LandingPage/navbar";
 import Footer from "@/components/common/LandingPage/footer";
 import { ContactForm } from "@/components/common/ContactPage/ContactForm";
+import { NewsletterForm } from "@/components/common/HelpPage/NewsletterForm";
 import Link from "next/link";
 import Image from "next/image";
 import { ArrowLeft, Mail, MessageCircle } from "lucide-react";
@@ -53,7 +54,12 @@ export default function ContactPage() {
               <div className="flex flex-col gap-3">
                 <div className="flex items-center gap-3 text-sm text-[#5E6470]">
                   <Mail size={16} />
-                  support@meetmind.ai
+                  <a
+                    href="mailto:support@meetmind.ai"
+                    className="hover:underline hover:text-[#02505E] transition-colors"
+                  >
+                    support@meetmind.ai
+                  </a>
                 </div>
                 <div className="flex items-center justify-between text-sm text-[#5E6470]">
                   <div className="flex items-center gap-3">
@@ -76,19 +82,7 @@ export default function ContactPage() {
             <p className="text-sm text-[#a8d5dc] mb-6">
               Get notified when we ship new features and improvements.
             </p>
-            <div className="flex items-center gap-3 max-w-md mx-auto">
-              <input
-                type="email"
-                placeholder="Enter your email"
-                className="flex-1 px-4 py-3 rounded-lg text-sm text-[#0F172A] placeholder:text-[#94a3b8] focus:outline-none focus:ring-2 focus:ring-white bg-white"
-              />
-              <button
-                type="button"
-                className="px-5 py-3 bg-[#035A69] text-white font-semibold rounded-lg text-sm hover:bg-[#024a57] transition-colors"
-              >
-                Subscribe
-              </button>
-            </div>
+            <NewsletterForm variant="dark" />
           </div>
 
         </div>

@@ -44,7 +44,7 @@ export function ContactForm() {
           err.response?.data?.message ||
           err.response?.data?.error?.details?.[0]?.msg ||
           "Something went wrong. Please try again.";
-        setError(typeof raw === "string" ? raw : JSON.stringify(raw));
+        setError(typeof raw === "string" ? raw : "Something went wrong. Please try again.");
       } else {
         setError("Unexpected error. Please try again.");
       }
