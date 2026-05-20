@@ -30,28 +30,28 @@ export function ContactForm() {
   }
 
   async function handleSubmit(e: React.FormEvent) {
-  e.preventDefault();
-  if (isLoading) return; // guard duplicate submissions
-  try {
-    setIsLoading(true);
-    setError(null);
-    await api.post("/api/v1/contact", formData);
-    setIsSuccess(true);
-    setFormData({ name: "", email: "", subject: "", message: "" });
-  } catch (err) {
-   if (axios.isAxiosError(err)) {
-      const raw =
-        err.response?.data?.message ||
-        err.response?.data?.error?.details?.[0]?.msg ||
-        "Something went wrong. Please try again.";
-      setError(typeof raw === "string" ? raw : JSON.stringify(raw));
-    } else {
-      setError("Unexpected error. Please try again.");
+    e.preventDefault();
+    if (isLoading) return;
+    try {
+      setIsLoading(true);
+      setError(null);
+      await api.post("/api/v1/contact", formData);
+      setIsSuccess(true);
+      setFormData({ name: "", email: "", subject: "", message: "" });
+    } catch (err) {
+      if (axios.isAxiosError(err)) {
+        const raw =
+          err.response?.data?.message ||
+          err.response?.data?.error?.details?.[0]?.msg ||
+          "Something went wrong. Please try again.";
+        setError(typeof raw === "string" ? raw : JSON.stringify(raw));
+      } else {
+        setError("Unexpected error. Please try again.");
+      }
+    } finally {
+      setIsLoading(false);
     }
-  } finally {
-    setIsLoading(false);
   }
-}
 
   const inputClass =
     "w-full px-4 py-3 rounded-lg border border-[#E1E3E4] text-[#0F172A] placeholder:text-[#94a3b8] text-sm focus:outline-none focus:ring-1 focus:ring-[#02505E] transition bg-white";

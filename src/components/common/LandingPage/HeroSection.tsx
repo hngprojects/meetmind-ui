@@ -49,12 +49,12 @@ export default function HeroSection() {
             >
               Get early access
             </Link>
-            <button
-              type="button"
+            <Link
+              href="/demo"
               className="px-8 py-3 border border-[#DADADA] text-[#02505E] font-semibold rounded-lg text-base hover:bg-[#02505E] hover:text-white transition-colors inline-flex items-center gap-2 cursor-pointer"
             >
               Watch a Demo
-            </button>
+            </Link>
           </div>
 
           {/* Mobile */}
@@ -73,12 +73,12 @@ export default function HeroSection() {
               >
                 Get early access
               </Link>
-              <button
-                type="button"
+              <Link
+                href="/demo"
                 className="px-8 py-3 border border-[#DADADA] text-[#02505E] font-semibold rounded-lg text-base hover:bg-[#02505E] hover:text-white transition-colors inline-flex items-center gap-2 cursor-pointer"
               >
                 Watch a Demo
-              </button>
+              </Link>
             </div>
           </div>
 
