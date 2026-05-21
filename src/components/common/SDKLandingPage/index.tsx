@@ -1,10 +1,10 @@
-import Navbar from './Navbar';
-import HeroSection from './HeroSection';
-import HowItWorks from './HowItWorks';
-import Features from './Features';
-import Pricing from './Pricing';
-import CTABanner from './CTABanner';
-import Footer from './Footer';
+import Navbar from "./Navbar";
+import HeroSection from "./HeroSection";
+import HowItWorks from "./HowItWorks";
+import Features from "./Features";
+import Pricing from "./Pricing";
+import CTABanner from "./CTABanner";
+import Footer from "./Footer";
 
 export default function SDKLandingPage() {
   return (
@@ -19,5 +19,3 @@ export default function SDKLandingPage() {
     </div>
   );
 }
-
-

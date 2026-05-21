@@ -1,7 +1,7 @@
-'use client';
+"use client";
 
-import { PricingCard } from './PricingCard';
-import { PRICING_PLANS } from '../../../constants/pricing.constants';
+import { PricingCard } from "./PricingCard";
+import { PRICING_PLANS } from "../../../constants/pricing.constants";
 
 export function PricingCards() {
   return (
@@ -14,7 +14,7 @@ export function PricingCards() {
           description={plan.description}
           buttonText={plan.buttonText}
           buttonVariant={plan.buttonVariant}
-          isCustom={'isCustom' in plan ? plan.isCustom : undefined}
+          isCustom={"isCustom" in plan ? plan.isCustom : undefined}
         />
       ))}
     </div>

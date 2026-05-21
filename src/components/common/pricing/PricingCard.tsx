@@ -1,11 +1,11 @@
-'use client';
+"use client";
 
 interface PricingCardProps {
   name: string;
   price: string;
   description: string;
   buttonText: string;
-  buttonVariant: 'outline' | 'solid';
+  buttonVariant: "outline" | "solid";
   isCustom?: boolean;
   onButtonClick?: () => void;
 }
@@ -45,9 +45,9 @@ export function PricingCard({
         className={`
           w-full text-center py-2.5 px-4 rounded-full font-semibold text-sm transition-colors cursor-pointer
           ${
-            buttonVariant === 'solid'
-              ? 'bg-black text-white border border-transparent hover:bg-gray-800'
-              : 'bg-transparent border border-[#cbd5e1] text-[#1f2a3e] hover:bg-gray-50'
+            buttonVariant === "solid"
+              ? "bg-black text-white border border-transparent hover:bg-gray-800"
+              : "bg-transparent border border-[#cbd5e1] text-[#1f2a3e] hover:bg-gray-50"
           }
         `}
       >

@@ -1,11 +1,8 @@
-import Image from 'next/image';
-import PersonaSnippet from './PersonaConfigSnippet';
-import { featuresList } from './pageData/SDKPageData';
-
-
+import Image from "next/image";
+import PersonaSnippet from "./PersonaConfigSnippet";
+import { featuresList } from "./pageData/SDKPageData";
 
 export default function Features() {
-
   return (
     <section
       id="features"
@@ -30,8 +27,8 @@ export default function Features() {
               text-left transition-all duration-300 hover:-translate-y-2 hover:shadow-md"
             >
               <div className="flex items-center justify-start w-full">
-                <Image 
-                  src={feature.icon} 
+                <Image
+                  src={feature.icon}
                   alt={`${feature.title} icon`}
                   width={32}
                   height={32}
@@ -62,9 +59,9 @@ export default function Features() {
           </p>
           <div className="space-y-4">
             <p className="font-normal text-base text-[#3F4555] text-wrap">
-              Every parameter maps directly to the Persona() constructor. Changes
-              to tone, mode, and verbosity affect how the agent speaks — not just
-              when.
+              Every parameter maps directly to the Persona() constructor.
+              Changes to tone, mode, and verbosity affect how the agent speaks —
+              not just when.
             </p>
             <p className="font-normal text-base text-[#3F4555] text-wrap">
               Interruption threshold controls how long the agent waits for a
@@ -73,11 +70,10 @@ export default function Features() {
             </p>
           </div>
         </div>
-        
-        <div className="flex justify-end md:w-1/2">
-          <PersonaSnippet/>
-        </div>
 
+        <div className="flex justify-end md:w-1/2">
+          <PersonaSnippet />
+        </div>
       </section>
     </section>
   );
