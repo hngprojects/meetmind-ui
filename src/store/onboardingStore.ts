@@ -90,7 +90,9 @@ export const onboardingStore = create<OnboardingState>()(
           },
         })),
       addToast: (message, type = "info") => {
-        const id = Date.now().toString();
+        const id =
+          globalThis.crypto?.randomUUID?.() ??
+          `${Date.now()}-${Math.random().toString(16).slice(2)}`;
 
         set((state) => ({
           toasts: [...state.toasts, { id, message, type }],

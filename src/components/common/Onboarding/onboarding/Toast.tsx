@@ -4,14 +4,24 @@ import { onboardingStore } from "@/store/onboardingStore";
 import { cn } from "@/lib/utils";
 
 export default function ToastContainer() {
-  const { toasts, removeToast } = onboardingStore();
+  const toasts = onboardingStore((s) => s.toasts);
+  const removeToast = onboardingStore((s) => s.removeToast);
 
   return (
-    <div className="fixed top-4 right-4 flex flex-col gap-2 z-50 w-[320px]">
+    <div
+      className="fixed top-4 right-4 flex flex-col gap-2 z-50 w-[320px]"
+      aria-live="polite"
+      aria-atomic="true"
+    >
       {toasts.map((toast) => (
         <div
           key={toast.id}
           onClick={() => removeToast(toast.id)}
+          role="button"
+          tabIndex={0}
+          onKeyDown={(e) => {
+            if (e.key === "Enter" || e.key === " ") removeToast(toast.id);
+          }}
           className={cn(
             "px-4 py-3 rounded-lg text-sm shadow border cursor-pointer",
             "transition-all duration-200 transform",
