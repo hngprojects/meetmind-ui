@@ -1,7 +1,7 @@
-import { PricingCards } from '@/components/common/pricing/PricingCards';
-import { FeaturesSection } from '@/components/common/pricing/FeaturesSection';
-import Navbar from '@/components/common/LandingPage/Navbar';    
-import Footer from '@/components/common/LandingPage/Footer';
+import { PricingCards } from "@/components/common/pricing/PricingCards";
+import { FeaturesSection } from "@/components/common/pricing/FeaturesSection";
+import Navbar from "@/components/common/LandingPage/Navbar";
+import Footer from "@/components/common/LandingPage/Footer";
 
 export default function PricingPage() {
   return (

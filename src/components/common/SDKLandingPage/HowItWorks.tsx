@@ -1,10 +1,8 @@
-import Image from 'next/image';
-import { steps } from './pageData/SDKPageData';
-import { quickStartSteps } from './pageData/SDKPageData';
-
+import Image from "next/image";
+import { steps } from "./pageData/SDKPageData";
+import { quickStartSteps } from "./pageData/SDKPageData";
 
 export default function HowItWorks() {
-
   return (
     <section
       id="how-it-works"
@@ -64,12 +62,12 @@ export default function HowItWorks() {
                 <p className="text-base font-normal text-[#0A8F8F]">
                   {quickstep.num}
                 </p>
-                
+
                 <Image
                   src={quickstep.icon}
                   alt={`${quickstep.title} illustration`}
-                  width={32} 
-                  height={32} 
+                  width={32}
+                  height={32}
                 />
               </div>
 

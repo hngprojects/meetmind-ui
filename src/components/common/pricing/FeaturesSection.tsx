@@ -1,40 +1,40 @@
-import Link from 'next/link';
+import Link from "next/link";
 
 // Feature data with plan availability
 const FEATURE_COMPARISON = [
-  { feature: 'Python SDK access', starter: true, pro: true, enterprise: true },
+  { feature: "Python SDK access", starter: true, pro: true, enterprise: true },
   {
-    feature: 'REST API endpoints',
+    feature: "REST API endpoints",
     starter: false,
     pro: true,
     enterprise: true,
   },
   {
-    feature: 'Pre-session document upload',
+    feature: "Pre-session document upload",
     starter: true,
     pro: true,
     enterprise: true,
   },
   {
-    feature: 'Resume & candidate profile ingestion',
+    feature: "Resume & candidate profile ingestion",
     starter: true,
     pro: true,
     enterprise: true,
   },
   {
-    feature: 'Real-time audio ingestion',
+    feature: "Real-time audio ingestion",
     starter: true,
     pro: true,
     enterprise: true,
   },
   {
-    feature: 'Live speech-to-text transcription',
+    feature: "Live speech-to-text transcription",
     starter: true,
     pro: true,
     enterprise: true,
   },
   {
-    feature: 'Raised hand event detection',
+    feature: "Raised hand event detection",
     starter: false,
     pro: false,
     enterprise: true,
@@ -71,30 +71,60 @@ export function FeaturesSection() {
               {FEATURE_COMPARISON.map((item, index) => (
                 <tr
                   key={item.feature}
-                  className={`border-b border-[#eaeef2] ${index % 2 === 0 ? 'bg-white' : 'bg-gray-50'}`}
+                  className={`border-b border-[#eaeef2] ${index % 2 === 0 ? "bg-white" : "bg-gray-50"}`}
                 >
                   <td className="py-3 px-4 text-sm font-medium text-[#1f2a3e]">
                     {item.feature}
                   </td>
                   <td className="text-center py-3 px-4">
                     {item.starter ? (
-                      <span className="text-green-600 text-xl" aria-label="Available">✓</span>
+                      <span
+                        className="text-green-600 text-xl"
+                        aria-label="Available"
+                      >
+                        ✓
+                      </span>
                     ) : (
-                      <span className="text-gray-400 text-xl" aria-label="Not available">—</span>
+                      <span
+                        className="text-gray-400 text-xl"
+                        aria-label="Not available"
+                      >
+                        —
+                      </span>
                     )}
                   </td>
                   <td className="text-center py-3 px-4">
                     {item.pro ? (
-                      <span className="text-green-600 text-xl" aria-label="Available">✓</span>
+                      <span
+                        className="text-green-600 text-xl"
+                        aria-label="Available"
+                      >
+                        ✓
+                      </span>
                     ) : (
-                      <span className="text-gray-400 text-xl" aria-label="Not available">—</span>
+                      <span
+                        className="text-gray-400 text-xl"
+                        aria-label="Not available"
+                      >
+                        —
+                      </span>
                     )}
                   </td>
                   <td className="text-center py-3 px-4">
                     {item.enterprise ? (
-                      <span className="text-green-600 text-xl" aria-label="Available">✓</span>
+                      <span
+                        className="text-green-600 text-xl"
+                        aria-label="Available"
+                      >
+                        ✓
+                      </span>
                     ) : (
-                      <span className="text-gray-400 text-xl" aria-label="Not available">—</span>
+                      <span
+                        className="text-gray-400 text-xl"
+                        aria-label="Not available"
+                      >
+                        —
+                      </span>
                     )}
                   </td>
                 </tr>
@@ -117,25 +147,55 @@ export function FeaturesSection() {
                 <div className="text-center">
                   <div className="text-xs text-[#5c6b7a] mb-1">Starter</div>
                   {item.starter ? (
-                    <span className="text-green-600 text-lg" aria-label="Available">✓</span>
+                    <span
+                      className="text-green-600 text-lg"
+                      aria-label="Available"
+                    >
+                      ✓
+                    </span>
                   ) : (
-                    <span className="text-gray-400 text-lg" aria-label="Not available">—</span>
+                    <span
+                      className="text-gray-400 text-lg"
+                      aria-label="Not available"
+                    >
+                      —
+                    </span>
                   )}
                 </div>
                 <div className="text-center">
                   <div className="text-xs text-[#5c6b7a] mb-1">Pro</div>
                   {item.pro ? (
-                    <span className="text-green-600 text-lg" aria-label="Available">✓</span>
+                    <span
+                      className="text-green-600 text-lg"
+                      aria-label="Available"
+                    >
+                      ✓
+                    </span>
                   ) : (
-                    <span className="text-gray-400 text-lg" aria-label="Not available">—</span>
+                    <span
+                      className="text-gray-400 text-lg"
+                      aria-label="Not available"
+                    >
+                      —
+                    </span>
                   )}
                 </div>
                 <div className="text-center">
                   <div className="text-xs text-[#5c6b7a] mb-1">Enterprise</div>
                   {item.enterprise ? (
-                    <span className="text-green-600 text-lg" aria-label="Available">✓</span>
+                    <span
+                      className="text-green-600 text-lg"
+                      aria-label="Available"
+                    >
+                      ✓
+                    </span>
                   ) : (
-                    <span className="text-gray-400 text-lg" aria-label="Not available">—</span>
+                    <span
+                      className="text-gray-400 text-lg"
+                      aria-label="Not available"
+                    >
+                      —
+                    </span>
                   )}
                 </div>
               </div>

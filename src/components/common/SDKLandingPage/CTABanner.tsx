@@ -1,4 +1,4 @@
-import Link from 'next/link';
+import Link from "next/link";
 
 export default function CTABanner() {
   return (
@@ -7,8 +7,10 @@ export default function CTABanner() {
       className="w-full bg-[#F7F9FB] py-16 px-4 md:px-8 flex flex-col items-center justify-center"
     >
       {/* Outer Banner Wrapper */}
-      <div className="w-full lg:max-w-272 bg-[#036475] rounded-2xl
-      p-6 md:p-12 flex flex-col gap-8 mx-auto items-start text-left md:items-center">
+      <div
+        className="w-full lg:max-w-272 bg-[#036475] rounded-2xl
+      p-6 md:p-12 flex flex-col gap-8 mx-auto items-start text-left md:items-center"
+      >
         {/* Text Container*/}
         <div className="w-full md:max-w-136 md:mx-auto flex flex-col gap-4 ">
           <h3 className="font-bold text-3xl md:text-4xl text-[#FEFEFF] leading-tight md:text-center">

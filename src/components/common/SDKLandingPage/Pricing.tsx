@@ -1,5 +1,5 @@
-import Link from 'next/link';
-import { LuCheck } from 'react-icons/lu';
+import Link from "next/link";
+import { LuCheck } from "react-icons/lu";
 
 export default function Pricing() {
   return (
@@ -18,7 +18,6 @@ export default function Pricing() {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-8 w-full lg:max-w-272 mx-auto mt-20 px-4 md:px-0 items-stretch">
-        
         {/* Starter Plan */}
         <div className="flex flex-col bg-white p-8 h-full rounded-2xl border border-gray-200 shadow-sm text-left items-start gap-6 transition-all duration-300 hover:-translate-y-2 hover:shadow-md">
           <span className="px-3 py-1 bg-[#F7F9FB] border border-[#88898A] text-[#0F172A] text-xs font-bold rounded-full uppercase tracking-wider">
@@ -39,29 +38,45 @@ export default function Pricing() {
 
           <ul className="flex flex-col gap-3 w-full">
             <li className="flex items-center gap-3 text-sm text-[#3F4555]">
-              <LuCheck className="w-5 h-5 text-[#1A8261] shrink-0" strokeWidth={2.5} />
+              <LuCheck
+                className="w-5 h-5 text-[#1A8261] shrink-0"
+                strokeWidth={2.5}
+              />
               Full SDK access
             </li>
             <li className="flex items-center gap-3 text-sm text-[#3F4555]">
-              <LuCheck className="w-5 h-5 text-[#1A8261] shrink-0" strokeWidth={2.5} />
+              <LuCheck
+                className="w-5 h-5 text-[#1A8261] shrink-0"
+                strokeWidth={2.5}
+              />
               Zoom & Google Meet adapters
             </li>
             <li className="flex items-center gap-3 text-sm text-[#3F4555]">
-              <LuCheck className="w-5 h-5 text-[#1A8261] shrink-0" strokeWidth={2.5} />
+              <LuCheck
+                className="w-5 h-5 text-[#1A8261] shrink-0"
+                strokeWidth={2.5}
+              />
               Unlimited local sessions
             </li>
             <li className="flex items-center gap-3 text-sm text-[#3F4555]">
-              <LuCheck className="w-5 h-5 text-[#1A8261] shrink-0" strokeWidth={2.5} />
+              <LuCheck
+                className="w-5 h-5 text-[#1A8261] shrink-0"
+                strokeWidth={2.5}
+              />
               Community Support
             </li>
           </ul>
         </div>
 
         {/* Pro Plan (Highlighted) */}
-        <div className="relative flex flex-col bg-[#E6F0F1] p-8 h-full rounded-2xl border-2 border-[#B1CFD4] shadow-md 
-        text-left items-start gap-6 transition-all duration-300 hover:-translate-y-2 hover:shadow-md">
-          <span className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-[#B1CFD4] text-[#0F172A] text-xs 
-          font-bold px-4 py-1 rounded-full tracking-wider whitespace-nowrap shadow-sm">
+        <div
+          className="relative flex flex-col bg-[#E6F0F1] p-8 h-full rounded-2xl border-2 border-[#B1CFD4] shadow-md 
+        text-left items-start gap-6 transition-all duration-300 hover:-translate-y-2 hover:shadow-md"
+        >
+          <span
+            className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-[#B1CFD4] text-[#0F172A] text-xs 
+          font-bold px-4 py-1 rounded-full tracking-wider whitespace-nowrap shadow-sm"
+          >
             Most Popular
           </span>
 
@@ -83,30 +98,46 @@ export default function Pricing() {
 
           <ul className="flex flex-col gap-3 w-full">
             <li className="flex items-center gap-3 text-sm text-[#0F172A]">
-              <LuCheck className="w-5 h-5 text-[#1A8261] shrink-0" strokeWidth={2.5} />
+              <LuCheck
+                className="w-5 h-5 text-[#1A8261] shrink-0"
+                strokeWidth={2.5}
+              />
               Everything in free
             </li>
             <li className="flex items-center gap-3 text-sm text-[#0F172A]">
-              <LuCheck className="w-5 h-5 text-[#1A8261] shrink-0" strokeWidth={2.5} />
+              <LuCheck
+                className="w-5 h-5 text-[#1A8261] shrink-0"
+                strokeWidth={2.5}
+              />
               Managed cloud API
             </li>
             <li className="flex items-center gap-3 text-sm text-[#0F172A]">
-              <LuCheck className="w-5 h-5 text-[#1A8261] shrink-0" strokeWidth={2.5} />
+              <LuCheck
+                className="w-5 h-5 text-[#1A8261] shrink-0"
+                strokeWidth={2.5}
+              />
               Higher rate limits
             </li>
             <li className="flex items-center gap-3 text-sm text-[#0F172A]">
-              <LuCheck className="w-5 h-5 text-[#1A8261] shrink-0" strokeWidth={2.5} />
+              <LuCheck
+                className="w-5 h-5 text-[#1A8261] shrink-0"
+                strokeWidth={2.5}
+              />
               Priority Support
             </li>
           </ul>
         </div>
 
         {/* Enterprise Plan */}
-        <div className="flex flex-col bg-white p-8 h-full rounded-2xl border border-gray-200
+        <div
+          className="flex flex-col bg-white p-8 h-full rounded-2xl border border-gray-200
          shadow-sm text-left items-start gap-6 transition-all
-         duration-300 hover:-translate-y-2 hover:shadow-md">
-          <span className="px-3 py-1 bg-[#F7F9FB] border border-[#88898A] text-[#0F172A] 
-          text-xs font-bold rounded-full uppercase tracking-wider">
+         duration-300 hover:-translate-y-2 hover:shadow-md"
+        >
+          <span
+            className="px-3 py-1 bg-[#F7F9FB] border border-[#88898A] text-[#0F172A] 
+          text-xs font-bold rounded-full uppercase tracking-wider"
+          >
             Enterprise
           </span>
           <div>
@@ -126,19 +157,31 @@ export default function Pricing() {
 
           <ul className="flex flex-col gap-3 w-full">
             <li className="flex items-center gap-3 text-sm text-[#3F4555]">
-              <LuCheck className="w-5 h-5 text-[#1A8261] shrink-0" strokeWidth={2.5} />
+              <LuCheck
+                className="w-5 h-5 text-[#1A8261] shrink-0"
+                strokeWidth={2.5}
+              />
               Everything in Pro
             </li>
             <li className="flex items-center gap-3 text-sm text-[#3F4555]">
-              <LuCheck className="w-5 h-5 text-[#1A8261] shrink-0" strokeWidth={2.5} />
+              <LuCheck
+                className="w-5 h-5 text-[#1A8261] shrink-0"
+                strokeWidth={2.5}
+              />
               Private deployment
             </li>
             <li className="flex items-center gap-3 text-sm text-[#3F4555]">
-              <LuCheck className="w-5 h-5 text-[#1A8261] shrink-0" strokeWidth={2.5} />
+              <LuCheck
+                className="w-5 h-5 text-[#1A8261] shrink-0"
+                strokeWidth={2.5}
+              />
               99.9 uptime SLA
             </li>
             <li className="flex items-center gap-3 text-sm text-[#3F4555]">
-              <LuCheck className="w-5 h-5 text-[#1A8261] shrink-0" strokeWidth={2.5} />
+              <LuCheck
+                className="w-5 h-5 text-[#1A8261] shrink-0"
+                strokeWidth={2.5}
+              />
               Dedicated onboarding
             </li>
           </ul>
