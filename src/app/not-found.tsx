@@ -6,15 +6,22 @@ import { GoArrowLeft } from "react-icons/go";
 export default function NotFound() {
   const router = useRouter();
 
-  const handleBackClick = (e: React.MouseEvent<HTMLButtonElement>) => {
-    e.preventDefault();
-    router.back();
+  const handleBackClick = () => {
+    if (window.history.length > 1) {
+      router.back();
+    } else {
+      router.push("/");
+    }
   };
 
   return (
     <main className="min-h-[85vh] flex flex-col items-center justify-center px-4 py-12 bg-[#FEFEFF] text-center">
       <div className="w-full max-w-2xl mx-auto flex flex-col items-center">
-        <div className="w-24 h-24 rounded-full bg-[#D9E8EA] flex items-center justify-center text-[#036475] text-4xl mb-8 animate-pulse">
+        <div
+          className="w-24 h-24 rounded-full bg-[`#D9E8EA`] flex items-center justify-center text-[`#036475`] text-4xl mb-8 animate-pulse"
+          role="img"
+          aria-label="Under construction"
+        >
           🚧
         </div>
         <h1 className="text-[#3F4555] text-3xl sm:text-5xl font-serif font-normal tracking-tight mb-4">
@@ -30,8 +37,8 @@ export default function NotFound() {
           className="inline-flex items-center gap-2 text-[#036475] 
           hover:text-[#0A4C57] text-sm font-semibold 
           py-2 px-4 rounded-md transition-colors cursor-pointer
-           focus-visible:outline-none focus-visible:ring-2
-            focus-visible:ring-offset-2 focus-visible:ring-[#036475]"
+          focus-visible:outline-none focus-visible:ring-2
+          focus-visible:ring-offset-2 focus-visible:ring-[#036475]"
         >
           <GoArrowLeft className="w-4 h-4" />
           Go back
