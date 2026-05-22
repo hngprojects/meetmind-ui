@@ -28,10 +28,11 @@ export default function SubscribeCTA() {
   });
 
   const onSubmit = async (data: SubscribeFormData) => {
-    // Simulate a network request
-    await new Promise((resolve) => setTimeout(resolve, 1500));
-    setStatus("success");
-    reset();
+    if (data) {
+      await new Promise((resolve) => setTimeout(resolve, 1500));
+      setStatus("success");
+      reset();
+    }
   };
 
   return (
@@ -60,7 +61,7 @@ export default function SubscribeCTA() {
 
             {status === "success" ? (
               <p className="text-[#D9E8EA] font-medium text-sm md:text-base animate-pulse">
-                waiting for backend team to give me api
+                Thank you for subscribing!
               </p>
             ) : (
               <form

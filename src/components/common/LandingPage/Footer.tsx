@@ -35,11 +35,7 @@ const footerColumns = [
       { label: "About Us", href: "#" },
       { label: "Contact", href: "/contact" },
       { label: "Privacy Policy", href: "/privacy-policy" },
-<<<<<<< HEAD
-      { label: "Terms of Service", href: "#" },
-=======
       { label: "Terms of Service", href: "/terms-of-service" },
->>>>>>> 8fc7264f7a3ca40de8e251930cd2663d3dd38ff5
     ],
   },
 ];
