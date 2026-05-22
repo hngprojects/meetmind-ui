@@ -5,34 +5,34 @@ const footerColumns = [
   {
     title: "Product",
     links: [
-      { label: "Features", href: "#" },
-      { label: "Use Cases", href: "#" },
+      { label: "Features", href: "/features" },
+      { label: "Use Cases", href: "/use-cases" },
       { label: "Pricing", href: "/pricing" },
-      { label: "ChangeLog", href: "#" },
+      { label: "ChangeLog", href: "/changelog" },
     ],
   },
   {
     title: "Developers",
     links: [
       { label: "SDK", href: "/sdk" },
-      { label: "Documentation", href: "#" },
-      { label: "API Reference", href: "#" },
-      { label: "GitHub", href: "#" },
+      { label: "Documentation", href: "/documentation" },
+      { label: "API Reference", href: "/api-reference" },
+      { label: "GitHub", href: "/github" },
     ],
   },
   {
     title: "Resources",
     links: [
       { label: "Blog", href: "/blogpost" },
-      { label: "Help Center", href: "#" },
-      { label: "Case Studies", href: "#" },
-      { label: "Tutorials", href: "#" },
+      { label: "Help Center", href: "/help-center" },
+      { label: "Case Studies", href: "/case-studies" },
+      { label: "Tutorials", href: "/tutorials" },
     ],
   },
   {
     title: "Company",
     links: [
-      { label: "About Us", href: "#" },
+      { label: "About Us", href: "/about" },
       { label: "Contact", href: "/contact" },
       { label: "Privacy Policy", href: "/privacy-policy" },
       { label: "Terms of Service", href: "/terms-of-service" },
@@ -41,10 +41,22 @@ const footerColumns = [
 ];
 
 const socialLinks = [
-  { name: "LinkedIn", icon: "/icons/linkedin-outline.svg", href: "#" },
-  { name: "Facebook", icon: "/icons/facebook-outline.svg", href: "#" },
-  { name: "GitHub", icon: "/icons/github-outline.svg", href: "#" },
-  { name: "Instagram", icon: "/icons/instagram-outline.svg", href: "#" },
+  {
+    name: "LinkedIn",
+    icon: "/icons/linkedin-outline.svg",
+    href: "/social/linkedin",
+  },
+  {
+    name: "Facebook",
+    icon: "/icons/facebook-outline.svg",
+    href: "/social/facebook",
+  },
+  { name: "GitHub", icon: "/icons/github-outline.svg", href: "/social/github" },
+  {
+    name: "Instagram",
+    icon: "/icons/instagram-outline.svg",
+    href: "/social/instagram",
+  },
 ];
 
 export default function Footer() {
