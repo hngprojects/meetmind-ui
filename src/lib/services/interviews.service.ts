@@ -123,40 +123,59 @@ function mapLiveInterviewsToList(
   const map = new Map<string, InterviewListItem>();
 
   for (const item of combined) {
-    if (!item) continue;
+    if (!item || typeof item !== "object") continue;
 
-    const id = item.id ?? item.interview_id;
+    const id =
+      (item as Record<string, unknown>).id ??
+      (item as Record<string, unknown>).interview_id;
     if (!id) continue;
 
+    const raw = item as Record<string, unknown>;
+
+    // ✅ Coerce candidateName to string defensively
+    const rawName =
+      raw.candidate_name ??
+      (raw.candidate as Record<string, unknown> | undefined)?.name ??
+      "Unknown Candidate";
     const candidateName =
-      item.candidate_name ?? item.candidate?.name ?? "Unknown Candidate";
+      typeof rawName === "string"
+        ? rawName
+        : String(rawName ?? "Unknown Candidate");
 
-    const roleTitle = item.role_title ?? item.title ?? "Unknown Role";
+    // ✅ Coerce roleTitle to string defensively
+    const rawRole = raw.role_title ?? raw.title ?? "Unknown Role";
+    const roleTitle =
+      typeof rawRole === "string" ? rawRole : String(rawRole ?? "Unknown Role");
 
-    map.set(id, {
-      id,
+    // ✅ Normalize status: coerce to string + lowercase before comparing
+    const rawStatus =
+      typeof raw.status === "string" ? raw.status.trim().toLowerCase() : "";
+    const listStatus: "live" | "upcoming" | "none" =
+      rawStatus === "live" || rawStatus === "upcoming" ? rawStatus : "none";
+
+    // ✅ Safe initials — works because candidateName is guaranteed a string now
+    const initials =
+      candidateName
+        .split(" ")
+        .filter(Boolean)
+        .slice(0, 2)
+        .map((part) => part[0]?.toUpperCase() ?? "")
+        .join("") || "NA";
+
+    // ✅ Coerce scheduledLabel to string defensively
+    const rawScheduled = raw.scheduled_at ?? raw.scheduledAt ?? "Not scheduled";
+    const scheduledLabel =
+      typeof rawScheduled === "string"
+        ? rawScheduled
+        : String(rawScheduled ?? "Not scheduled");
+
+    map.set(String(id), {
+      id: String(id),
       candidateName,
       roleTitle,
-
-      // 👇 derive initials safely
-      // initials: getInitials(candidateName),
-      initials:
-        candidateName
-          .split(" ")
-          .filter(Boolean)
-          .slice(0, 2)
-          .map((part: string) => part[0]?.toUpperCase() ?? "")
-          .join("") || "NA",
-
-      // 👇 you don’t have API value, so fallback logic
-      scheduledLabel: item.scheduled_at ?? item.scheduledAt ?? "Not scheduled",
-
-      // 👇 map API status into your UI type
-      // listStatus: mapStatus(item.status),
-      listStatus:
-        item.status === "live" || item.status === "upcoming"
-          ? item.status
-          : "none",
+      initials,
+      scheduledLabel,
+      listStatus,
     });
   }
 
