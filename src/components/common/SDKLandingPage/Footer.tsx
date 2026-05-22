@@ -1,15 +1,13 @@
 import Link from "next/link";
 import Image from "next/image";
-
 const footerLinks = [
   { label: "Documentation", href: "/docs" },
-  { label: "Github", href: "#" },
+  { label: "Github", href: "/github" },
   { label: "Changelog", href: "/changelog" },
   { label: "Privacy", href: "/privacy" },
-  { label: "SDK2026", href: "#" },
-  { label: "V0.10", href: "#" },
+  { label: "SDK2026", href: "/sdk2026" },
+  { label: "V0.10", href: "/version-history" },
 ];
-
 export default function Footer() {
   return (
     <footer
