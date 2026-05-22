@@ -3,7 +3,7 @@
 import { cn } from "@/lib/utils";
 import type { ScorecardCategory } from "@/types/interview";
 import { FaChevronDown, FaChevronRight } from "react-icons/fa";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 type Props = {
   categories: ScorecardCategory[];
@@ -19,6 +19,15 @@ export default function ScorecardTab({ categories }: Props) {
   const [expanded, setExpanded] = useState<Record<string, boolean>>(() =>
     Object.fromEntries(categories.map((c) => [c.id, c.expanded ?? false])),
   );
+
+  useEffect(() => {
+    function run() {
+      setExpanded(
+        Object.fromEntries(categories.map((c) => [c.id, c.expanded ?? false])),
+      );
+    }
+    run();
+  }, [categories]);
 
   const toggle = (id: string) => {
     setExpanded((prev) => ({ ...prev, [id]: !prev[id] }));

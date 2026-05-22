@@ -43,7 +43,8 @@ export default function TranscriptTab({
         <SessionStateCard
           roleTitle={interview.roleTitle}
           phase={sessionPhase}
-          elapsed="00:00:00"
+          // elapsed="00:00:00"
+          elapsed={interview.elapsed}
           participants={interview.participants}
           platform={interview.platform}
           onRejoin={() => onPhaseChange?.("connecting")}

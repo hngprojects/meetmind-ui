@@ -91,7 +91,14 @@ export default function ProfileTab({ interview }: Props) {
           <div className="flex justify-between text-sm">
             <dt className="text-[#6b7280]">Status</dt>
             <dd>
-              <StatusBadge status="live" label="Live" />
+              {/* <StatusBadge status="live" label="Live" /> */}
+              <StatusBadge
+                status={interview.listStatus}
+                label={
+                  interview.status.charAt(0).toUpperCase() +
+                  interview.status.slice(1)
+                }
+              />
             </dd>
           </div>
           <DetailRow label="Rating" value={interview.rating ?? "----"} />
