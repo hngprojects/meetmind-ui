@@ -14,7 +14,7 @@ const TermText = () => {
 
       <p className=" text-base text-[#91949D]">
         By using Meetminds you agree to the{" "}
-        <Link href="/Term-and-services" className="text-[#035A69] underline">
+        <Link href="/terms-of-service" className="text-[#035A69] underline">
           Terms of Service
         </Link>{" "}
         and{" "}

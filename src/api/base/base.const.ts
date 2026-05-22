@@ -13,6 +13,17 @@ export const ApiVersion = {
   v1: "/api/v1",
 } as const;
 
+export const ApiErrorCode = {
+  invalidCredentials: "invalid_credentials",
+  validationError: "validation_error",
+  invalidRefreshToken: "invalid_refresh_token",
+  tokenRevoked: "token_revoked",
+  tokenExpired: "token_expired",
+  networkError: "network_error",
+  unknown: "unknown",
+  clientError: "client_error",
+} as const;
+
 export const AuthTokenKey = {
   accessToken: "access_token",
   refreshToken: "refresh_token",
@@ -22,7 +33,7 @@ export const AuthTokenKey = {
 
 export const QueryKey = {
   auth: {
-    me: ["me"],
+    me: ["auth", "me"],
   },
   interviews: {
     all: ["interviews"],

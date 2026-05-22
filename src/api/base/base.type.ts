@@ -12,29 +12,21 @@ export type PaginatedApiResponse<TData> = {
 };
 
 export type ApiErrorDetail = {
-  code: string;
-  details: unknown | null;
+  type: string;
+  loc: (string | number)[];
+  msg: string;
+  input?: string;
+  ctx?: Record<string, unknown>;
 };
 
 export type ApiErrorType = {
   success: false;
   message: string;
-  error: ApiErrorDetail;
+  error: {
+    code: string;
+    details: ApiErrorDetail[] | null;
+  };
 };
-
-export type FastApiErrorDetail = {
-  loc: (string | number)[];
-  msg: string;
-  type: string;
-  input?: string;
-  ctx?: Record<string, unknown>;
-};
-
-export type FastApiError = {
-  detail: FastApiErrorDetail[];
-};
-
-export type AnyApiError = ApiErrorType | FastApiError;
 
 export type ApiOptions = {
   signal?: AbortSignal;

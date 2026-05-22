@@ -1,15 +1,11 @@
-import {
-  ApiError,
-  isApiErrorType,
-  isFastApiError,
-} from "@/api/base/base.error";
-import { ApiResponse, AnyApiError } from "@/api/base/base.type";
-import { ApiVersion } from "@/api/base/base.const";
-import { env } from "@/env/client";
+import { ApiError, isApiErrorType, buildApiError } from "@/api/base/base.error";
+import { ApiResponse, ApiErrorType } from "@/api/base/base.type";
+import { ApiVersion, ApiErrorCode } from "@/api/base/base.const";
+import { clientEnv } from "@/env/client";
 import axios, { AxiosError, AxiosRequestConfig } from "axios";
 
 export const api = axios.create({
-  baseURL: `${env.NEXT_PUBLIC_API_URL}${ApiVersion.v1}`,
+  baseURL: `${clientEnv.NEXT_PUBLIC_API_URL}${ApiVersion.v1}`,
   timeout: 60 * 1000,
   withCredentials: true,
 });
@@ -43,8 +39,8 @@ export async function callApi<TResData>({
       signal,
     });
 
-    // Some endpoints return wrapped { success, data }, others return raw
     const json = response.data as unknown;
+
     if (
       typeof json === "object" &&
       json !== null &&
@@ -57,44 +53,30 @@ export async function callApi<TResData>({
     return json as TResData;
   } catch (e) {
     if (e instanceof AxiosError) {
-      const errorData = e.response?.data as AnyApiError | undefined;
+      const errorData = e.response?.data;
       const status = e.response?.status;
 
-      if (
-        errorData &&
-        (isApiErrorType(errorData) || isFastApiError(errorData))
-      ) {
-        throw new ApiError(errorData, status);
+      if (isApiErrorType(errorData)) {
+        throw new ApiError(errorData as ApiErrorType, status);
       }
 
-      // Network error or no response (e.g. timeout, offline)
       if (!e.response) {
-        throw new ApiError(
-          {
-            success: false,
-            message: e.message ?? "Network error, please check your connection",
-            error: { code: "network_error", details: null },
-          },
-          undefined,
+        throw buildApiError(
+          e.message ?? "Network error, please check your connection",
+          ApiErrorCode.networkError,
         );
       }
 
-      // Unexpected error shape from backend
-      throw new ApiError(
-        {
-          success: false,
-          message: "An unexpected error occurred",
-          error: { code: "unknown", details: null },
-        },
+      throw buildApiError(
+        "An unexpected error occurred",
+        ApiErrorCode.unknown,
         status,
       );
     }
 
-    // Non-axios error (e.g. bug in our own code)
-    throw new ApiError({
-      success: false,
-      message: "Something went wrong while processing your request",
-      error: { code: "client_error", details: null },
-    });
+    throw buildApiError(
+      "Something went wrong while processing your request",
+      ApiErrorCode.clientError,
+    );
   }
 }

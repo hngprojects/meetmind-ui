@@ -3,11 +3,15 @@ import { FcGoogle } from "react-icons/fc";
 
 const Authwith = () => {
   // handle Google sign-in
+  // const handleGoogleSignIn = () => {
+  //   window.location.href =
+  //     "https://api.staging.meetmind.hng14.com/api/v1/auth/google";
+  // };
   const handleGoogleSignIn = () => {
-    window.location.href =
-      "https://api.staging.meetmind.hng14.com/api/v1/auth/google";
+    // Tell the backend to redirect to YOUR Next.js route handler
+    const redirectUri = `${window.location.origin}/auth/google/callback`;
+    window.location.href = `https://api.staging.meetmind.hng14.com/api/v1/auth/google?redirect_uri=${encodeURIComponent(redirectUri)}`;
   };
-
   return (
     <section
       className="flex  items-center justify-center gap-3 flex-row w-full

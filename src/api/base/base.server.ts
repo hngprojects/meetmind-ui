@@ -1,13 +1,9 @@
 import "server-only";
-import {
-  ApiError,
-  isApiErrorType,
-  isFastApiError,
-} from "@/api/base/base.error";
-import { ApiResponse, AnyApiError } from "@/api/base/base.type";
-import { ApiVersion } from "@/api/base/base.const";
-import { env } from "@/env/server";
+import { ApiError, isApiErrorType, buildApiError } from "@/api/base/base.error";
+import { ApiResponse, ApiErrorType } from "@/api/base/base.type";
+import { ApiVersion, ApiErrorCode } from "@/api/base/base.const";
 import { cookies } from "next/headers";
+import { serverEnv } from "@/env/server";
 
 export async function callApiServer<TResData>({
   url,
@@ -20,9 +16,9 @@ export async function callApiServer<TResData>({
   method?: "GET" | "POST" | "PUT" | "DELETE" | "PATCH";
   data?: unknown;
   params?: Record<string, unknown>;
-  next?: NextFetchRequestConfig; // for revalidate/tags
+  next?: NextFetchRequestConfig;
 }): Promise<TResData> {
-  const fullUrl = new URL(`${env.API_BASE_URL}${ApiVersion.v1}${url}`);
+  const fullUrl = new URL(`${serverEnv.API_BASE_URL}${ApiVersion.v1}${url}`);
 
   if (params) {
     Object.entries(params).forEach(([k, v]) => {
@@ -49,25 +45,22 @@ export async function callApiServer<TResData>({
   const json = await res.json();
 
   if (!res.ok) {
-    const error = json as AnyApiError;
-
-    if (isApiErrorType(error) || isFastApiError(error)) {
-      throw new ApiError(error, res.status);
+    if (isApiErrorType(json)) {
+      throw new ApiError(json as ApiErrorType, res.status);
     }
-
-    // Fallback for unexpected error shapes
-    throw new ApiError(
-      {
-        success: false,
-        message: "An unexpected error occurred",
-        error: { code: "unknown", details: null },
-      },
+    throw buildApiError(
+      "An unexpected error occurred",
+      ApiErrorCode.unknown,
       res.status,
     );
   }
 
-  // Some endpoints return wrapped { success, data }, others return raw
-  if ("data" in json && "success" in json) {
+  if (
+    typeof json === "object" &&
+    json !== null &&
+    "data" in json &&
+    "success" in json
+  ) {
     return (json as ApiResponse<TResData>).data;
   }
 

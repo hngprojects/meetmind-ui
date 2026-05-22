@@ -1,6 +1,6 @@
-import { AnyApiError, ApiErrorType, FastApiError } from "@/api/base/base.type";
+import { ApiErrorType } from "@/api/base/base.type";
+import { ApiErrorCode } from "@/api/base/base.const";
 
-// Type guards to distinguish error shapes at runtime
 export function isApiErrorType(error: unknown): error is ApiErrorType {
   return (
     typeof error === "object" &&
@@ -12,43 +12,37 @@ export function isApiErrorType(error: unknown): error is ApiErrorType {
   );
 }
 
-export function isFastApiError(error: unknown): error is FastApiError {
-  return (
-    typeof error === "object" &&
-    error !== null &&
-    "detail" in error &&
-    Array.isArray((error as FastApiError).detail)
-  );
-}
-
-// Unified error class
 export class ApiError extends Error {
   public status?: number;
-  public code?: string;
-  public details: unknown | null;
-  public raw: AnyApiError;
+  public code: string;
+  public details: ApiErrorType["error"]["details"];
+  public raw: ApiErrorType;
 
-  constructor(raw: AnyApiError, status?: number) {
-    // Normalize message regardless of which error shape came back
-    const message = isApiErrorType(raw)
-      ? raw.message
-      : raw.detail.map((d) => d.msg).join(", ");
-
-    super(message);
+  constructor(raw: ApiErrorType, status?: number) {
+    super(raw.message);
     this.name = "ApiError";
     this.status = status;
     this.raw = raw;
-
-    if (isApiErrorType(raw)) {
-      this.code = raw.error.code;
-      this.details = raw.error.details;
-    } else {
-      this.code = "validation_error";
-      this.details = raw.detail;
-    }
+    this.code = raw.error.code;
+    this.details = raw.error.details;
   }
 }
 
 export function isApiError(error: unknown): error is ApiError {
   return error instanceof ApiError;
+}
+
+export function buildApiError(
+  message: string,
+  code: string = ApiErrorCode.unknown,
+  status?: number,
+): ApiError {
+  return new ApiError(
+    {
+      success: false,
+      message,
+      error: { code, details: null },
+    },
+    status,
+  );
 }
