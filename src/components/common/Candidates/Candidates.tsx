@@ -1,17 +1,15 @@
 import React from "react";
-import CandidatesHeader from "./components/CandidatesHeader";
 import CandidatesToolbar from "./components/CandidatesToolbar";
-import CandidatesViewToggle from "./components/CandidatesViewToggle";
 import CandidatesStats from "./components/CandidatesStats";
 import CandidatesTableView from "./components/CandidatesTableView";
 
 const Candidates = () => {
   return (
-    <div>
-      <CandidatesHeader />
-      <CandidatesStats />
-      <CandidatesToolbar />
-      <CandidatesViewToggle />
+    <div className="bg-bg-primary">
+      <div className="flex flex-col gap-4">
+        <CandidatesStats />
+        <CandidatesToolbar />
+      </div>
       <CandidatesTableView />
     </div>
   );
