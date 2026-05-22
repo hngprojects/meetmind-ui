@@ -14,7 +14,7 @@ const Dashnavlist = () => {
     { title: "Dashboard", link: "/Dashboard", id: 0 },
     { title: "Candidates", link: "/Candidates", id: 1 },
     { title: "Interviews", link: "/Interviews", id: 2 },
-    { title: "Calender", link: "/Calendar", id: 3 },
+    { title: "Calendar", link: "/Calendar", id: 3 },
   ];
   // track page
   const pathname = usePathname();
