@@ -87,7 +87,7 @@ export default function ChatTab({ messages }: Props) {
             className="text-[#9ca3af] hover:text-[#0f172a]"
             aria-label="Voice"
           >
-            <Image src="/icons/mic.svg" alt="Send" width={18} height={18} />
+            <Image src="/icons/mic.svg" alt="Voice" width={18} height={18} />
           </button>
           <button
             type="button"

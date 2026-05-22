@@ -47,20 +47,25 @@ export default function ProfileTab({ interview }: Props) {
       <section className="mt-8">
         <h4 className="text-sm font-semibold text-[#0f172a]">Links</h4>
         <div className="mt-3 flex flex-col gap-2">
-          <a
+          {/*When link is available uncomment a and delete span - coderabbits flag*/}
+          {/* <a
             href="#"
             className="flex items-center gap-2 text-sm font-medium  hover:underline"
-          >
+          > */}
+          <span className="flex items-center gap-2 text-sm font-medium  hover:underline">
             <HiOutlineDocumentText className="h-4 w-4" />
             <span className="text-[#0e797e]"> View Resume</span>
-          </a>
-          <a
+          </span>
+          {/* </a> */}
+          {/* <a
             href="#"
             className="flex items-center gap-2 text-sm font-medium hover:underline"
-          >
+          > */}
+          <span className="flex items-center gap-2 text-sm font-medium  hover:underline">
             <HiOutlineGlobeAlt className="h-4 w-4" />
             <span className="text-[#0e797e]"> Portfolio</span>
-          </a>
+          </span>
+          {/* </a> */}
         </div>
       </section>
 

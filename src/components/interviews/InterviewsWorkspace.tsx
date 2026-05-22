@@ -53,7 +53,7 @@ export default function InterviewsWorkspace() {
     <div className="flex gap-6">
       <InterviewListSidebar
         items={list}
-        selectedId={selectedId}
+        selectedId={currentSelectedId ?? null}
         onSelect={setSelectedId}
       />
 

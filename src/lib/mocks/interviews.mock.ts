@@ -12,7 +12,7 @@ export const MOCK_INTERVIEW_LIST: InterviewListItem[] = [
     initials: "TB",
     roleTitle: "Product Designer",
     candidateName: "Temi Balogun",
-    scheduledLabel: "Now 2:30pm - 3:30AM",
+    scheduledLabel: "Now 2:30PM - 3:30PM",
     listStatus: "live",
   },
   {
@@ -20,7 +20,7 @@ export const MOCK_INTERVIEW_LIST: InterviewListItem[] = [
     initials: "FU",
     roleTitle: "Video Editor",
     candidateName: "Frank Udoho",
-    scheduledLabel: "Now 2:30pm - 3:30AM",
+    scheduledLabel: "Now 2:30PM - 3:30PM",
     listStatus: "upcoming",
   },
   {
@@ -42,7 +42,7 @@ export const MOCK_INTERVIEW_LIST: InterviewListItem[] = [
   {
     id: "5",
     initials: "RD",
-    roleTitle: "Virtual Assitant",
+    roleTitle: "Virtual Assistant",
     candidateName: "Reekadobanks@gmail.com",
     scheduledLabel: "Tomorrow 10:00AM - 10:30AM",
     listStatus: "none",

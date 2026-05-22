@@ -9,7 +9,7 @@ import {
 } from "@/lib/mocks/interviews.mock";
 import type {
   ChatMessage,
-  CreateInterviewPayload,
+  // CreateInterviewPayload,
   InterviewDetail,
   InterviewListItem,
   ScorecardCategory,
@@ -29,11 +29,10 @@ export async function listInterviews(): Promise<InterviewListItem[]> {
     ]);
     const live = unwrapData<unknown>(liveRes.data);
     const stats = unwrapData<{ live_interviews?: unknown[] }>(statsRes.data);
-    if (stats?.live_interviews?.length) {
-      return MOCK_INTERVIEW_LIST;
-    }
-    void live;
-    return MOCK_INTERVIEW_LIST;
+
+    const mapped = mapLiveInterviewsToList(live, stats);
+
+    return mapped.length ? mapped : MOCK_INTERVIEW_LIST;
   } catch {
     return MOCK_INTERVIEW_LIST;
   }
@@ -80,13 +79,13 @@ export function getScorecard(_id: string): ScorecardCategory[] {
   return MOCK_SCORECARD;
 }
 
-export async function createInterview(
-  payload: CreateInterviewPayload,
-): Promise<{ id: string }> {
-  const res = await api.post("/api/v1/interviews", payload);
-  const data = unwrapData<{ id?: string; interview_id?: string }>(res.data);
-  return { id: data.id ?? data.interview_id ?? "1" };
-}
+// export async function createInterview(
+//   payload: CreateInterviewPayload,
+// ): Promise<{ id: string }> {
+//   const res = await api.post("/api/v1/interviews", payload);
+//   const data = unwrapData<{ id?: string; interview_id?: string }>(res.data);
+//   return { id: data.id ?? data.interview_id ?? "1" };
+// }
 
 export async function cancelInterview(id: string): Promise<void> {
   await api.patch(`/api/v1/interviews/${id}/cancel`);
@@ -108,4 +107,49 @@ function mapApiToDetail(
     ),
     status: (data.status as InterviewDetail["status"]) ?? mock.status,
   };
+}
+
+function mapLiveInterviewsToList(
+  live: string,
+  stats: { live_interviews?: string[] },
+): InterviewListItem[] {
+  const liveArr = Array.isArray(live) ? live : [];
+  const statsArr = Array.isArray(stats?.live_interviews)
+    ? stats.live_interviews
+    : [];
+
+  const combined = [...liveArr, ...statsArr];
+
+  const map = new Map<string, InterviewListItem>();
+
+  for (const item of combined) {
+    if (!item) continue;
+
+    const id = item.id ?? item.interview_id;
+    if (!id) continue;
+
+    const candidateName =
+      item.candidate_name ?? item.candidate?.name ?? "Unknown Candidate";
+
+    const roleTitle = item.role_title ?? item.title ?? "Unknown Role";
+
+    map.set(id, {
+      id,
+      candidateName,
+      roleTitle,
+
+      // 👇 derive initials safely
+      // initials: getInitials(candidateName),
+      initials: "AB",
+
+      // 👇 you don’t have API value, so fallback logic
+      scheduledLabel: item.scheduled_at ?? item.scheduledAt ?? "Not scheduled",
+
+      // 👇 map API status into your UI type
+      // listStatus: mapStatus(item.status),
+      listStatus: "none",
+    });
+  }
+
+  return Array.from(map.values());
 }

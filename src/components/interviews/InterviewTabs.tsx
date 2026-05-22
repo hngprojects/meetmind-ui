@@ -18,12 +18,18 @@ type Props = {
 
 export default function InterviewTabs({ active, onChange }: Props) {
   return (
-    <div className="flex gap-8 border-b border-[#e5e7eb] px-6 pt-6">
+    <div
+      role="tablist"
+      aria-label="Interview sections"
+      className="flex gap-8 border-b border-[#e5e7eb] px-6 pt-6"
+    >
       {TABS.map((tab) => (
         <button
           key={tab.id}
           type="button"
           onClick={() => onChange(tab.id)}
+          role="tab"
+          aria-selected={active === tab.id}
           className={cn(
             "relative pb-3 text-sm font-medium transition-colors",
             active === tab.id
