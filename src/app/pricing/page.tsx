@@ -13,7 +13,7 @@ export default function PricingPage() {
           <h1 className="text-3xl md:text-4xl font-bold tracking-[-0.02em] mb-3 text-black">
             Pricing Plans
           </h1>
-          <p className="text-base text-[#4a4a4a] max-w-[600px] mx-auto">
+          <p className="text-base text-[#4a4a4a] max-w-150 mx-auto">
             The core SDK is open source and free forever. Managed infrastructure
             when you need it.
           </p>
