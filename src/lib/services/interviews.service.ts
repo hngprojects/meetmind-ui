@@ -110,8 +110,8 @@ function mapApiToDetail(
 }
 
 function mapLiveInterviewsToList(
-  live: string,
-  stats: { live_interviews?: string[] },
+  live: unknown,
+  stats: { live_interviews?: unknown[] },
 ): InterviewListItem[] {
   const liveArr = Array.isArray(live) ? live : [];
   const statsArr = Array.isArray(stats?.live_interviews)
@@ -140,14 +140,23 @@ function mapLiveInterviewsToList(
 
       // 👇 derive initials safely
       // initials: getInitials(candidateName),
-      initials: "AB",
+      initials:
+        candidateName
+          .split(" ")
+          .filter(Boolean)
+          .slice(0, 2)
+          .map((part: string) => part[0]?.toUpperCase() ?? "")
+          .join("") || "NA",
 
       // 👇 you don’t have API value, so fallback logic
       scheduledLabel: item.scheduled_at ?? item.scheduledAt ?? "Not scheduled",
 
       // 👇 map API status into your UI type
       // listStatus: mapStatus(item.status),
-      listStatus: "none",
+      listStatus:
+        item.status === "live" || item.status === "upcoming"
+          ? item.status
+          : "none",
     });
   }
 

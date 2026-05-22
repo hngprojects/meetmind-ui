@@ -52,7 +52,7 @@ export default function ProfileTab({ interview }: Props) {
             href="#"
             className="flex items-center gap-2 text-sm font-medium  hover:underline"
           > */}
-          <span className="flex items-center gap-2 text-sm font-medium  hover:underline">
+          <span className="flex items-center gap-2 text-sm font-medium">
             <HiOutlineDocumentText className="h-4 w-4" />
             <span className="text-[#0e797e]"> View Resume</span>
           </span>
@@ -61,7 +61,7 @@ export default function ProfileTab({ interview }: Props) {
             href="#"
             className="flex items-center gap-2 text-sm font-medium hover:underline"
           > */}
-          <span className="flex items-center gap-2 text-sm font-medium  hover:underline">
+          <span className="flex items-center gap-2 text-sm font-medium">
             <HiOutlineGlobeAlt className="h-4 w-4" />
             <span className="text-[#0e797e]"> Portfolio</span>
           </span>
