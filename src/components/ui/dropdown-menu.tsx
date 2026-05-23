@@ -28,23 +28,23 @@ const itemDestructive =
    Root
 ---------------------------- */
 
-function DropdownMenu({
-  ...props
-}: React.ComponentProps<typeof DropdownMenuPrimitive.Root>) {
+function DropdownMenu(
+  props: React.ComponentProps<typeof DropdownMenuPrimitive.Root>,
+) {
   return <DropdownMenuPrimitive.Root data-slot="dropdown-menu" {...props} />;
 }
 
-function DropdownMenuPortal({
-  ...props
-}: React.ComponentProps<typeof DropdownMenuPrimitive.Portal>) {
+function DropdownMenuPortal(
+  props: React.ComponentProps<typeof DropdownMenuPrimitive.Portal>,
+) {
   return (
     <DropdownMenuPrimitive.Portal data-slot="dropdown-menu-portal" {...props} />
   );
 }
 
-function DropdownMenuTrigger({
-  ...props
-}: React.ComponentProps<typeof DropdownMenuPrimitive.Trigger>) {
+function DropdownMenuTrigger(
+  props: React.ComponentProps<typeof DropdownMenuPrimitive.Trigger>,
+) {
   return (
     <DropdownMenuPrimitive.Trigger
       data-slot="dropdown-menu-trigger"
@@ -70,7 +70,6 @@ function DropdownMenuContent({
         sideOffset={sideOffset}
         align={align}
         className={cn(
-          /* base */
           "z-50 max-h-(--radix-dropdown-menu-content-available-height)",
           "w-(--radix-dropdown-menu-trigger-width) min-w-48",
           "origin-(--radix-dropdown-menu-content-transform-origin)",
@@ -79,7 +78,6 @@ function DropdownMenuContent({
           "shadow-2xl ring-1 ring-foreground/5 dark:ring-foreground/10",
           "duration-100",
 
-          /* animation states */
           "data-[side=bottom]:slide-in-from-top-2",
           "data-[side=left]:slide-in-from-right-2",
           "data-[side=right]:slide-in-from-left-2",
@@ -89,7 +87,6 @@ function DropdownMenuContent({
           "data-closed:animate-out data-closed:fade-out-0 data-closed:zoom-out-95",
 
           "data-[state=closed]:overflow-hidden",
-
           className,
         )}
         {...props}
@@ -102,16 +99,16 @@ function DropdownMenuContent({
    Group
 ---------------------------- */
 
-function DropdownMenuGroup({
-  ...props
-}: React.ComponentProps<typeof DropdownMenuPrimitive.Group>) {
+function DropdownMenuGroup(
+  props: React.ComponentProps<typeof DropdownMenuPrimitive.Group>,
+) {
   return (
     <DropdownMenuPrimitive.Group data-slot="dropdown-menu-group" {...props} />
   );
 }
 
 /* ---------------------------
-   Item (base logic)
+   Item
 ---------------------------- */
 
 function DropdownMenuItem({
@@ -180,21 +177,6 @@ function DropdownMenuCheckboxItem({
 
       {children}
     </DropdownMenuPrimitive.CheckboxItem>
-  );
-}
-
-/* ---------------------------
-   Radio Group
----------------------------- */
-
-function DropdownMenuRadioGroup({
-  ...props
-}: React.ComponentProps<typeof DropdownMenuPrimitive.RadioGroup>) {
-  return (
-    <DropdownMenuPrimitive.RadioGroup
-      data-slot="dropdown-menu-radio-group"
-      {...props}
-    />
   );
 }
 
@@ -305,9 +287,9 @@ function DropdownMenuShortcut({
    Submenu
 ---------------------------- */
 
-function DropdownMenuSub({
-  ...props
-}: React.ComponentProps<typeof DropdownMenuPrimitive.Sub>) {
+function DropdownMenuSub(
+  props: React.ComponentProps<typeof DropdownMenuPrimitive.Sub>,
+) {
   return <DropdownMenuPrimitive.Sub data-slot="dropdown-menu-sub" {...props} />;
 }
 
@@ -372,7 +354,7 @@ function DropdownMenuSubContent({
 }
 
 /* ---------------------------
-   Exports
+   Export
 ---------------------------- */
 
 export {
@@ -384,7 +366,6 @@ export {
   DropdownMenuLabel,
   DropdownMenuItem,
   DropdownMenuCheckboxItem,
-  DropdownMenuRadioGroup,
   DropdownMenuRadioItem,
   DropdownMenuSeparator,
   DropdownMenuShortcut,
