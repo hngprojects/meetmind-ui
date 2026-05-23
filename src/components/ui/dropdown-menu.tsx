@@ -21,8 +21,19 @@ const itemDisabled =
 
 const itemInset = "data-inset:pl-9.5";
 
-const itemDestructive =
-  "data-[variant=destructive]:text-destructive data-[variant=destructive]:focus:bg-destructive/10 data-[variant=destructive]:focus:text-destructive dark:data-[variant=destructive]:focus:bg-destructive
+const itemDestructiveBase = "data-[variant=destructive]:text-destructive";
+
+const itemDestructiveFocus =
+  "data-[variant=destructive]:focus:bg-destructive/10 data-[variant=destructive]:focus:text-destructive dark:data-[variant=destructive]:focus:bg-destructive/20";
+
+const itemDestructiveIcon =
+  "data-[variant=destructive]:*:[svg]:text-destructive";
+
+const itemDestructive = cn(
+  itemDestructiveBase,
+  itemDestructiveFocus,
+  itemDestructiveIcon,
+);
 
 /* ---------------------------
    Root
