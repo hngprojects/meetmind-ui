@@ -13,7 +13,10 @@ import { FaArrowLeft, FaArrowRight } from "react-icons/fa6";
 
 const FileUpload = () => {
   const params = useParams();
-  const candidateId = params?.candidate_id as string;
+  const rawCandidateId = params?.candidate_id;
+  const candidateId = Array.isArray(rawCandidateId)
+    ? rawCandidateId[0]
+    : rawCandidateId;
   const [isLoading, setIsLoading] = useState(false);
   const [serverError, setServerError] = useState<string | null>(null);
   const { setOpen } = useCreateStore();
@@ -27,7 +30,7 @@ const FileUpload = () => {
     mode: "onChange",
   });
 
-  const error = form.formState.errors;
+  // const error = form.formState.errors;
 
   //form submission
   const {
@@ -67,6 +70,11 @@ const FileUpload = () => {
   };
 
   const onSubmit = async (data: UploadCandidateValues) => {
+    if (!candidateId) {
+      setServerError("Missing candidate identifier. Please restart this step.");
+      return;
+    }
+
     try {
       setIsLoading(true);
       setServerError(null);
@@ -167,7 +175,7 @@ const FileUpload = () => {
               <div className="flex flex-row justify-between">
                 <p className="mt-2 text-sm font-medium">{fileName}</p>
 
-                {error.CandidateUpload?.message && (
+                {(serverError || errors.CandidateUpload?.message) && (
                   <p
                     className="text-[#EF4444] border rounded-2xl text-sm bg-[#FDECEC]
                  flex items-center justify-center px-2 py-1 border-[#EF4444]"

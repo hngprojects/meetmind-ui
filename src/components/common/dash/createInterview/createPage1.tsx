@@ -10,7 +10,7 @@ const CreatePage1 = () => {
   // open upload
   const { UploadOpen, setUploadOpen } = useUpload();
   // open input
-  const { InputOpen, setInputOpen } = useInput();
+  const { setInputOpen } = useInput();
 
   const handleUpload = () => {
     setUploadOpen(true);
@@ -53,7 +53,7 @@ const CreatePage1 = () => {
             {/* import candidate  */}
             <h1>Import Candidates</h1>
             <p>
-              Drop a file with Candiate information, paste email addresses
+              Drop a file with Candidate information, paste email addresses
               directly.
             </p>
 
@@ -72,7 +72,7 @@ const CreatePage1 = () => {
             </div>
 
             {UploadOpen && <FileUpload />}
-            {InputOpen && <h1>hello</h1>}
+            {/* {InputOpen && <h1>hello</h1>} */}
           </div>
         </div>
       )}

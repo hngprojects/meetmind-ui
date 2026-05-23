@@ -6,7 +6,7 @@ type step1Store = {
   toggle: () => void;
   setStep1: (step1: boolean) => void;
 };
-export const useCreateStore = create<step1Store>((set) => ({
+export const useCreateStep1 = create<step1Store>((set) => ({
   step1: true,
   toggle: () => set((state) => ({ step1: !state.step1 })),
   setStep1: (value: boolean) => set({ step1: value }),
