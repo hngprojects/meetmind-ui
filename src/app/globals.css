@@ -11,10 +11,15 @@
   --font-heading: var(--font-sans);
   --font-serif: var(--font-serif);
 
+  /* =============== BRAND COLORS =============== */
+  --color-brand-primary: #02505e;
+
   /* =============== BACKGROUND COLORS =============== */
   --color-bg-primary: #ffffff;
   --color-bg-secondary: #f7f9fb;
   --color-bg-tertiary: #e6f0f1;
+  --color-soft-white: #f4f4f5;
+  --color-soft-green: #d9e8ea;
 
   /* =============== TEXT COLORS =============== */
   --color-text-color-primary: #0f172a;
@@ -81,6 +86,18 @@
 
   --color-icon-bg: #fef3f2;
   --color-icon-text: #f04438;
+
+  /* =============== ABOUT PAGE =============== */
+  --color-brand-accent: #4f46e5;
+  --color-accent-teal: #035a69;
+  --color-accent-teal-dark: #02505e;
+  --color-newsletter-bg: #02505e;
+  --color-newsletter-subtext: #e1e3e4;
+  --color-newsletter-btn-bg: #f7f9fb;
+  --color-newsletter-btn-text: #02505e;
+  --color-belief-card-bg: #f7f9fb;
+  --color-timeline-bg: #f7f9fb;
+  --color-mission-bg: #f7f9fb;
 
   /* =============== SCROLLBAR COLORS =============== */
   --color-scrollbar-track: #f3f4f6;
@@ -195,6 +212,18 @@
   --sidebar-accent-foreground: oklch(0.985 0 0);
   --sidebar-border: oklch(1 0 0 / 10%);
   --sidebar-ring: oklch(0.556 0 0);
+
+  /* About page tokens */
+  --color-brand-accent: `#6366f1`;
+  --color-accent-teal: `#0b7285`;
+  --color-accent-teal-dark: `#0a5f70`;
+  --color-newsletter-bg: `#0f2f36`;
+  --color-newsletter-subtext: `#cbd5e1`;
+  --color-newsletter-btn-bg: `#e2e8f0`;
+  --color-newsletter-btn-text: `#0f2f36`;
+  --color-belief-card-bg: `#1f2937`;
+  --color-timeline-bg: `#111827`;
+  --color-mission-bg: `#111827`;
 }
 
 @layer base {

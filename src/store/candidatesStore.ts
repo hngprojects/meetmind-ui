@@ -3,10 +3,11 @@ import { create } from "zustand";
 export type ViewMode = "list" | "grid";
 
 export interface CandidateFilters {
-  status: "all" | "ongoing" | "completed" | "attention";
+  status: "all" | "ongoing" | "completed" | "needs_review";
   role: string | null;
   search: string;
   sortBy: "date" | "score" | "name";
+  sortDirection: "asc" | "desc";
 }
 
 interface CandidatesState {
@@ -17,7 +18,6 @@ interface CandidatesState {
   resetFilters: () => void;
   search: string;
   setSearch: (v: string) => void;
-
   page: number;
   setPage: (p: number) => void;
 
@@ -33,6 +33,7 @@ const initialFilters: CandidateFilters = {
   role: null,
   search: "",
   sortBy: "date",
+  sortDirection: "desc",
 };
 
 export const useCandidatesStore = create<CandidatesState>((set) => ({
@@ -49,6 +50,8 @@ export const useCandidatesStore = create<CandidatesState>((set) => ({
   resetFilters: () => set({ filters: initialFilters }),
   search: "",
   setSearch: (v) => set({ search: v }),
+  sortBy: "date",
+  sortDirection: "desc",
   page: 1,
   setPage: (p) => set({ page: p }),
   pageSize: 20,

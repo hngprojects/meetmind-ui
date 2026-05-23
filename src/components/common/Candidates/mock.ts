@@ -26,7 +26,7 @@ export const mockCandidatesData: Candidate[] = [
     name: "Raj Patel",
     email: "raj.patel@yahoo.com",
     role: "Visual Designer",
-    status: "Needs review",
+    status: "needs_review",
     date: "April 28, 2026",
     score: 0,
     action: "None",

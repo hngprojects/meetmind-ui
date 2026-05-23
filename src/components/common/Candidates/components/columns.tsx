@@ -4,7 +4,7 @@ import { Candidate } from "../types";
 import ScoreBar from "./ScoreBar";
 import StatusBadge from "./StatusBadge";
 import ActionBadge from "./ActionBadge";
-import { mockCandidatesData } from "../mock";
+import { FiArrowUp, FiArrowDown } from "react-icons/fi";
 
 export const getInitials = (name: string) => {
   return name
@@ -19,7 +19,17 @@ const columnHelper = createColumnHelper<Candidate>();
 
 export const candidateColumns = [
   columnHelper.accessor("name", {
-    header: "Name",
+    header: ({ column }) => {
+      return (
+        <button
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          className="flex items-center gap-1"
+        >
+          Name
+          {column.getIsSorted() === "asc" ? <FiArrowUp /> : <FiArrowDown />}
+        </button>
+      );
+    },
     meta: { widthClass: "w-[28%]" },
     cell: ({ row: { original } }) => (
       <div className="flex items-center gap-3">
@@ -52,14 +62,34 @@ export const candidateColumns = [
     cell: (info) => <StatusBadge status={info.getValue()} />,
   }),
   columnHelper.accessor("date", {
-    header: "Date",
+    header: ({ column }) => {
+      return (
+        <button
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          className="flex items-center gap-1"
+        >
+          Date
+          {column.getIsSorted() === "asc" ? <FiArrowUp /> : <FiArrowDown />}
+        </button>
+      );
+    },
     meta: { widthClass: "w-[15%]" },
     cell: (info) => (
       <span className="text-color-text-subtext">{info.getValue()}</span>
     ),
   }),
   columnHelper.accessor("score", {
-    header: "Scores",
+    header: ({ column }) => {
+      return (
+        <button
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          className="flex items-center gap-1"
+        >
+          Scores
+          {column.getIsSorted() === "asc" ? <FiArrowUp /> : <FiArrowDown />}
+        </button>
+      );
+    },
     meta: { widthClass: "w-[12%]" },
     cell: (info) => <ScoreBar score={info.getValue()} />,
   }),
