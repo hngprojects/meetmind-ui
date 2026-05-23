@@ -37,7 +37,7 @@ const Dashboard = () => {
         <Buttons
           text="Create interview"
           type="button"
-          style2="w-[50%]"
+          wrapperClassname="w-[50%]"
           style=" bg-color-brand-primary"
           onClick={toggle}
         />

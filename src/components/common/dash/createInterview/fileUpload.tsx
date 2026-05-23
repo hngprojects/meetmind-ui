@@ -30,8 +30,6 @@ const FileUpload = () => {
     mode: "onChange",
   });
 
-  // const error = form.formState.errors;
-
   //form submission
   const {
     reset,
@@ -202,7 +200,7 @@ const FileUpload = () => {
           <Buttons
             icon2={<FaArrowRight />}
             text={isLoading ? "Uploading..." : "Continue"}
-            style2="w-[50%]"
+            wrapperClassname="w-[50%]"
             type="submit"
             disabled={isLoading || !!errors.CandidateUpload}
           />

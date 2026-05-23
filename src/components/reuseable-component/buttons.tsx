@@ -3,7 +3,7 @@ import { Button } from "../ui/button";
 
 interface Props {
   style?: string;
-  style2?: string;
+  wrapperClassname?: string;
   text: string;
   onClick?: (() => void | undefined) | undefined;
   disabled?: boolean;
@@ -14,7 +14,7 @@ interface Props {
 
 const Buttons = ({
   style,
-  style2,
+  wrapperClassname,
   text,
   onClick,
   disabled,
@@ -23,7 +23,7 @@ const Buttons = ({
   icon2,
 }: Props) => {
   return (
-    <div className={` ${style2}`}>
+    <div className={` ${wrapperClassname}`}>
       <Button
         variant="default"
         className={`${style} w-full rounded-lg 
