@@ -55,12 +55,12 @@ export default function RootLayout({
       )}
     >
       <body className="min-h-full flex flex-col">
-        <AuthProvider>
-          <Providers>
+        <Providers>
+          <AuthProvider>
             {children}
             <ToastContainer />
-          </Providers>
-        </AuthProvider>
+          </AuthProvider>
+        </Providers>
       </body>
     </html>
   );

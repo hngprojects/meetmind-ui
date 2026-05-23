@@ -100,7 +100,12 @@ const Step4 = () => {
           >
             {mutation.isPending ? "Saving..." : "Continue"}
           </Button>
-          <Button onClick={prevStep} variant="ghost" className="w-fit">
+          <Button
+            onClick={prevStep}
+            disabled={mutation.isPending}
+            variant="ghost"
+            className="w-fit"
+          >
             <GoArrowLeft />
             Back
           </Button>

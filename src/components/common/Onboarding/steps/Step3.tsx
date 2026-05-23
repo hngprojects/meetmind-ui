@@ -16,6 +16,7 @@ const Step3 = () => {
   const prevStep = onboardingStore((state) => state.prevStep);
   const addToast = onboardingStore((s) => s.addToast);
   const mutation = useMutation({
+    mutationKey: ["onboarding", "preferences"],
     mutationFn: onboardingAPI.setPreferences,
     onSuccess: () => {
       nextStep();
@@ -111,7 +112,12 @@ const Step3 = () => {
           >
             {mutation.isPending ? "Saving..." : "Continue"}
           </Button>
-          <Button onClick={prevStep} variant="ghost" className="w-fit">
+          <Button
+            onClick={prevStep}
+            disabled={mutation.isPending}
+            variant="ghost"
+            className="w-fit"
+          >
             <GoArrowLeft /> Back
           </Button>
         </div>

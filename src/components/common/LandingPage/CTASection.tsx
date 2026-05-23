@@ -43,7 +43,7 @@ export default function CTASection() {
             </p>
 
             <Link
-              href="/watch-demo"
+              href="/coming-soon"
               className="flex justify-center items-center w-66.5 h-14 
                 px-4 py-2.5 mx-auto bg-[#F7F9FB] text-[#035A69] 
                 hover:bg-[#02505E] hover:text-[#F7F9FB] font-semibold 

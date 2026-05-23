@@ -15,6 +15,7 @@ import { FiFolderMinus } from "react-icons/fi";
 const Step5 = () => {
   const router = useRouter();
   const prevStep = onboardingStore((s) => s.prevStep);
+  const reset = onboardingStore((s) => s.reset);
 
   const addToast = onboardingStore((s) => s.addToast);
 
@@ -22,7 +23,8 @@ const Step5 = () => {
     mutationFn: onboardingAPI.completeOnboarding,
     onSuccess: () => {
       addToast("Onboarding completed successfully", "success");
-      router.push("/Dashboard");
+      router.push("/dashboard");
+      reset();
     },
     onError: () => {
       addToast("Onboarding failed. Try again.", "error");

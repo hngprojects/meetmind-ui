@@ -3,11 +3,11 @@ import Image from "next/image";
 
 const footerLinks = [
   { label: "Documentation", href: "/docs" },
-  { label: "Github", href: "#" },
+  { label: "Github", href: "/coming-soon" },
   { label: "Changelog", href: "/changelog" },
   { label: "Privacy", href: "/privacy" },
-  { label: "SDK2026", href: "#" },
-  { label: "V0.10", href: "#" },
+  { label: "SDK2026", href: "/coming-soon" },
+  { label: "V0.10", href: "/coming-soon" },
 ];
 
 export default function Footer() {

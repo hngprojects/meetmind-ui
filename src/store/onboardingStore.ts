@@ -63,9 +63,9 @@ export const onboardingStore = create<OnboardingState>()(
       setHasAttemptedStep: (value) => set({ hasAttemptedStep: value }),
       setStep: (step) => set({ step }),
       nextStep: () => {
+        set({ hasAttemptedStep: true });
         const { step, validateStep } = get();
         if (!validateStep()) {
-          set({ hasAttemptedStep: true });
           return;
         }
         set({

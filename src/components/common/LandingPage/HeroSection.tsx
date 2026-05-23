@@ -54,7 +54,7 @@ export default function HeroSection() {
             </Link>
 
             <Link
-              href="/watch-demo"
+              href="/coming-soon"
               className="flex justify-center items-center w-47.5 h-14 px-4 py-2.5 mx-auto 
               bg-[#F7F9FB] border border-[#DADADA] text-[#0F172A] font-semibold 
               rounded-lg text-[16px] hover:bg-[#02505E] hover:text-[#F7F9FB] 
@@ -85,7 +85,7 @@ export default function HeroSection() {
               </Link>
 
               <Link
-                href="/watch-demo"
+                href="/coming-soon"
                 className="flex justify-center items-center w-86.25 h-14 px-4 py-2.5 
                   mx-auto bg-[#F7F9FB] border border-[#DADADA] text-[#0F172A] 
                   font-semibold rounded-lg text-[16px] hover:bg-[#02505E] 

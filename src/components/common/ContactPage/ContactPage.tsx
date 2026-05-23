@@ -4,7 +4,7 @@ import { ContactForm } from "@/components/common/ContactPage/ContactForm";
 import { NewsletterForm } from "@/components/common/HelpPage/NewsletterForm";
 import Link from "next/link";
 import Image from "next/image";
-import { ArrowLeft, Mail, MessageCircle } from "lucide-react";
+import { BsArrowLeft, BsEnvelope, BsChatDots } from "react-icons/bs";
 
 export default function ContactPage() {
   return (
@@ -18,7 +18,7 @@ export default function ContactPage() {
             href="/"
             className="inline-flex items-center gap-2 text-sm text-[#0F172A] mb-6 hover:underline"
           >
-            <ArrowLeft size={16} />
+            <BsArrowLeft size={16} />
             Back
           </Link>
 
@@ -45,14 +45,14 @@ export default function ContactPage() {
           <div className="bg-white rounded-2xl border border-[#E1E3E4] p-8">
             <ContactForm />
 
-            {/* Other ways to reach us */}
+            {/* Other ways to reach us part */}
             <div className="mt-8 pt-6 border-t border-[#E1E3E4]">
               <p className="text-sm font-semibold text-[#0F172A] mb-4">
                 Other ways to reach us
               </p>
               <div className="flex flex-col gap-3">
                 <div className="flex items-center gap-3 text-sm text-[#5E6470]">
-                  <Mail size={16} />
+                  <BsEnvelope size={16} />
                   <a
                     href="mailto:support@meetmind.ai"
                     className="hover:underline hover:text-[#02505E] transition-colors"
@@ -62,7 +62,7 @@ export default function ContactPage() {
                 </div>
                 <div className="flex items-center justify-between text-sm text-[#5E6470]">
                   <div className="flex items-center gap-3">
-                    <MessageCircle size={16} />
+                    <BsChatDots size={16} />
                     Live Chat
                   </div>
                   <span className="text-xs text-[#64748b] bg-[#f1f5f9] px-3 py-1 rounded-full font-medium">

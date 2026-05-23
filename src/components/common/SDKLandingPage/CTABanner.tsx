@@ -25,7 +25,7 @@ export default function CTABanner() {
         {/* Buttons Wrapper */}
         <div className="w-full md:max-w-136 flex flex-col md:flex-row gap-4 md:justify-center">
           <Link
-            href="/signup"
+            href="/sign-up"
             className="w-full md:w-auto md:min-w-66.5 text-center py-3 bg-[#036475] hover:bg-[#F7F9FB]
              text-[#FEFEFF] hover:text-[#02505E] border border-[#AFB1B2] hover:border-[#02505E] text-base font-bold
               rounded-xl transition-colors"
@@ -33,7 +33,7 @@ export default function CTABanner() {
             Try Demo
           </Link>
           <Link
-            href="/docs"
+            href="/coming-soon"
             className="w-full md:w-auto md:min-w-66.5 text-center py-3 bg-[#036475] hover:bg-[#F7F9FB]
              text-[#FEFEFF] hover:text-[#02505E] border border-[#AFB1B2] hover:border-[#02505E] text-base font-bold
               rounded-xl transition-colors"
