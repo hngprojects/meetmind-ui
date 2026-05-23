@@ -6,6 +6,7 @@ import ScoreBar from "./ScoreBar";
 import StatusBadge from "./StatusBadge";
 import { getInitials } from "./columns";
 import { FiArrowUpRight } from "react-icons/fi";
+import { cn } from "@/lib/utils";
 
 const CandidatesGridView = ({ table }: { table: TanstackTable<Candidate> }) => {
   const rows = table.getRowModel().rows;
@@ -61,9 +62,16 @@ const CandidatesGridView = ({ table }: { table: TanstackTable<Candidate> }) => {
               <div className="flex items-center justify-between gap-2 pt-2">
                 <ScoreBar score={candidate.score} />
 
+                <ScoreBar score={candidate.score} />
                 <button
-                  className="flex h-9 w-9 items-center justify-center rounded-full bg-color-bg-secondary text-color-text-color-primary hover:bg-color-button-primary-bg-hover hover:text-color-button-pr
-                  aria-label={`Open data view profile for ${candidate.name}`}
+                  className={cn(
+                    "flex h-9 w-9 items-center justify-center rounded-full",
+                    "bg-color-bg-secondary text-color-text-color-primary",
+                    "border border-color-card-border transition-colors",
+                    "hover:bg-color-button-primary-bg-hover hover:text-color-button-primary-text-hover",
+                    "group/btn",
+                  )}
+                  aria-label={`View profiles for ${candidate.name}`}
                 >
                   <FiArrowUpRight className="h-5 w-5 transition-transform group-hover/btn:translate-x-0.5 group-hover/btn:-translate-y-0.5" />
                 </button>

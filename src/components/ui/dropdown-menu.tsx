@@ -7,7 +7,7 @@ import { cn } from "@/lib/utils";
 import { FiCheck, FiChevronRight } from "react-icons/fi";
 
 /* ---------------------------
-   Shared style primitives
+   Style primitives
 ---------------------------- */
 
 const itemBase =
@@ -19,13 +19,13 @@ const itemFocus =
 const itemDisabled =
   "data-disabled:pointer-events-none data-disabled:opacity-50";
 
-const insetStyle = "data-inset:pl-9.5";
+const itemInset = "data-inset:pl-9.5";
 
-const destructiveItem =
+const itemDestructive =
   "data-[variant=destructive]:text-destructive data-[variant=destructive]:focus:bg-destructive/10 data-[variant=destructive]:focus:text-destructive dark:data-[variant=destructive]:focus:bg-destructive
 
 /* ---------------------------
-   Root components
+   Root
 ---------------------------- */
 
 function DropdownMenu({
@@ -70,11 +70,26 @@ function DropdownMenuContent({
         sideOffset={sideOffset}
         align={align}
         className={cn(
-          "z-50 max-h-(--radix-dropdown-menu-content-available-height) w-(--radix-dropdown-menu-trigger-width) min-w-48 origin-(--radix-dropdown-menu-content-transform-origin) overflow-x-hidden overfl
-          "data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2",
-          "data-[state=closed]:overflow-hidden dark:ring-foreground/10",
+          /* base */
+          "z-50 max-h-(--radix-dropdown-menu-content-available-height)",
+          "w-(--radix-dropdown-menu-trigger-width) min-w-48",
+          "origin-(--radix-dropdown-menu-content-transform-origin)",
+          "overflow-x-hidden overflow-y-auto",
+          "rounded-2xl bg-popover p-1 text-popover-foreground",
+          "shadow-2xl ring-1 ring-foreground/5 dark:ring-foreground/10",
+          "duration-100",
+
+          /* animation states */
+          "data-[side=bottom]:slide-in-from-top-2",
+          "data-[side=left]:slide-in-from-right-2",
+          "data-[side=right]:slide-in-from-left-2",
+          "data-[side=top]:slide-in-from-bottom-2",
+
           "data-open:animate-in data-open:fade-in-0 data-open:zoom-in-95",
           "data-closed:animate-out data-closed:fade-out-0 data-closed:zoom-out-95",
+
+          "data-[state=closed]:overflow-hidden",
+
           className,
         )}
         {...props}
@@ -84,7 +99,7 @@ function DropdownMenuContent({
 }
 
 /* ---------------------------
-   Groups
+   Group
 ---------------------------- */
 
 function DropdownMenuGroup({
@@ -96,7 +111,7 @@ function DropdownMenuGroup({
 }
 
 /* ---------------------------
-   Items
+   Item (base logic)
 ---------------------------- */
 
 function DropdownMenuItem({
@@ -117,8 +132,8 @@ function DropdownMenuItem({
         itemBase,
         itemFocus,
         itemDisabled,
-        inset && insetStyle,
-        destructiveItem,
+        inset && itemInset,
+        itemDestructive,
         className,
       )}
       {...props}
@@ -148,7 +163,7 @@ function DropdownMenuCheckboxItem({
         itemBase,
         itemFocus,
         itemDisabled,
-        inset && insetStyle,
+        inset && itemInset,
         "pr-8 pl-3",
         className,
       )}
@@ -203,7 +218,7 @@ function DropdownMenuRadioItem({
         itemBase,
         itemFocus,
         itemDisabled,
-        inset && insetStyle,
+        inset && itemInset,
         "pr-8 pl-3",
         className,
       )}
@@ -240,7 +255,7 @@ function DropdownMenuLabel({
       data-inset={inset}
       className={cn(
         "px-3 py-2.5 text-xs text-muted-foreground",
-        inset && insetStyle,
+        inset && itemInset,
         className,
       )}
       {...props}
@@ -277,7 +292,8 @@ function DropdownMenuShortcut({
     <span
       data-slot="dropdown-menu-shortcut"
       className={cn(
-        "ml-auto text-xs tracking-widest text-muted-foreground group-focus/dropdown-menu-item:text-accent-foreground",
+        "ml-auto text-xs tracking-widest text-muted-foreground",
+        "group-focus/dropdown-menu-item:text-accent-foreground",
         className,
       )}
       {...props}
@@ -310,7 +326,7 @@ function DropdownMenuSubTrigger({
       className={cn(
         itemBase,
         itemFocus,
-        inset && insetStyle,
+        inset && itemInset,
         "data-open:bg-accent data-open:text-accent-foreground",
         className,
       )}
@@ -322,6 +338,10 @@ function DropdownMenuSubTrigger({
   );
 }
 
+/* ---------------------------
+   Sub Content
+---------------------------- */
+
 function DropdownMenuSubContent({
   className,
   ...props
@@ -330,10 +350,20 @@ function DropdownMenuSubContent({
     <DropdownMenuPrimitive.SubContent
       data-slot="dropdown-menu-sub-content"
       className={cn(
-        "z-50 min-w-36 origin-(--radix-dropdown-menu-content-transform-origin) overflow-hidden rounded-2xl bg-popover p-1 text-popover-foreground shadow-2xl ring-1 ring-foreground/5 duration-100",
-        "data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2",
+        "z-50 min-w-36 origin-(--radix-dropdown-menu-content-transform-origin)",
+        "overflow-hidden rounded-2xl bg-popover p-1",
+        "text-popover-foreground shadow-2xl",
+        "ring-1 ring-foreground/5",
+        "duration-100",
+
+        "data-[side=bottom]:slide-in-from-top-2",
+        "data-[side=left]:slide-in-from-right-2",
+        "data-[side=right]:slide-in-from-left-2",
+        "data-[side=top]:slide-in-from-bottom-2",
+
         "data-open:animate-in data-open:fade-in-0 data-open:zoom-in-95",
         "data-closed:animate-out data-closed:fade-out-0 data-closed:zoom-out-95",
+
         className,
       )}
       {...props}

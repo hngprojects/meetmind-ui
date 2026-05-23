@@ -7,6 +7,10 @@ import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { FiX } from "react-icons/fi";
 
+/* ---------------------------
+   Root primitives
+---------------------------- */
+
 function Dialog({
   ...props
 }: React.ComponentProps<typeof DialogPrimitive.Root>) {
@@ -31,6 +35,39 @@ function DialogClose({
   return <DialogPrimitive.Close data-slot="dialog-close" {...props} />;
 }
 
+/* ---------------------------
+   Overlay styles
+---------------------------- */
+
+const overlayBase = "fixed inset-0 isolate z-50 bg-black/80 duration-100";
+
+const overlayBlur = "supports-backdrop-filter:backdrop-blur-xs";
+
+const overlayAnimation =
+  "data-open:animate-in data-open:fade-in-0 data-closed:animate-out data-closed:fade-out-0";
+
+/* ---------------------------
+   Content styles
+---------------------------- */
+
+const contentBase =
+  "fixed top-1/2 left-1/2 z-50 grid w-full max-w-[calc(100%-2rem)]";
+
+const contentLayout =
+  "-translate-x-1/2 -translate-y-1/2 gap-6 rounded-4xl bg-popover p-6";
+
+const contentText =
+  "text-sm text-popover-foreground ring-1 ring-foreground/5 outline-none sm:max-w-md";
+
+const contentAnimation =
+  "data-open:animate-in data-open:fade-in-0 data-open:zoom-in-95";
+const contentExit =
+  "data-closed:animate-out data-closed:fade-out-0 data-closed:zoom-out-95";
+
+/* ---------------------------
+   Overlay
+---------------------------- */
+
 function DialogOverlay({
   className,
   ...props
@@ -38,14 +75,15 @@ function DialogOverlay({
   return (
     <DialogPrimitive.Overlay
       data-slot="dialog-overlay"
-      className={cn(
-        "fixed inset-0 isolate z-50 bg-black/80 duration-100 supports-backdrop-filter:backdrop-blur-xs data-open:animate-in data-open:fade-in-0 data-closed:animate-out data-closed:fade-out-0",
-        className,
-      )}
+      className={cn(overlayBase, overlayBlur, overlayAnimation, className)}
       {...props}
     />
   );
 }
+
+/* ---------------------------
+   Content
+---------------------------- */
 
 function DialogContent({
   className,
@@ -58,15 +96,21 @@ function DialogContent({
   return (
     <DialogPortal>
       <DialogOverlay />
+
       <DialogPrimitive.Content
         data-slot="dialog-content"
         className={cn(
-          "fixed top-1/2 left-1/2 z-50 grid w-full max-w-[calc(100%-2rem)] -translate-x-1/2 -translate-y-1/2 gap-6 rounded-4xl bg-popover p-6 text-sm text-popover-foreground ring-1 ring-foreground/5 d
+          contentBase,
+          contentLayout,
+          contentText,
+          contentAnimation,
+          contentExit,
           className,
         )}
         {...props}
       >
         {children}
+
         {showCloseButton && (
           <DialogPrimitive.Close data-slot="dialog-close" asChild>
             <Button
@@ -83,6 +127,10 @@ function DialogContent({
     </DialogPortal>
   );
 }
+
+/* ---------------------------
+   Layout helpers
+---------------------------- */
 
 function DialogHeader({ className, ...props }: React.ComponentProps<"div">) {
   return (
@@ -112,6 +160,7 @@ function DialogFooter({
       {...props}
     >
       {children}
+
       {showCloseButton && (
         <DialogPrimitive.Close asChild>
           <Button variant="outline">Close</Button>
@@ -120,6 +169,10 @@ function DialogFooter({
     </div>
   );
 }
+
+/* ---------------------------
+   Typography
+---------------------------- */
 
 function DialogTitle({
   className,
@@ -145,13 +198,18 @@ function DialogDescription({
     <DialogPrimitive.Description
       data-slot="dialog-description"
       className={cn(
-        "text-sm text-muted-foreground *:[a]:underline *:[a]:underline-offset-3 *:[a]:hover:text-foreground",
+        "text-sm text-muted-foreground",
+        "*:[a]:underline *:[a]:underline-offset-3 *:[a]:hover:text-foreground",
         className,
       )}
       {...props}
     />
   );
 }
+
+/* ---------------------------
+   Exports
+---------------------------- */
 
 export {
   Dialog,
