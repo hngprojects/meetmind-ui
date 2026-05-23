@@ -27,21 +27,21 @@ export default function HeroSection() {
 
         <div className="flex flex-col items-center md:flex-row gap-6 md:justify-between">
           <Link
-            href="/signup"
+            href="/sign-up"
             className="inline-block min-w-56 text-center py-2 bg-[#02505E] hover:bg-[#F7F9FB] text-[#FEFEFF] hover:text-[#02505E] hover:border
              hover:border-[#02505E] text-base font-bold rounded-lg cursor-pointer"
           >
             Try Demo
           </Link>
           <Link
-            href="/api"
+            href="/coming-soon"
             className="inline-block min-w-56 text-center py-2 border border-[#035A69] text-[#02505E] hover:text-[#FEFEFF] hover:bg-[#02505E]
              font-bold rounded-lg text-base cursor-pointer"
           >
             Get API Keys
           </Link>
           <Link
-            href="/docs"
+            href="/coming-soon"
             className="inline-block min-w-56 text-center py-2 border border-[#035A69] text-[#02505E] hover:text-[#FEFEFF] hover:bg-[#02505E]
              font-bold rounded-lg text-base cursor-pointer"
           >

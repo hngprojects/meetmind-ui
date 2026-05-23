@@ -1,19 +1,19 @@
-"use client"; // Required for useState and useEffect in Next.js App Router
+"use client";
 
 import { useEffect, useState } from "react";
+import Link from "next/link";
+import Image from "next/image";
 import { RiArrowDropDownLine } from "react-icons/ri";
 import { IoIosMenu } from "react-icons/io";
 import { MdOutlineCancel } from "react-icons/md";
-import Image from "next/image";
-import Link from "next/link";
 
 const navLinks = [
   { label: "How it works", href: "#how-it-works" },
   { label: "Features", href: "#features" },
-  { label: "Pricing", href: "#pricing" },
+  { label: "Temperature", href: "#temperature" },
 ];
 
-export default function Navbar() {
+export default function NavBar() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   useEffect(() => {
@@ -25,6 +25,7 @@ export default function Navbar() {
 
     const handleClickOutside = (e: MouseEvent) => {
       const target = e.target as HTMLElement;
+
       if (!target.closest("nav")) {
         setIsMobileMenuOpen(false);
       }
@@ -40,18 +41,17 @@ export default function Navbar() {
   }, [isMobileMenuOpen]);
 
   return (
-    <nav className="fixed top-0 left-0 right-0 z-50 bg-[#F7F9FB] border-b border-gray-100">
-      <div className="max-w-7xl mx-auto flex items-center justify-between px-6 py-4">
+    <nav className="fixed top-0 left-0 right-0 z-50 bg-[#ffffff] border-b border-gray-100">
+      <div className="max-w-360 mx-auto flex items-center justify-between px-6 py-4 md:px-10 lg:px-20">
         {/* Logo + Brand Name */}
-        <div className="flex gap-6">
-          <Link href="/#hero" className="flex items-center">
+        <div className="flex gap-3">
+          <Link href="/" className="flex items-center">
             <Image
               src="/icons/meetmind-logo.svg"
               alt="MeetMind Logo"
-              className="h-8 w-auto"
               width={32}
               height={32}
-              priority
+              className="h-8 w-auto"
             />
           </Link>
           <p className="font-bold text-[24px]">
@@ -62,22 +62,23 @@ export default function Navbar() {
         {/* Desktop Navigation Links */}
         <div className="hidden md:flex items-center gap-8">
           {navLinks.map((link) => (
-            <Link
+            <a
               key={link.label}
               href={link.href}
               className="text-[#0F172A] text-sm"
             >
               {link.label}
-            </Link>
+            </a>
           ))}
 
-          {/* DOCS */}
+          {/* SDK */}
           <div className="relative flex items-center">
             <Link
-              href="/coming-soon"
+              href="/sdk"
               className="flex items-center gap-1 text-[#0F172A] text-sm font-medium cursor-pointer"
+              onClick={() => console.log("SDK menu clicked")}
             >
-              <span>Docs</span>
+              <span>SDK</span>
               <RiArrowDropDownLine className="w-4 h-4" />
             </Link>
           </div>
@@ -86,9 +87,9 @@ export default function Navbar() {
         {/* Desktop CTA Button */}
         <Link
           href="/sign-up"
-          className="hidden md:inline-block px-8 py-2 bg-[#02505E] hover:bg-[#02505ece] text-[#FEFEFF] font-semibold rounded-lg text-sm cursor-pointer"
+          className="hidden md:inline-block px-4 py-2 bg-[#02505E] text-[#FEFEFF] font-semibold rounded-lg text-sm cursor-pointer"
         >
-          Try Demo
+          Request early access
         </Link>
 
         {/* Mobile Hamburger Button */}
@@ -112,28 +113,21 @@ export default function Navbar() {
         <div className="bg-[#ffffff] border-t border-gray-200 md:hidden">
           <div className="flex flex-col px-6 py-4 gap-4">
             {navLinks.map((link) => (
-              <Link
+              <a
                 key={link.label}
                 href={link.href}
                 className="text-[#0F172A] text-sm font-medium"
                 onClick={() => setIsMobileMenuOpen(false)}
               >
                 {link.label}
-              </Link>
+              </a>
             ))}
             <Link
-              href="/docs"
-              className="flex items-center gap-1 text-[#0F172A] text-sm font-medium cursor-pointer"
-              onClick={() => setIsMobileMenuOpen(false)}
-            >
-              <span>Docs</span>
-            </Link>
-            <Link
               href="/sign-up"
-              className="inline-block text-center px-4 py-2 bg-[#02505E] hover:bg-[#02505ece] text-[#FEFEFF] font-semibold rounded-lg text-sm"
+              className="inline-block text-center px-4 py-2 bg-[#02505E] text-[#FEFEFF] font-semibold rounded-lg text-sm"
               onClick={() => setIsMobileMenuOpen(false)}
             >
-              Try Demo
+              Request early access
             </Link>
           </div>
         </div>

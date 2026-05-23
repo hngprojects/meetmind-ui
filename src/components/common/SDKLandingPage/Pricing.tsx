@@ -30,7 +30,7 @@ export default function Pricing() {
             </p>
           </div>
           <Link
-            href="/signup"
+            href="/sign-up"
             className="w-full block text-center py-3 bg-gray-50 hover:bg-gray-100 text-[#0F172A] text-base font-bold rounded-xl border border-gray-200 transition-colors"
           >
             Get Started
@@ -90,7 +90,7 @@ export default function Pricing() {
             </p>
           </div>
           <Link
-            href="/signup"
+            href="/sign-up"
             className="w-full block text-center py-3 bg-[#02505E] hover:bg-[#023e4a] text-[#FEFEFF] text-base font-bold rounded-xl transition-colors shadow-sm"
           >
             Start Free Trial
@@ -148,7 +148,7 @@ export default function Pricing() {
             </p>
           </div>
           <Link
-            href="/#contact"
+            href="/contact"
             className="w-full block text-center py-3 bg-gray-50 hover:bg-gray-100 text-[#0F172A]
              text-base font-bold rounded-xl border border-gray-200 transition-colors"
           >

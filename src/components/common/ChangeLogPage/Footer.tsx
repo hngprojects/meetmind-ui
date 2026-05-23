@@ -5,34 +5,31 @@ const footerColumns = [
   {
     title: "Product",
     links: [
-      { label: "Features", href: "/coming-soon" },
-      { label: "Use Cases", href: "/coming-soon" },
+      { label: "Use Cases", href: "#" },
       { label: "Pricing", href: "/pricing" },
-      { label: "ChangeLog", href: "/coming-soon" },
+      { label: "ChangeLog", href: "#" },
     ],
   },
   {
     title: "Developers",
     links: [
       { label: "SDK", href: "/sdk" },
-      { label: "Documentation", href: "/coming-soon" },
-      { label: "API Reference", href: "/coming-soon" },
-      { label: "GitHub", href: "/coming-soon" },
+      { label: "Documentation", href: "#" },
+      { label: "API Reference", href: "#" },
+      { label: "GitHub", href: "#" },
     ],
   },
   {
     title: "Resources",
     links: [
       { label: "Blog", href: "/blogpost" },
-      { label: "Help Center", href: "/help" },
-      { label: "Case Studies", href: "/coming-soon" },
-      { label: "Tutorials", href: "/coming-soon" },
+      { label: "Help Center", href: "#" },
     ],
   },
   {
     title: "Company",
     links: [
-      { label: "About Us", href: "/about-us" },
+      { label: "About Us", href: "#" },
       { label: "Contact", href: "/contact" },
       { label: "Privacy Policy", href: "/privacy-policy" },
       { label: "Terms of Service", href: "/terms-of-service" },
@@ -41,10 +38,10 @@ const footerColumns = [
 ];
 
 const socialLinks = [
-  { name: "LinkedIn", icon: "/icons/linkedin-outline.svg", href: "/coming-soon" },
-  { name: "Facebook", icon: "/icons/facebook-outline.svg", href: "/coming-soon" },
-  { name: "GitHub", icon: "/icons/github-outline.svg", href: "/coming-soon" },
-  { name: "Instagram", icon: "/icons/instagram-outline.svg", href: "/coming-soon" },
+  { name: "LinkedIn", icon: "/icons/linkedin-outline.svg", href: "#" },
+  { name: "Facebook", icon: "/icons/facebook-outline.svg", href: "#" },
+  { name: "GitHub", icon: "/icons/github-outline.svg", href: "#" },
+  { name: "Instagram", icon: "/icons/instagram-outline.svg", href: "#" },
 ];
 
 export default function Footer() {
@@ -61,20 +58,23 @@ export default function Footer() {
             className="max-w-xs md:max-w-lg lg:max-w-xs md:flex flex-col 
                   md:items-center lg:items-start"
           >
-            <div className="flex gap-3">
-              <Link href="/" className="flex items-center">
-                <Image
-                  src="/icons/meetmind-logo.svg"
-                  alt="MeetMind logo"
-                  width={42}
-                  height={42}
-                  className="h-10 w-auto"
-                />
-              </Link>
+            <Link
+              href="#changeloghero"
+              aria-label="Go to changelog hero section"
+              className="flex items-center gap-3"
+            >
+              <Image
+                src="/icons/meetmind-logo.svg"
+                alt="MeetMind logo"
+                width={42}
+                height={42}
+                className="h-10 w-auto"
+              />
               <p className="font-bold text-[24px]">
                 Meet<span className="text-[#4F46E5]">Mind</span>
               </p>
-            </div>
+            </Link>
+
             <p
               className="mt-4 text-sm text-[#3F4555] md:text-center lg:text-start 
                 leading-relaxed"
