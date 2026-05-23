@@ -74,7 +74,7 @@ export default function Navbar() {
           {/* DOCS */}
           <div className="relative flex items-center">
             <Link
-              href="/docs"
+              href="/coming-soon"
               className="flex items-center gap-1 text-[#0F172A] text-sm font-medium cursor-pointer"
             >
               <span>Docs</span>
@@ -85,7 +85,7 @@ export default function Navbar() {
 
         {/* Desktop CTA Button */}
         <Link
-          href="/signup"
+          href="/sign-up"
           className="hidden md:inline-block px-8 py-2 bg-[#02505E] hover:bg-[#02505ece] text-[#FEFEFF] font-semibold rounded-lg text-sm cursor-pointer"
         >
           Try Demo
@@ -129,7 +129,7 @@ export default function Navbar() {
               <span>Docs</span>
             </Link>
             <Link
-              href="/signup"
+              href="/sign-up"
               className="inline-block text-center px-4 py-2 bg-[#02505E] hover:bg-[#02505ece] text-[#FEFEFF] font-semibold rounded-lg text-sm"
               onClick={() => setIsMobileMenuOpen(false)}
             >
