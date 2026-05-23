@@ -1,187 +1,92 @@
-"use client";
+import Navbar from "@/components/common/LandingPage/Navbar";
+import Footer from "@/components/common/LandingPage/Footer";
+import { ContactForm } from "@/components/common/ContactPage/ContactForm";
+import { NewsletterForm } from "@/components/common/HelpPage/NewsletterForm";
+import Link from "next/link";
+import Image from "next/image";
+import { BsArrowLeft, BsEnvelope, BsChatDots } from "react-icons/bs";
 
-import { useState } from "react";
-import axios from "axios";
-import api from "@/lib/api";
-import { BsCheck } from "react-icons/bs";
-
-interface ContactFormData {
-  name: string;
-  email: string;
-  subject: string;
-  message: string;
-}
-
-export function ContactForm() {
-  const [formData, setFormData] = useState<ContactFormData>({
-    name: "",
-    email: "",
-    subject: "",
-    message: "",
-  });
-  const [isLoading, setIsLoading] = useState(false);
-  const [isSuccess, setIsSuccess] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-
-  function handleChange(
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
-  ) {
-    setFormData((prev) => ({ ...prev, [e.target.name]: e.target.value }));
-    setError(null);
-  }
-
-  async function handleSubmit(e: React.FormEvent) {
-    e.preventDefault();
-    if (isLoading) return;
-    try {
-      setIsLoading(true);
-      setError(null);
-      await api.post("/api/v1/contact", formData);
-      setIsSuccess(true);
-      setFormData({ name: "", email: "", subject: "", message: "" });
-    } catch (err) {
-      if (axios.isAxiosError(err)) {
-        const raw =
-          err.response?.data?.message ||
-          err.response?.data?.error?.details?.[0]?.msg ||
-          "Something went wrong. Please try again.";
-        setError(
-          typeof raw === "string"
-            ? raw
-            : "Something went wrong. Please try again.",
-        );
-      } else {
-        setError("Unexpected error. Please try again.");
-      }
-    } finally {
-      setIsLoading(false);
-    }
-  }
-
-  const inputClass =
-    "w-full px-4 py-3 rounded-lg border border-[#E1E3E4] text-[#0F172A] placeholder:text-[#94a3b8] text-sm focus:outline-none focus:ring-1 focus:ring-[#02505E] transition bg-white";
-
-  if (isSuccess) {
-    return (
-      <div
-        role="status"
-        aria-live="polite"
-        className="w-full py-12 flex flex-col items-center justify-center gap-3 text-center"
-      >
-        <div className="w-12 h-12 rounded-full bg-[#02505E]/10 flex items-center justify-center">
-          <BsCheck size={24} className="text-[#02505E]" />
-        </div>
-        <h3 className="text-lg font-semibold text-[#0F172A]">Message sent!</h3>
-        <p className="text-sm text-[#64748b]">
-          We&apos;ll get back to you within 24 hours.
-        </p>
-        <button
-          onClick={() => setIsSuccess(false)}
-          className="mt-2 text-sm text-[#02505E] hover:underline"
-        >
-          Send another message
-        </button>
-      </div>
-    );
-  }
-
+export default function ContactPage() {
   return (
-    <form onSubmit={handleSubmit} className="flex flex-col gap-4 w-full">
-      {/* Server error */}
-      {error && (
-        <p
-          role="alert"
-          aria-live="assertive"
-          className="text-red-500 text-sm text-center bg-red-50 border border-red-200 rounded-lg px-3 py-2"
-        >
-          {error}
-        </p>
-      )}
+    <div className="min-h-screen bg-[#F7F9FB] flex flex-col">
+      <Navbar />
 
-      {/* Name */}
-      <div className="flex flex-col gap-1.5">
-        <label htmlFor="name" className="text-sm font-medium text-[#0F172A]">
-          Name
-        </label>
-        <input
-          id="name"
-          name="name"
-          type="text"
-          value={formData.name}
-          onChange={handleChange}
-          placeholder="Ruth Okolo"
-          required
-          disabled={isLoading}
-          className={inputClass}
-        />
-      </div>
+      <main className="flex-1 pt-28 pb-16 px-6">
+        <div className="max-w-2xl mx-auto">
+          {/* Back link */}
+          <Link
+            href="/"
+            className="inline-flex items-center gap-2 text-sm text-[#0F172A] mb-6 hover:underline"
+          >
+            <BsArrowLeft size={16} />
+            Back
+          </Link>
 
-      {/* Email */}
-      <div className="flex flex-col gap-1.5">
-        <label htmlFor="email" className="text-sm font-medium text-[#0F172A]">
-          Email address
-        </label>
-        <input
-          id="email"
-          name="email"
-          type="email"
-          value={formData.email}
-          onChange={handleChange}
-          placeholder="you@company.com"
-          required
-          disabled={isLoading}
-          className={inputClass}
-        />
-      </div>
+          {/* Header */}
+          <div className="flex items-start justify-between mb-8">
+            <div>
+              <h1 className="text-4xl font-bold text-[#0F172A] mb-2">
+                Contact Support
+              </h1>
+              <p className="text-sm text-[#5E6470]">
+                Can&apos;t find what you&apos;re looking for?
+              </p>
+            </div>
+            <Image
+              src="/icons/task-list-star.svg"
+              alt="Contact Support Icon"
+              width={64}
+              height={64}
+              className="w-14 h-14 opacity-30"
+            />
+          </div>
 
-      {/* Subject */}
-      <div className="flex flex-col gap-1.5">
-        <label htmlFor="subject" className="text-sm font-medium text-[#0F172A]">
-          Subject
-        </label>
-        <input
-          id="subject"
-          name="subject"
-          type="text"
-          value={formData.subject}
-          onChange={handleChange}
-          placeholder="How can we help?"
-          required
-          disabled={isLoading}
-          className={inputClass}
-        />
-      </div>
+          {/* Form Card */}
+          <div className="bg-white rounded-2xl border border-[#E1E3E4] p-8">
+            <ContactForm />
 
-      {/* Message */}
-      <div className="flex flex-col gap-1.5">
-        <label htmlFor="message" className="text-sm font-medium text-[#0F172A]">
-          Message
-        </label>
-        <textarea
-          id="message"
-          name="message"
-          value={formData.message}
-          onChange={handleChange}
-          placeholder="Describe your issue or question..."
-          required
-          disabled={isLoading}
-          rows={5}
-          className={`${inputClass} resize-none`}
-        />
-      </div>
+            {/* Other ways to reach us part */}
+            <div className="mt-8 pt-6 border-t border-[#E1E3E4]">
+              <p className="text-sm font-semibold text-[#0F172A] mb-4">
+                Other ways to reach us
+              </p>
+              <div className="flex flex-col gap-3">
+                <div className="flex items-center gap-3 text-sm text-[#5E6470]">
+                  <BsEnvelope size={16} />
+                  <a
+                    href="mailto:support@meetmind.ai"
+                    className="hover:underline hover:text-[#02505E] transition-colors"
+                  >
+                    support@meetmind.ai
+                  </a>
+                </div>
+                <div className="flex items-center justify-between text-sm text-[#5E6470]">
+                  <div className="flex items-center gap-3">
+                    <BsChatDots size={16} />
+                    Live Chat
+                  </div>
+                  <span className="text-xs text-[#64748b] bg-[#f1f5f9] px-3 py-1 rounded-full font-medium">
+                    Coming soon
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
 
-      {/* Submit */}
-      <button
-        type="submit"
-        disabled={isLoading}
-        className="w-full py-3.5 bg-[#02505E] text-white font-semibold rounded-lg text-sm hover:bg-[#02505E]/90 transition-colors disabled:opacity-50"
-      >
-        {isLoading ? "Sending..." : "Send Message"}
-      </button>
+          {/* Never miss an update */}
+          <div className="mt-8 bg-[#02505E] rounded-2xl px-8 py-10 text-center">
+            <h2 className="text-2xl font-semibold text-white mb-2">
+              Never miss an update
+            </h2>
+            <p className="text-sm text-[#a8d5dc] mb-6">
+              Get notified when we ship new features and improvements.
+            </p>
+            <NewsletterForm variant="dark" />
+          </div>
+        </div>
+      </main>
 
-      <p className="text-center text-xs text-[#64748b]">
-        We typically respond within 24 hours
-      </p>
-    </form>
+      <Footer />
+    </div>
   );
 }
