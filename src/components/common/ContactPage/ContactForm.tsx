@@ -3,7 +3,7 @@
 import { useState } from "react";
 import axios from "axios";
 import api from "@/lib/api";
-import { Check } from "lucide-react";
+import { BsCheck } from "react-icons/bs";
 
 interface ContactFormData {
   name: string;
@@ -63,9 +63,13 @@ export function ContactForm() {
 
   if (isSuccess) {
     return (
-      <div role="status" aria-live="polite" className="w-full py-12 flex flex-col items-center justify-center gap-3 text-center">
+      <div
+        role="status"
+        aria-live="polite"
+        className="w-full py-12 flex flex-col items-center justify-center gap-3 text-center"
+      >
         <div className="w-12 h-12 rounded-full bg-[#02505E]/10 flex items-center justify-center">
-          <Check size={24} className="text-[#02505E]" />
+          <BsCheck size={24} className="text-[#02505E]" />
         </div>
         <h3 className="text-lg font-semibold text-[#0F172A]">Message sent!</h3>
         <p className="text-sm text-[#64748b]">
@@ -85,7 +89,11 @@ export function ContactForm() {
     <form onSubmit={handleSubmit} className="flex flex-col gap-4 w-full">
       {/* Server error */}
       {error && (
-        <p role="alert" aria-live="assertive" className="text-red-500 text-sm text-center bg-red-50 border border-red-200 rounded-lg px-3 py-2">
+        <p
+          role="alert"
+          aria-live="assertive"
+          className="text-red-500 text-sm text-center bg-red-50 border border-red-200 rounded-lg px-3 py-2"
+        >
           {error}
         </p>
       )}
