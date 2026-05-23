@@ -42,7 +42,7 @@ export default function Navbar() {
 
   return (
     <nav className="fixed top-0 left-0 right-0 z-50 bg-[#ffffff] border-b border-gray-100">
-      <div className="max-w-7xl mx-auto flex items-center justify-between px-6 py-4 md:px-10 lg:px-22.5">
+      <div className="max-w-360 mx-auto flex items-center justify-between px-6 py-4 md:px-10 lg:px-20">
         {/* Logo + Brand Name */}
         <div className="flex gap-3">
           <Link href="/" className="flex items-center">
