@@ -16,12 +16,15 @@ import { SortingState } from "@tanstack/react-table";
 import { useState, useMemo } from "react";
 import CandidatesToolbar from "./CandidatesToolbar";
 import CandidatesStats from "./CandidatesStats";
+import ExportModal from "./Export";
 
 const View = () => {
   const [sorting, setSorting] = useState<SortingState>([]);
   const viewMode = useCandidatesStore((s) => s.viewMode);
   const search = useCandidatesStore((s) => s.search);
   const filters = useCandidatesStore((s) => s.filters);
+  const exportOpen = useCandidatesStore((s) => s.exportOpen);
+  const setExportOpen = useCandidatesStore((s) => s.setExportOpen);
   const processedData = useMemo(() => {
     let data = [...mockCandidatesData];
 
@@ -47,7 +50,6 @@ const View = () => {
       const aValue = a[key];
       const bValue = b[key];
 
-      // DATE SORT (special case)
       if (key === "date") {
         const aDate = new Date(aValue).getTime();
         const bDate = new Date(bValue).getTime();
@@ -55,12 +57,10 @@ const View = () => {
         return dir === "asc" ? aDate - bDate : bDate - aDate;
       }
 
-      // NUMBER SORT (score)
       if (typeof aValue === "number" && typeof bValue === "number") {
         return dir === "asc" ? aValue - bValue : bValue - aValue;
       }
 
-      // STRING SORT (name, etc.)
       return dir === "asc"
         ? String(aValue).localeCompare(String(bValue))
         : String(bValue).localeCompare(String(aValue));
@@ -90,6 +90,7 @@ const View = () => {
       ) : (
         <CandidatesGridView table={table} />
       )}
+      <ExportModal open={exportOpen} onClose={() => setExportOpen(false)} />
     </div>
   );
 };

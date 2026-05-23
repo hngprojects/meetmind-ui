@@ -26,6 +26,8 @@ interface CandidatesState {
 
   selectedCandidateId: string | null;
   setSelectedCandidateId: (id: string | null) => void;
+  exportOpen: boolean;
+  setExportOpen: (v: boolean) => void;
 }
 
 const initialFilters: CandidateFilters = {
@@ -58,4 +60,6 @@ export const useCandidatesStore = create<CandidatesState>((set) => ({
   setPageSize: (n) => set({ pageSize: n }),
   selectedCandidateId: null,
   setSelectedCandidateId: (id) => set({ selectedCandidateId: id }),
+  exportOpen: false,
+  setExportOpen: (v) => set({ exportOpen: v }),
 }));

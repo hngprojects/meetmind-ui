@@ -32,6 +32,7 @@ const CandidatesToolbar = () => {
   const setSearch = useCandidatesStore((s) => s.setSearch);
   const filters = useCandidatesStore((s) => s.filters);
   const setFilters = useCandidatesStore((s) => s.setFilters);
+  const setExportOpen = useCandidatesStore((s) => s.setExportOpen);
 
   const activeStatusLabel =
     STATUS_OPTIONS.find((opt) => opt.value === filters?.status)?.label || "All";
@@ -109,6 +110,7 @@ const CandidatesToolbar = () => {
         <Button
           variant="ghost"
           className="h-10 px-4 gap-2 border-button-outline-border text-color-text-subtext font-medium rounded-lg"
+          onClick={() => setExportOpen(true)}
         >
           <FiUpload className="h-4 w-4 text-color-text-secondary" />
           <span>Export list</span>

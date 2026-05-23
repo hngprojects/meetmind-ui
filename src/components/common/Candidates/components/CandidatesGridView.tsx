@@ -1,11 +1,11 @@
 import React from "react";
 import { Table as TanstackTable } from "@tanstack/react-table";
 import { Candidate } from "../types";
-import { FiArrowUpRight } from "react-icons/fi";
 import { Card, CardContent } from "@/components/ui/card";
 import ScoreBar from "./ScoreBar";
 import StatusBadge from "./StatusBadge";
 import { getInitials } from "./columns";
+import { FiArrowUpRight } from "react-icons/fi";
 
 const CandidatesGridView = ({ table }: { table: TanstackTable<Candidate> }) => {
   const rows = table.getRowModel().rows;
