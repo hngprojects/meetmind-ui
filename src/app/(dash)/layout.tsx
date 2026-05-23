@@ -1,5 +1,3 @@
-// app/(dashboard)/layout.tsx
-
 import Dashboardnavbar from "@/components/common/dash/dashnav/dashboardnavbar";
 import ProtectedRoute from "@/components/providers/ProtectedRoute";
 
@@ -10,9 +8,9 @@ export default function DashboardLayout({
 }) {
   return (
     <ProtectedRoute>
-      <div className="min-h-screen bg-background">
+      <div className="bg-background">
         <Dashboardnavbar />
-        <main className="container mx-auto px-6 py-8">{children}</main>
+        <main className="px-6 py-3">{children}</main>
       </div>
     </ProtectedRoute>
   );

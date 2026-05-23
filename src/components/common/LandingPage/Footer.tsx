@@ -41,10 +41,21 @@ const footerColumns = [
 ];
 
 const socialLinks = [
-  { name: "LinkedIn", icon: "/icons/linkedin-outline.svg", href: "#" },
-  { name: "Facebook", icon: "/icons/facebook-outline.svg", href: "#" },
-  { name: "GitHub", icon: "/icons/github-outline.svg", href: "#" },
-  { name: "Instagram", icon: "/icons/instagram-outline.svg", href: "#" },
+  {
+    name: "LinkedIn",
+    icon: "/icons/linkedin-outline.svg",
+    href: "https://www.linkedin.com/company/122284193/admin/dashboard/",
+  },
+  {
+    name: "x",
+    icon: "/icons/x-twitter.svg",
+    href: "https://x.com/ThinkTalk_mm",
+  },
+  {
+    name: "Instagram",
+    icon: "/icons/instagram-outline.svg",
+    href: "https://www.instagram.com/thinktalk_mm",
+  },
 ];
 
 export default function Footer() {
@@ -88,6 +99,7 @@ export default function Footer() {
                 <a
                   key={social.name}
                   href={social.href}
+                  target="_blank"
                   aria-label={social.name}
                   className="opacity-60 hover:opacity-100 transition-opacity"
                 >
