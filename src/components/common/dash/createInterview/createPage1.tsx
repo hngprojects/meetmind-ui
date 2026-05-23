@@ -3,6 +3,9 @@ import { useCreateStore } from "@/store/createInterviewStore";
 import Buttons from "@/components/reuseable-component/buttons";
 import FileUpload from "./fileUpload";
 import { useInput, useUpload } from "@/store/uploadManual";
+import { useCreateStep2 } from "@/store/step2";
+import { useCreateStep1 } from "@/store/step1";
+import Context from "./context";
 
 const CreatePage1 = () => {
   // open the page
@@ -11,6 +14,9 @@ const CreatePage1 = () => {
   const { UploadOpen, setUploadOpen } = useUpload();
   // open input
   const { setInputOpen } = useInput();
+  // step 2
+  const { step2 } = useCreateStep2();
+  const { step1 } = useCreateStep1();
 
   const handleUpload = () => {
     setUploadOpen(true);
@@ -22,6 +28,8 @@ const CreatePage1 = () => {
     setInputOpen(true);
   };
 
+  // toggle step 2
+
   return (
     <div className="w-full">
       {open && (
@@ -30,8 +38,8 @@ const CreatePage1 = () => {
          flex items-center justify-center w-full"
         >
           <div
-            className="bg-white rounded-2xl
-          p-6 w-100 flex flex-col gap-4"
+            className=" rounded-2xl max-h-[90vh] overflow-y-auto
+          p-6 w-100 flex flex-col gap-7 bg-background"
           >
             {/* Header */}
             <div className="flex justify-between items-start">
@@ -50,29 +58,36 @@ const CreatePage1 = () => {
               </button>
             </div>
 
-            {/* import candidate  */}
-            <h1>Import Candidates</h1>
-            <p>
-              Drop a file with Candidate information, paste email addresses
-              directly.
-            </p>
+            {/* step 1 */}
+            {step1 && (
+              <div>
+                {/* import candidate  */}
+                <h1>Import Candidates</h1>
+                <p>
+                  Drop a file with Candidate information, paste email addresses
+                  directly.
+                </p>
 
-            {/* buttons */}
-            <div className="flex flex-row gap-3">
-              <Buttons
-                text="Upload file"
-                type="button"
-                onClick={handleUpload}
-              />
-              <Buttons
-                text="Manual input"
-                type="button"
-                onClick={handleInput}
-              />
-            </div>
+                {/* buttons */}
+                <div className="flex flex-row gap-3">
+                  <Buttons
+                    text="Upload file"
+                    type="button"
+                    onClick={handleUpload}
+                  />
+                  <Buttons
+                    text="Manual input"
+                    type="button"
+                    onClick={handleInput}
+                  />
+                </div>
 
-            {UploadOpen && <FileUpload />}
-            {/* {InputOpen && <h1>hello</h1>} */}
+                {UploadOpen && <FileUpload />}
+                {/* {InputOpen && <h1>hello</h1>} */}
+              </div>
+            )}
+
+            {step2 && <Context />}
           </div>
         </div>
       )}

@@ -3,6 +3,8 @@ import Buttons from "@/components/reuseable-component/buttons";
 import api from "@/lib/api";
 import { CandidateSchema, UploadCandidateValues } from "@/schemas/uploadSchema";
 import { useCreateStore } from "@/store/createInterviewStore";
+import { useCreateStep1 } from "@/store/step1";
+import { useCreateStep2 } from "@/store/step2";
 import { zodResolver } from "@hookform/resolvers/zod";
 import axios from "axios";
 import Image from "next/image";
@@ -67,9 +69,19 @@ const FileUpload = () => {
     e.preventDefault();
   };
 
+  const { setStep2 } = useCreateStep2();
+  const { setStep1 } = useCreateStep1();
+
   const onSubmit = async (data: UploadCandidateValues) => {
     if (!candidateId) {
       setServerError("Missing candidate identifier. Please restart this step.");
+      return;
+    }
+
+    const file = data.CandidateUpload as File;
+
+    if (!(file instanceof File)) {
+      setServerError("No valid file selected.");
       return;
     }
 
@@ -78,16 +90,11 @@ const FileUpload = () => {
       setServerError(null);
 
       const formData = new FormData();
-      formData.append("file", data.CandidateUpload as File);
+      formData.append("file", file);
 
       const response = await api.post(
         `/api/v1/candidates/${candidateId}/documents/upload`,
         formData,
-        {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        },
       );
 
       if (response.status === 200 || response.status === 201) {
@@ -95,6 +102,8 @@ const FileUpload = () => {
         setFileName("");
         setFileSize(null);
         setOpen(false);
+        setStep1(false);
+        setStep2(true);
       }
     } catch (error) {
       if (axios.isAxiosError(error)) {
@@ -108,6 +117,8 @@ const FileUpload = () => {
       setIsLoading(false);
     }
   };
+
+  // step 2
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
