@@ -10,9 +10,9 @@ type Props = {
 };
 
 const BAR_COLORS = {
-  green: "bg-[#166534]",
-  orange: "bg-[#b45309]",
-  gray: "bg-[#d1d5db]",
+  green: "bg-[var(--color-success)]",
+  orange: "bg-[var(--color-warning)]",
+  gray: "bg-[var(--color-bg-divider)]",
 };
 
 export default function ScorecardTab({ categories }: Props) {
@@ -41,7 +41,7 @@ export default function ScorecardTab({ categories }: Props) {
           <div
             key={cat.id}
             className={cn(
-              "border-b border-[#f3f4f6] py-5",
+              "border-b border-[var(--color-scrollbar-track)] py-5",
               index === categories.length - 1 && "border-0",
             )}
           >
@@ -51,17 +51,17 @@ export default function ScorecardTab({ categories }: Props) {
               className="flex w-full items-center gap-3 text-left"
             >
               {isOpen ? (
-                <FaChevronDown className="h-5 w-5 shrink-0 text-[#6b7280]" />
+                <FaChevronDown className="h-5 w-5 shrink-0 text-[var(--color-text-secondary)]" />
               ) : (
-                <FaChevronRight className="h-5 w-5 shrink-0 text-[#6b7280]" />
+                <FaChevronRight className="h-5 w-5 shrink-0 text-[var(--color-text-secondary)]" />
               )}
-              <span className="flex-1 font-semibold text-[#0f172a]">
+              <span className="flex-1 font-semibold text-[var(--color-text-color-primary)]">
                 {cat.title}
               </span>
             </button>
 
             <div className="mt-3 pl-8">
-              <div className="h-2 w-full overflow-hidden rounded-full bg-[#f3f4f6]">
+              <div className="h-2 w-full overflow-hidden rounded-full bg-[var(--color-scrollbar-track)]">
                 <div
                   className={cn(
                     "h-full rounded-full transition-all",
@@ -75,10 +75,10 @@ export default function ScorecardTab({ categories }: Props) {
                 <div className="mt-5 space-y-4">
                   {cat.questions && (
                     <div>
-                      <p className="text-sm font-medium text-[#0f172a]">
+                      <p className="text-sm font-medium text-[var(--color-text-color-primary)]">
                         Questions asked
                       </p>
-                      <ul className="mt-2 space-y-2 text-sm text-[#6b7280]">
+                      <ul className="mt-2 space-y-2 text-sm text-[var(--color-text-secondary)]">
                         {cat.questions.map((q) => (
                           <li key={q}>{q}</li>
                         ))}
@@ -87,14 +87,14 @@ export default function ScorecardTab({ categories }: Props) {
                   )}
                   {cat.signals && (
                     <div>
-                      <p className="text-sm font-medium text-[#0f172a]">
+                      <p className="text-sm font-medium text-[var(--color-text-color-primary)]">
                         Signals detected
                       </p>
                       <div className="mt-2 flex flex-wrap gap-2">
                         {cat.signals.map((s) => (
                           <span
                             key={s}
-                            className="rounded-full border border-[#e5e7eb] bg-[#f9fafb] px-3 py-1 text-xs text-[#4b5563]"
+                            className="rounded-full border border-[var(--color-card-border)] bg-[var(--color-bg-secondary)] px-3 py-1 text-xs text-[var(--color-text-body)]"
                           >
                             {s}
                           </span>

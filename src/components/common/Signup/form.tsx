@@ -68,7 +68,7 @@ const Signform = () => {
 
       setFormData(data);
       setIsSuccess(true);
-      router.push("/signup");
+      router.push("/onboarding");
     } catch (error) {
       if (axios.isAxiosError(error)) {
         const responseData = error.response?.data;

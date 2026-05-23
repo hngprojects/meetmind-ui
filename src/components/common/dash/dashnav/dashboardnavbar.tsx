@@ -1,78 +1,164 @@
 "use client";
-
+import React, { useState, useRef, useEffect } from "react";
 import Image from "next/image";
-import { cn } from "@/lib/utils";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
-import { HiOutlineMagnifyingGlass } from "react-icons/hi2";
+import Dashnavlist from "./dashnavlist";
 import { MdKeyboardArrowDown } from "react-icons/md";
+import {
+  LuUser,
+  LuSettings,
+  LuCreditCard,
+  LuCircleHelp,
+  LuLogOut,
+} from "react-icons/lu";
 
-const NAV_LINKS = [
-  { title: "Dashboard", href: "/dashboard" },
-  { title: "Candidates", href: "/candidates" },
-  { title: "Interviews", href: "/interviews" },
-  { title: "Calendar", href: "/calendar" },
-];
+const Dashboardnavbar = () => {
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const dropdownRef = useRef<HTMLDivElement>(null);
 
-export default function DashboardNavbar() {
-  const pathname = usePathname();
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        dropdownRef.current &&
+        !dropdownRef.current.contains(event.target as Node)
+      ) {
+        setIsDropdownOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
 
   return (
-    <header className="px-10 py-5">
-      <div className="mx-auto flex max-w-[87.5rem] items-center justify-between">
-        <Link href="/" className="flex items-center gap-3">
-          <Image
-            src="/icons/meetmind-full-logo.svg"
-            alt="MeetMind Logo"
-            width={32}
-            height={32}
-            className="h-8 w-auto"
-          />
-        </Link>
-
-        <nav className="flex h-10 items-center gap-1 rounded-lg bg-white px-1 shadow-sm ring-1 ring-[#e5e7eb]">
-          {NAV_LINKS.map((link) => {
-            const active = pathname.startsWith(link.href);
-            return (
-              <Link
-                key={link.href}
-                href={link.href}
-                className={cn(
-                  "rounded-md px-5 py-2 text-sm font-medium transition-colors",
-                  active
-                    ? "bg-[#e7f2f3] text-[#0e797e]"
-                    : "text-[#6b7280] hover:text-[#0f172a]",
-                )}
-              >
-                {link.title}
-              </Link>
-            );
-          })}
-        </nav>
-
-        <div className="flex items-center gap-6 text-[#6b7280]">
-          <HiOutlineMagnifyingGlass className="h-5 w-5 cursor-pointer" />
-          <div className="relative">
+    <section className="border-b border-[#E5E7EB] bg-white sticky top-0 z-50">
+      <div className="flex flex-row justify-between py-6 px-16 items-center">
+        {/* Logo + Brand Name */}
+        <div className="flex gap-3 w-[30%]">
+          <Link href="/" className="flex items-center gap-2">
             <Image
-              src="/icons/bell-notification.svg"
-              alt="bell-notification"
-              width={20}
-              height={20}
+              src="/icons/meetmind-logo.svg"
+              alt="MeetMind Logo"
+              width={32}
+              height={32}
+              className="h-8 w-auto"
             />
+          </Link>
+          <p className="font-bold text-[24px]">
+            Meet<span className="text-[#4F46E5]">Mind</span>
+          </p>
+        </div>
+
+        <div className="flex items-center justify-end h-10 w-[70%] gap-8">
+          {/* navlist */}
+          <div className="h-10 bg-card flex rounded-lg items-center justify-center w-[50%]">
+            <Dashnavlist />
           </div>
-          <div className="flex cursor-pointer items-center gap-1">
-            <div className="h-9 w-9 overflow-hidden rounded-full bg-[#d1d5db]">
+
+          {/* icons & profile dropdown */}
+          <div className="flex flex-row items-center justify-end gap-6 w-[40%]">
+            <button className="p-1 hover:bg-gray-50 rounded-full transition-colors cursor-pointer">
               <Image
-                src="/images/profile-pic.png"
-                alt="profile-icon"
-                width={36}
-                height={36}
+                src="/icons/magnifying-lens.svg"
+                alt="search-icon"
+                width={20}
+                height={20}
               />
+            </button>
+            <button className="p-1 hover:bg-gray-50 rounded-full transition-colors cursor-pointer">
+              <Image
+                src="/icons/bell-notification.svg"
+                alt="bell-notification"
+                width={20}
+                height={20}
+              />
+            </button>
+
+            {/* Profile Dropdown Container */}
+            <div className="relative" ref={dropdownRef}>
+              <button
+                onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+                className="flex items-center gap-2 cursor-pointer hover:opacity-90 transition-opacity p-1 rounded-lg"
+              >
+                <div className="w-[35px] h-[35px] rounded-full overflow-hidden border border-gray-100">
+                  <Image
+                    src="/images/profile-icon.png"
+                    alt="profile-icon"
+                    width={35}
+                    height={35}
+                    className="object-cover"
+                  />
+                </div>
+                <MdKeyboardArrowDown
+                  className={`text-xl transition-transform duration-200 ${isDropdownOpen ? "rotate-180" : ""}`}
+                />
+              </button>
+
+              {/* Dropdown Menu */}
+              {isDropdownOpen && (
+                <div className="absolute right-0 mt-3 w-56 bg-white rounded-xl shadow-lg border border-gray-100 py-2 z-50 animate-in fade-in slide-in-from-top-2 duration-150">
+                  <div className="px-4 py-2.5 border-b border-gray-50">
+                    <p className="text-sm font-semibold text-[#0F172A]">
+                      John Micheal
+                    </p>
+                    <p className="text-xs text-gray-500 truncate">
+                      johnmicheal@gmail.com
+                    </p>
+                  </div>
+
+                  <div className="py-1">
+                    <Link
+                      href="/profile"
+                      onClick={() => setIsDropdownOpen(false)}
+                      className="flex items-center gap-3 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-colors"
+                    >
+                      <LuUser className="text-lg text-gray-400" />
+                      <span>Profile</span>
+                    </Link>
+                    <Link
+                      href="/settings"
+                      onClick={() => setIsDropdownOpen(false)}
+                      className="flex items-center gap-3 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-colors"
+                    >
+                      <LuSettings className="text-lg text-gray-400" />
+                      <span>Setting</span>
+                    </Link>
+                    <Link
+                      href="#"
+                      onClick={() => setIsDropdownOpen(false)}
+                      className="flex items-center gap-3 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-colors"
+                    >
+                      <LuCreditCard className="text-lg text-gray-400" />
+                      <span>Billing</span>
+                    </Link>
+                    <Link
+                      href="/help"
+                      onClick={() => setIsDropdownOpen(false)}
+                      className="flex items-center gap-3 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-colors"
+                    >
+                      <LuCircleHelp className="text-lg text-gray-400" />
+                      <span>Help Center</span>
+                    </Link>
+                  </div>
+
+                  <div className="border-t border-gray-50 pt-1">
+                    <Link
+                      href="/sign-in"
+                      onClick={() => setIsDropdownOpen(false)}
+                      className="flex items-center gap-3 px-4 py-2 text-sm text-red-600 hover:bg-red-50 transition-colors"
+                    >
+                      <LuLogOut className="text-lg" />
+                      <span>Sign out</span>
+                    </Link>
+                  </div>
+                </div>
+              )}
             </div>
-            <MdKeyboardArrowDown className="h-5 w-5" />
           </div>
         </div>
       </div>
-    </header>
+    </section>
   );
-}
+};
+
+export default Dashboardnavbar;

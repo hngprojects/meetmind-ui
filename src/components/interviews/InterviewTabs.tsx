@@ -21,7 +21,7 @@ export default function InterviewTabs({ active, onChange }: Props) {
     <div
       role="tablist"
       aria-label="Interview sections"
-      className="flex gap-8 border-b border-[#e5e7eb] px-6 pt-6"
+      className="flex gap-8 border-b border-[var(--color-card-border)] px-6 pt-6"
     >
       {TABS.map((tab) => (
         <button
@@ -33,8 +33,8 @@ export default function InterviewTabs({ active, onChange }: Props) {
           className={cn(
             "relative pb-3 text-sm font-medium transition-colors",
             active === tab.id
-              ? "text-[#0e797e] after:absolute after:bottom-0 after:left-0 after:h-0.5 after:w-full after:bg-[#0e797e]"
-              : "text-[#6b7280] hover:text-[#0f172a]",
+              ? "text-[var(--color-text-primary)] after:absolute after:bottom-0 after:left-0 after:h-0.5 after:w-full after:bg-[var(--color-text-primary)]"
+              : "text-[var(--color-text-secondary)] hover:text-[var(--color-text-color-primary)]",
           )}
         >
           {tab.label}

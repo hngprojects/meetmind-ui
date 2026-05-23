@@ -21,6 +21,8 @@ export function useInterview(id: string | null) {
     queryKey: ["interviews", id],
     queryFn: () => getInterview(id!),
     enabled: !!id,
+    staleTime: 1000 * 60 * 5, // cache for 5 min — avoids refetch on tab switch
+    // placeholderData: keepPreviousData, // keeps old interview visible while new one loads
   });
 }
 

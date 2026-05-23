@@ -29,7 +29,7 @@ export default function TemperatureControl() {
   return (
     <section id="temperature" className="pt-4 pb-10 lg:pt-16 lg:pb-20">
       <div
-        className="max-w-7xl flex flex-col lg:flex-row md:gap-16 lg:gap-16 lg:items-start mx-auto 
+        className="max-w-360 flex flex-col lg:flex-row md:gap-16 lg:gap-16 lg:items-start mx-auto  
             px-6 md:px-10 lg:px-20"
       >
         <div className="flex flex-col items-center lg:items-start lg:max-w-118.5 gap-2">

@@ -34,6 +34,11 @@ const SignInForm = () => {
     },
   });
 
+  const handleFieldChange = (field: keyof SignInFormData) => () => {
+    if (errors[field]) clearErrors(field);
+    if (serverError) setServerError("");
+  };
+
   const onSubmit = async (data: SignInFormData) => {
     setServerError("");
     try {
@@ -60,7 +65,14 @@ const SignInForm = () => {
       router.push("/onboarding");
     } catch (error) {
       if (axios.isAxiosError(error)) {
-        setServerError(error.response?.data?.detail || "Something went wrong");
+        const detail = error.response?.data?.detail;
+        const errorMessage =
+          (Array.isArray(detail) ? detail[0]?.msg : undefined) ||
+          (typeof detail === "string" ? detail : undefined) ||
+          error.response?.data?.message ||
+          "Invalid email or password";
+
+        setServerError(errorMessage);
       } else {
         setServerError("Something went wrong");
       }
@@ -85,9 +97,7 @@ const SignInForm = () => {
             type="email"
             placeholder="you@company.com"
             registration={register("email", {
-              onChange: () => {
-                if (errors.email) clearErrors("email");
-              },
+              onChange: handleFieldChange("email"),
             })}
             error={errors.email}
           />
@@ -98,13 +108,17 @@ const SignInForm = () => {
             type="password"
             placeholder="Enter your password"
             registration={register("password", {
-              onChange: () => {
-                if (errors.password) clearErrors("password");
-              },
+              onChange: handleFieldChange("password"),
             })}
             error={errors.password}
             showPasswordToggle
           />
+
+          {serverError && (
+            <p role="alert" className="text-center text-sm text-error-text">
+              {serverError}
+            </p>
+          )}
 
           {/* Forgot Password */}
           <div className="flex justify-center">
@@ -116,10 +130,6 @@ const SignInForm = () => {
               Forgot Password?
             </Link>
           </div>
-
-          {serverError && (
-            <p className="text-center text-sm text-error-text">{serverError}</p>
-          )}
 
           {/* Submit Button */}
           <button

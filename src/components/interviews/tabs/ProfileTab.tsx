@@ -17,60 +17,71 @@ export default function ProfileTab({ interview }: Props) {
   return (
     <div className="overflow-y-auto px-6 py-6">
       <div className="flex items-center gap-4">
-        <div className="flex h-16 w-16 items-center justify-center rounded-full bg-[#B5B7BD] text-xl font-medium text-[#FEFEFF]">
+        <div className="flex h-16 w-16 items-center justify-center rounded-full bg-[var(--color-text-placeholder)] text-xl font-medium text-[var(--color-text-white-primary)]">
           {interview.initials}
         </div>
         <div>
-          <h3 className="text-lg font-bold text-[#0f172a]">
+          <h3 className="text-lg font-bold text-[var(--color-text-color-primary)]">
             {interview.roleTitle}
           </h3>
-          <p className="text-sm text-[#6b7280]">{interview.candidateName}</p>
+          <p className="text-sm text-[var(--color-text-secondary)]">
+            {interview.candidateName}
+          </p>
         </div>
       </div>
 
       <section className="mt-8">
-        <h4 className="text-sm font-semibold text-[#0f172a]">Contact</h4>
+        <h4 className="text-sm font-semibold text-[var(--color-text-color-primary)]">
+          Contact
+        </h4>
         <div className="mt-3 space-y-3">
-          <div className="flex items-center gap-3 rounded-lg border border-[#e5e7eb] px-4 py-3">
-            <HiOutlineEnvelope className="h-5 w-5 text-[#9ca3af]" />
-            <span className="text-sm text-[#0f172a]">
+          <div className="flex items-center gap-3 rounded-lg border border-[var(--color-card-border)] px-4 py-3">
+            <HiOutlineEnvelope className="h-5 w-5 text-[var(--color-card-text)]" />
+            <span className="text-sm text-[var(--color-text-color-primary)]">
               {interview.candidateEmail}
             </span>
           </div>
-          <div className="flex items-center gap-3 rounded-lg border border-[#e5e7eb] px-4 py-3">
-            <HiOutlinePhone className="h-5 w-5 text-[#9ca3af]" />
-            <span className="text-sm text-[#0f172a]">{interview.phone}</span>
+          <div className="flex items-center gap-3 rounded-lg border border-[var(--color-card-border)] px-4 py-3">
+            <HiOutlinePhone className="h-5 w-5 text-[var(--color-card-text)]" />
+            <span className="text-sm text-[var(--color-text-color-primary)]">
+              {interview.phone}
+            </span>
           </div>
         </div>
       </section>
 
       <section className="mt-8">
-        <h4 className="text-sm font-semibold text-[#0f172a]">Links</h4>
+        <h4 className="text-sm font-semibold text-[var(--color-text-color-primary)]">
+          Links
+        </h4>
         <div className="mt-3 flex flex-col gap-2">
           {/*When link is available uncomment a and delete span - coderabbits flag*/}
-          {/* <a
+          {/* 
             href="#"
-            className="flex items-center gap-2 text-sm font-medium  hover:underline"
+            className="flex items-center gap-2 text-sm font-medium hover:underline"
           > */}
           <span className="flex items-center gap-2 text-sm font-medium">
             <HiOutlineDocumentText className="h-4 w-4" />
-            <span className="text-[#0e797e]"> View Resume</span>
+            <span className="text-[var(--color-text-primary)]">
+              {" "}
+              View Resume
+            </span>
           </span>
           {/* </a> */}
-          {/* <a
+          {/* 
             href="#"
             className="flex items-center gap-2 text-sm font-medium hover:underline"
           > */}
           <span className="flex items-center gap-2 text-sm font-medium">
             <HiOutlineGlobeAlt className="h-4 w-4" />
-            <span className="text-[#0e797e]"> Portfolio</span>
+            <span className="text-[var(--color-text-primary)]"> Portfolio</span>
           </span>
           {/* </a> */}
         </div>
       </section>
 
       <section className="mt-8">
-        <h4 className="text-sm font-semibold text-[#0f172a]">
+        <h4 className="text-sm font-semibold text-[var(--color-text-color-primary)]">
           Interview details
         </h4>
         <dl className="mt-4 space-y-3">
@@ -89,7 +100,7 @@ export default function ProfileTab({ interview }: Props) {
           <DetailRow label="Question" value={interview.questionProgress} />
           <DetailRow label="AI Tone" value={interview.aiTone} />
           <div className="flex justify-between text-sm">
-            <dt className="text-[#6b7280]">Status</dt>
+            <dt className="text-[var(--color-text-secondary)]">Status</dt>
             <dd>
               <StatusBadge
                 status={interview.listStatus}
@@ -118,8 +129,8 @@ function DetailRow({
 }) {
   return (
     <div className="flex justify-between text-sm">
-      <dt className="text-[#6b7280]">{label}</dt>
-      <dd className="flex items-center gap-2 font-medium text-[#0f172a]">
+      <dt className="text-[var(--color-text-secondary)]">{label}</dt>
+      <dd className="flex items-center gap-2 font-medium text-[var(--color-text-color-primary)]">
         {icon}
         {value}
       </dd>

@@ -17,14 +17,14 @@ export default function InterviewListSidebar({
   onSelect,
 }: Props) {
   return (
-    <aside className="flex w-full max-w-[380px] flex-col rounded-2xl border border-[#e5e7eb] bg-white shadow-sm">
-      <div className="flex items-center justify-between border-b border-[#e5e7eb] px-5 py-4">
-        <h2 className="text-base font-bold text-[#0f172a]">
+    <aside className="flex w-full max-w-[380px] flex-col rounded-2xl border border-[var(--color-card-border)] bg-[var(--color-card-bg)] shadow-sm">
+      <div className="flex items-center justify-between border-b border-[var(--color-card-border)] px-5 py-4">
+        <h2 className="text-base font-bold text-[var(--color-text-color-primary)]">
           Interviews ({items.length})
         </h2>
         <button
           type="button"
-          className="text-[#6b7280] hover:text-[#0f172a]"
+          className="text-[var(--color-text-secondary)] hover:text-[var(--color-text-color-primary)]"
           aria-label="More options"
         >
           <HiOutlineEllipsisVertical className="h-5 w-5" />
@@ -40,30 +40,30 @@ export default function InterviewListSidebar({
                 type="button"
                 onClick={() => onSelect(item.id)}
                 className={cn(
-                  "flex w-full gap-3 px-5 py-4 text-left transition-colors hover:bg-[#f7f9fb]",
-                  selected && "bg-[#f7f9fb]",
+                  "flex w-full gap-3 px-5 py-4 text-left transition-colors hover:bg-[var(--color-bg-secondary)]",
+                  selected && "bg-[var(--color-bg-secondary)]",
                 )}
               >
-                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-[#B5B7BD] text-sm font-medium text-[#FEFEFF]">
+                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-[var(--color-text-placeholder)] text-sm font-medium text-[var(--color-text-white-primary)]">
                   {item.initials}
                 </div>
                 <div className="min-w-0 flex-1">
                   <div className="flex items-start justify-between gap-2">
-                    <p className="truncate text-sm font-semibold text-[#0f172a]">
+                    <p className="truncate text-sm font-semibold text-[var(--color-text-color-primary)]">
                       {item.roleTitle}
                     </p>
                     <StatusBadge status={item.listStatus} />
                   </div>
-                  <p className="truncate text-sm text-[#6b7280]">
+                  <p className="truncate text-sm text-[var(--color-text-secondary)]">
                     {item.candidateName}
                   </p>
-                  <p className="mt-0.5 text-xs text-[#9ca3af]">
+                  <p className="mt-0.5 text-xs text-[var(--color-card-text)]">
                     {item.scheduledLabel}
                   </p>
                 </div>
               </button>
               {index < items.length - 1 && (
-                <div className="mx-5 border-b border-[#f3f4f6]" />
+                <div className="mx-5 border-b border-[var(--color-scrollbar-track)]" />
               )}
             </li>
           );

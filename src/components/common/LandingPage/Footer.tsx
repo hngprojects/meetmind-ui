@@ -32,7 +32,7 @@ const footerColumns = [
   {
     title: "Company",
     links: [
-      { label: "About Us", href: "#" },
+      { label: "About Us", href: "/about-us" },
       { label: "Contact", href: "/contact" },
       { label: "Privacy Policy", href: "/privacy-policy" },
       { label: "Terms of Service", href: "/terms-of-service" },
@@ -52,7 +52,7 @@ export default function Footer() {
 
   return (
     <footer className="bg-white pt-16 pb-8 border-t border-[#E1E3E4]">
-      <div className="max-w-7xl mx-auto px-8 md:px-10 lg:px-22.5">
+      <div className="max-w-360 mx-auto px-8 md:px-10 lg:px-20">
         <div
           className="flex flex-col lg:flex-row items-start md:items-center 
                 lg:items-start lg:justify-between gap-12"
