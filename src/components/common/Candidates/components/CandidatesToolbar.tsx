@@ -2,12 +2,8 @@ import React from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import CandidatesViewToggle from "./CandidatesViewToggle";
-import {
-  FiSearch,
-  FiFilter,
-  FiArrowDown,
-  FiUploadCloud,
-} from "react-icons/fi";
+import { FiSearch, FiFilter, FiUpload } from "react-icons/fi";
+import { LuArrowDownAZ } from "react-icons/lu";
 
 const CandidatesToolbar = () => {
   return (
@@ -23,7 +19,7 @@ const CandidatesToolbar = () => {
 
       <div className="flex items-center gap-3">
         <Button
-          variant="outline"
+          variant="ghost"
           className="h-10 px-4 gap-2 border-button-outline-border text-color-text-subtext font-medium rounded-lg"
         >
           <span>All</span>
@@ -31,18 +27,18 @@ const CandidatesToolbar = () => {
         </Button>
 
         <Button
-          variant="outline"
+          variant="ghost"
           className="h-10 px-4 gap-2 border-button-outline-border text-color-text-subtext font-medium rounded-lg"
         >
           <span>Sort by Date</span>
-          <FiArrowDown className="h-4 w-4 text-color-text-secondary" />
+          <LuArrowDownAZ className="h-4 w-4 text-color-text-secondary" />
         </Button>
 
         <Button
-          variant="outline"
+          variant="ghost"
           className="h-10 px-4 gap-2 border-button-outline-border text-color-text-subtext font-medium rounded-lg"
         >
-          <FiUploadCloud className="h-4 w-4 text-color-text-secondary" />
+          <FiUpload className="h-4 w-4 text-color-text-secondary" />
           <span>Export list</span>
         </Button>
         <CandidatesViewToggle />

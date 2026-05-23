@@ -1,7 +1,7 @@
 import React from "react";
 
-const StatusBadge = () => {
-  return <div>StatusBadge</div>;
+const StatusBadge = ({ status }: { status: string }) => {
+  return <div>{status}</div>;
 };
 
 export default StatusBadge;

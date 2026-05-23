@@ -1,7 +1,7 @@
 import React from "react";
 import CandidatesToolbar from "./components/CandidatesToolbar";
 import CandidatesStats from "./components/CandidatesStats";
-import CandidatesTableView from "./components/CandidatesTableView";
+import View from "./components/View";
 
 const Candidates = () => {
   return (
@@ -10,7 +10,7 @@ const Candidates = () => {
         <CandidatesStats />
         <CandidatesToolbar />
       </div>
-      <CandidatesTableView />
+      <View />
     </div>
   );
 };
