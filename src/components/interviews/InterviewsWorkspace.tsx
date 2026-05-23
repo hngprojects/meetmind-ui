@@ -27,12 +27,6 @@ export default function InterviewsWorkspace() {
   const [summaryVariant, setSummaryVariant] =
     useState<SessionPhase>("summary_ready");
 
-  // useEffect(() => {
-  //   if (list.length && !selectedId) {
-  //     setSelectedId(list[0].id);
-  //   }
-  // }, [list, selectedId]);
-
   const currentSelectedId = selectedId ?? list[0]?.id;
 
   const { data: interview } = useInterview(currentSelectedId);

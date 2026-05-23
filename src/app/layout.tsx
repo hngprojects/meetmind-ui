@@ -4,6 +4,7 @@ import "./globals.css";
 import { cn } from "@/lib/utils";
 import AuthProvider from "@/components/providers/AuthProvider";
 import QueryProvider from "@/components/providers/QueryProvider";
+import AuthHydration from "@/components/providers/AuthHydration";
 
 const figtree = Figtree({ subsets: ["latin"], variable: "--font-sans" });
 
@@ -55,7 +56,9 @@ export default function RootLayout({
     >
       <body className="min-h-full flex flex-col">
         <QueryProvider>
-          <AuthProvider>{children}</AuthProvider>
+          <AuthProvider>
+            <AuthHydration>{children}</AuthHydration>
+          </AuthProvider>
         </QueryProvider>
       </body>
     </html>

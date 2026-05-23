@@ -1,7 +1,6 @@
 "use client";
 
 import Image from "next/image";
-
 import { cn } from "@/lib/utils";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -20,7 +19,7 @@ export default function DashboardNavbar() {
 
   return (
     <header className="px-10 py-5">
-      <div className="mx-auto flex max-w-[1400px] items-center justify-between">
+      <div className="mx-auto flex max-w-[87.5rem] items-center justify-between">
         <Link href="/" className="flex items-center gap-3">
           <Image
             src="/icons/meetmind-full-logo.svg"
@@ -54,8 +53,6 @@ export default function DashboardNavbar() {
         <div className="flex items-center gap-6 text-[#6b7280]">
           <HiOutlineMagnifyingGlass className="h-5 w-5 cursor-pointer" />
           <div className="relative">
-            {/* <HiOutlineBell className="h-5 w-5 cursor-pointer" />
-            <span className="absolute -right-0.5 -top-0.5 h-2 w-2 rounded-full bg-red-500" /> */}
             <Image
               src="/icons/bell-notification.svg"
               alt="bell-notification"
@@ -68,8 +65,8 @@ export default function DashboardNavbar() {
               <Image
                 src="/images/profile-pic.png"
                 alt="profile-icon"
-                width={35}
-                height={35}
+                width={36}
+                height={36}
               />
             </div>
             <MdKeyboardArrowDown className="h-5 w-5" />

@@ -89,11 +89,7 @@ export default function ChatTab({ messages }: Props) {
           >
             <Image src="/icons/mic.svg" alt="Voice" width={18} height={18} />
           </button>
-          <button
-            type="button"
-            // className="flex h-8 w-8 items-center justify-center rounded-full bg-[#02505e] text-white"
-            aria-label="Send"
-          >
+          <button type="button" aria-label="Send">
             <Image src="/icons/send.svg" alt="Send" width={18} height={18} />
           </button>
         </div>
