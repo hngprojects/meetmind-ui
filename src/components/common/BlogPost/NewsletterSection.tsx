@@ -132,7 +132,7 @@ export default function NewsletterSection() {
               type="submit"
               disabled={isLoading}
               text={isLoading ? "Subscribing..." : "Subscribe"}
-              style2="w-full md:w-fit"
+              wrapperClassname="w-full md:w-fit"
               style="
                 px-8 py-4 !h-auto bg-[#024E5B] text-white font-bold !rounded-xl
                 hover:bg-[#023a44] transition-colors text-sm tracking-wider

@@ -21,7 +21,7 @@ const Authwith = () => {
         onClick={handleGoogleSignIn}
         style="bg-[#FEFEFF]  hover:bg-[#FEFEFF]/80 border-[#E1E3E4]
          text-[#0F172A] "
-        style2="w-[75%] h-14"
+        wrapperClassname="w-[75%] h-14"
       />
     </section>
   );

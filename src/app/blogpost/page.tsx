@@ -165,7 +165,7 @@ export default function BlogPost() {
               <Buttons
                 type="button"
                 text="VIEW COMMENTS (0)"
-                style2="flex justify-center mb-16"
+                wrapperClassname="flex justify-center mb-16"
                 style="w-auto px-10 py-4 bg-[#035A69] text-white font-bold hover:bg-[#024a57] transition-all uppercase tracking-widest text-sm"
               />
 

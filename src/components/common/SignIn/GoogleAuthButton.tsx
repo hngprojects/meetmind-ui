@@ -26,7 +26,7 @@ const GoogleAuthButton = () => {
         border-[#E1E3E4]
         text-[#0F172A]
       "
-      style2="w-full h-[56px]"
+      wrapperClassname="w-full h-[56px]"
     />
   );
 };
