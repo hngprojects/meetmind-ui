@@ -13,6 +13,7 @@ import GoogleAuthButton from "./GoogleAuthButton";
 import AuthFooter from "@/components/common/SignIn/AuthFooter";
 import { useRouter } from "next/navigation";
 import { useAuthStore } from "@/store/authStore";
+import api from "@/lib/api";
 
 const SignInForm = () => {
   const [serverError, setServerError] = useState("");
@@ -62,7 +63,15 @@ const SignInForm = () => {
 
       setAuth(authUser, response.data.access_token);
 
-      router.push("/onboarding");
+      const meRes = await api.get("/api/v1/users/me");
+
+      const user = meRes.data.data;
+
+      if (!user.onboarding_completed) {
+        router.push("/onboarding");
+      } else {
+        router.push("/dashboard");
+      }
     } catch (error) {
       if (axios.isAxiosError(error)) {
         const detail = error.response?.data?.detail;
