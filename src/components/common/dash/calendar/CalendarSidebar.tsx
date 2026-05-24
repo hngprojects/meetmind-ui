@@ -15,7 +15,7 @@ const CalendarSidebar = ({
   setCurrentDate,
 }: CalendarSidebarProps) => {
   return (
-    <aside className="space-y-4">
+    <aside className="space-y-0">
       <CalendarCard
         selectedDate={selectedDate}
         setSelectedDate={setSelectedDate}

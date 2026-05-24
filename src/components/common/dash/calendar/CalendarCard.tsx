@@ -67,7 +67,7 @@ const CalendarCard = ({
   return (
     <section
       className="
-        overflow-hidden rounded-lg border border-[#E4E4E7] bg-white
+        overflow-hidden rounded-lg border border-calendar-border bg-white
       "
     >
       {/* Header */}
@@ -75,21 +75,21 @@ const CalendarCard = ({
         <button
           onClick={handlePreviousMonth}
           className=" flex h-8 w-8 items-center justify-center rounded-md border 
-            border-[#E4E4E7] cursor-pointer"
+            border-calendar-border cursor-pointer"
         >
-          <FiChevronLeft className="text-sm text-[#71717A]" />
+          <FiChevronLeft className="text-sm text-calendar-primary" />
         </button>
 
-        <h2 className="text-base font-semibold text-[#18181B]">
+        <h2 className="text-base font-semibold text-calendar-primary">
           {currentMonth} {currentYear}
         </h2>
 
         <button
           onClick={handleNextMonth}
           className=" flex h-8 w-8 items-center justify-center rounded-md border 
-            border-[#E4E4E7] cursor-pointer"
+            border-calendar-border cursor-pointer"
         >
-          <FiChevronRight className="text-sm text-[#71717A]" />
+          <FiChevronRight className="text-sm text-calendar-primary" />
         </button>
       </div>
 
@@ -103,7 +103,7 @@ const CalendarCard = ({
           <p
             key={day}
             className="
-              text-xs font-medium text-[#71717A]
+              text-xs font-medium text-calendar-secondary
             "
           >
             {day}
@@ -127,8 +127,8 @@ const CalendarCard = ({
                 text-sm font-medium transition-colors cursor-pointer
                 ${
                   selectedDate === day
-                    ? "bg-[#171717] text-[#FAFAFA]"
-                    : "text-[#09090B] hover:bg-[#F4F4F5]"
+                    ? "bg-calendar-bg-primary text-text-primary-foreground"
+                    : "text-calendar-primary hover:bg-soft-white"
                 }
               `}
             >

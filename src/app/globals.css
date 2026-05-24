@@ -97,6 +97,19 @@
   --color-timeline-bg: #f7f9fb;
   --color-mission-bg: #f7f9fb;
 
+  /* =============== CALENDAR PAGE =============== */
+  --color-calendar-primary: #09090b;
+  --color-calendar-secondary: #71717a;
+  --color-calendar-bg-primary: #171717;
+  --color-text-primary-foreground: #fafafa;
+  --color-calendar-border: #e4e4e7;
+  --color-newsletter-subtext: #e1e3e4;
+  --color-newsletter-btn-bg: #f7f9fb;
+  --color-newsletter-btn-text: #02505e;
+  --color-belief-card-bg: #f7f9fb;
+  --color-timeline-bg: #f7f9fb;
+  --color-mission-bg: #f7f9fb;
+
   /* =============== SCROLLBAR COLORS =============== */
   --color-scrollbar-track: #f3f4f6;
   --color-scrollbar-thumb: #d1d5db;
