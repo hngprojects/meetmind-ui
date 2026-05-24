@@ -1,4 +1,4 @@
-export type CandidateStatus = "Ongoing" | "needs_review" | "Completed";
+export type CandidateStatus = "ongoing" | "needs_review" | "completed";
 
 export interface Candidate {
   id: string;

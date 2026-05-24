@@ -1,5 +1,6 @@
 import React, { useMemo } from "react";
 import { Candidate } from "../types";
+import StatCard from "./StatCard";
 
 type Props = {
   data: Candidate[];
@@ -9,44 +10,36 @@ const CandidatesStats = ({ data }: Props) => {
   const stats = useMemo(() => {
     return {
       total: data.length,
-      completed: data.filter((c) => c.status === "Completed").length,
-      ongoing: data.filter((c) => c.status === "Ongoing").length,
+      completed: data.filter((c) => c.status === "completed").length,
+      ongoing: data.filter((c) => c.status === "ongoing").length,
       needsAttention: data.filter((c) => c.status === "needs_review").length,
     };
   }, [data]);
   return (
     <div className="flex bg-bg-secondary rounded-lg w-full divide-x divide-text-white-secondary">
-      <div className="p-6 flex-1 flex flex-col justify-between items-start gap-2">
-        <p className="text-[18px] font-normal text-text-secondary">
-          Total Candidates
-        </p>
-        <p className="text-4xl font-semibold text-text-purple-accent">
-          {stats.total}
-        </p>
-      </div>
+      <StatCard
+        label="Total Candidates"
+        value={stats.total}
+        valueClassName="text-text-purple-accent"
+      />
 
-      <div className="p-6 flex-1 flex flex-col justify-between items-start gap-2">
-        <p className="text-[18px] font-normal text-text-secondary">Completed</p>
-        <p className="text-4xl font-semibold text-text-color-secondary">
-          {stats.completed}
-        </p>
-      </div>
+      <StatCard
+        label="Completed"
+        value={stats.completed}
+        valueClassName="text-text-color-secondary"
+      />
 
-      <div className="p-6 flex-1 flex flex-col justify-between items-start gap-2">
-        <p className="text-[18px] font-normal text-text-secondary">Ongoing</p>
-        <p className="text-4xl font-semibold text-text-color-secondary">
-          {stats.ongoing}
-        </p>
-      </div>
+      <StatCard
+        label="Ongoing"
+        value={stats.ongoing}
+        valueClassName="text-text-color-secondary"
+      />
 
-      <div className="p-6 flex-1 flex flex-col justify-between items-start gap-2">
-        <p className="text-[18px] font-normal text-text-secondary">
-          Needs attention
-        </p>
-        <p className="text-4xl font-semibold text-error">
-          {stats.needsAttention}
-        </p>
-      </div>
+      <StatCard
+        label="Needs attention"
+        value={stats.needsAttention}
+        valueClassName="text-error"
+      />
     </div>
   );
 };

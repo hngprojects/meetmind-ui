@@ -4,14 +4,17 @@ import { Candidate } from "../types";
 import ScoreBar from "./ScoreBar";
 import StatusBadge from "./StatusBadge";
 import ActionBadge from "./ActionBadge";
-import { FiArrowUp, FiArrowDown } from "react-icons/fi";
+import SortableHeader from "./SortableHeader";
+import { Button } from "@/components/ui/button";
 
 export const getInitials = (name: string) => {
   return name
+    .trim()
     .split(" ")
+    .filter(Boolean)
     .map((part) => part[0])
-    .join("")
     .slice(0, 2)
+    .join("")
     .toUpperCase();
 };
 
@@ -20,15 +23,7 @@ const columnHelper = createColumnHelper<Candidate>();
 export const candidateColumns = [
   columnHelper.accessor("name", {
     header: ({ column }) => {
-      return (
-        <button
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-          className="flex items-center gap-1"
-        >
-          Name
-          {column.getIsSorted() === "asc" ? <FiArrowUp /> : <FiArrowDown />}
-        </button>
-      );
+      <SortableHeader title="Name" column={column} />;
     },
     meta: { widthClass: "w-[28%]" },
     cell: ({ row: { original } }) => (
@@ -62,17 +57,7 @@ export const candidateColumns = [
     cell: (info) => <StatusBadge status={info.getValue()} />,
   }),
   columnHelper.accessor("date", {
-    header: ({ column }) => {
-      return (
-        <button
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-          className="flex items-center gap-1"
-        >
-          Date
-          {column.getIsSorted() === "asc" ? <FiArrowUp /> : <FiArrowDown />}
-        </button>
-      );
-    },
+    header: ({ column }) => <SortableHeader title="Date" column={column} />,
     meta: { widthClass: "w-[15%]" },
     cell: (info) => (
       <span className="text-color-text-subtext">{info.getValue()}</span>
@@ -80,15 +65,7 @@ export const candidateColumns = [
   }),
   columnHelper.accessor("score", {
     header: ({ column }) => {
-      return (
-        <button
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-          className="flex items-center gap-1"
-        >
-          Scores
-          {column.getIsSorted() === "asc" ? <FiArrowUp /> : <FiArrowDown />}
-        </button>
-      );
+      <SortableHeader title="Scores" column={column} />;
     },
     meta: { widthClass: "w-[12%]" },
     cell: (info) => <ScoreBar score={info.getValue()} />,
@@ -103,9 +80,13 @@ export const candidateColumns = [
     meta: { widthClass: "w-[5%]" },
     cell: () => (
       <div className="text-right text-color-text-divider">
-        <button className="p-1 hover:text-color-text-color-primary transition-colors">
+        <Button
+          type="button"
+          variant="ghost"
+          className="p-1 hover:text-color-text-color-primary transition-colors"
+        >
           <FiChevronRight className="h-5 w-5" />
-        </button>
+        </Button>
       </div>
     ),
   }),
