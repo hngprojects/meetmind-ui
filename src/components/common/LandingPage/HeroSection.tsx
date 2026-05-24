@@ -44,7 +44,7 @@ export default function HeroSection() {
           {/* Desktop & Tablet View */}
           <div className="hidden mt-10 md:flex md:flex-row items-center justify-center gap-6">
             <Link
-              href="/signup"
+              href="/sign-up"
               className="flex justify-center items-center w-47.5 h-14 px-4 py-2.5 bg-[#02505E]
               text-[#FEFEFF] font-semibold rounded-lg text-base hover:bg-[#F7F9FB] 
               hover:text-[#013A44] hover:border hover:border-[#DADADA] 
@@ -54,7 +54,7 @@ export default function HeroSection() {
             </Link>
 
             <Link
-              href="/watch-demo"
+              href="/coming-soon"
               className="flex justify-center items-center w-47.5 h-14 px-4 py-2.5 mx-auto 
               bg-[#F7F9FB] border border-[#DADADA] text-[#0F172A] font-semibold 
               rounded-lg text-[16px] hover:bg-[#02505E] hover:text-[#F7F9FB] 
@@ -75,7 +75,7 @@ export default function HeroSection() {
             />
             <div className="flex flex-col items-center gap-6">
               <Link
-                href="/signup"
+                href="/sign-up"
                 className="flex justify-center items-center w-86.25 h-14 px-4 py-2.5 
                   bg-[#02505E] text-[#FEFEFF] font-semibold rounded-lg text-base 
                   hover:bg-[#F7F9FB] hover:text-[#013A44] hover:border 
@@ -85,7 +85,7 @@ export default function HeroSection() {
               </Link>
 
               <Link
-                href="/watch-demo"
+                href="/coming-soon"
                 className="flex justify-center items-center w-86.25 h-14 px-4 py-2.5 
                   mx-auto bg-[#F7F9FB] border border-[#DADADA] text-[#0F172A] 
                   font-semibold rounded-lg text-[16px] hover:bg-[#02505E] 

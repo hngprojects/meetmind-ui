@@ -3,7 +3,7 @@ import Image from "next/image";
 export default function FeaturesGrid() {
   return (
     <section id="features" className="pt-28 pb-18">
-      <div className="max-w-7xl mx-auto px-6 md:px-15 lg:px-20">
+      <div className="max-w-360 mx-auto px-6 md:px-15 lg:px-20">
         <h2 className="text-[#0F172A] text-[30px] md:text-[40px] font-semibold text-center">
           Features
         </h2>

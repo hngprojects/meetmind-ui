@@ -1,3 +1,5 @@
+"use client";
+
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { onboardingStore } from "../../../../store/onboardingStore";
@@ -5,6 +7,8 @@ import { HireRadioGroup, type HireOption } from "../onboarding/RadioCard";
 import Input from "../onboarding/Input";
 import Select from "../onboarding/Select";
 import { GoArrowLeft } from "react-icons/go";
+import { onboardingAPI } from "@/lib/api/onboarding";
+import { useMutation } from "@tanstack/react-query";
 
 const hireOptions: HireOption[] = [
   {
@@ -29,11 +33,25 @@ const Step2 = () => {
   const updateData = onboardingStore((state) => state.updateData);
   const nextStep = onboardingStore((state) => state.nextStep);
   const prevStep = onboardingStore((state) => state.prevStep);
+  const addToast = onboardingStore((s) => s.addToast);
   const hasAttemptedStep = onboardingStore((state) => state.hasAttemptedStep);
+  const setHasAttemptedStep = onboardingStore(
+    (state) => state.setHasAttemptedStep,
+  );
   const isValid =
     data.companyName.trim() !== "" &&
     data.role.trim() !== "" &&
     data.hires.trim() !== "";
+
+  const mutation = useMutation({
+    mutationFn: onboardingAPI.setRole,
+    onSuccess: () => {
+      nextStep();
+    },
+    onError: () => {
+      addToast("Failed to save role", "error");
+    },
+  });
   return (
     <div className="flex flex-col justify-center gap-6 md:w-full lg:w-auto">
       <div className="flex flex-col items-center justify-center">
@@ -55,8 +73,8 @@ const Step2 = () => {
             Set Up Your Workplace
           </h3>
           <p className="font-medium text-center max-w-sm">
-            Tell us a bit about how you’ll use MeetMind. we’ll tailor things for
-            you
+            Tell us a bit about how you’ll use MeetMind. We’ll tailor things for
+            you.
           </p>
         </div>
       </div>
@@ -72,17 +90,19 @@ const Step2 = () => {
           <Select
             value={data.role}
             onChange={(e) => updateData({ role: e.target.value })}
-            options={[
-              { value: "ceo", label: "CEO" },
-              { value: "founder", label: "Founder" },
-              { value: "engineer", label: "Engineer" },
-            ]}
+            options={[{ value: "Recruiter", label: "Recruiter" }]}
           />
 
           <div className="flex flex-col gap-2">
-            <label htmlFor="no-of-hires">How many hires are you planning</label>
+            <p
+              id="no-of-hires-label"
+              className="text-sm font-medium text-foreground"
+            >
+              How many hires are you planning
+            </p>
 
             <HireRadioGroup
+              aria-labelledby="no-of-hires-label"
               options={hireOptions}
               defaultValue={data.hires}
               onValueChange={(val) => updateData({ hires: val })}
@@ -98,14 +118,29 @@ const Step2 = () => {
 
         <div className="flex flex-col gap-2 items-center">
           <Button
-            onClick={nextStep}
-            disabled={!isValid}
+            onClick={() => {
+              setHasAttemptedStep(true);
+
+              if (!isValid) return;
+
+              mutation.mutate({
+                companyName: data.companyName,
+                role: data.role,
+                hires: data.hires,
+              });
+            }}
+            disabled={!isValid || mutation.isPending}
             size="lg"
             className="w-full bg-primary hover:bg-primary/90 text-primary-foreground"
           >
-            Continue
+            {mutation.isPending ? "Saving..." : "Continue"}
           </Button>
-          <Button onClick={prevStep} variant="ghost" className="w-fit">
+          <Button
+            onClick={prevStep}
+            disabled={mutation.isPending}
+            variant="ghost"
+            className="w-fit"
+          >
             <GoArrowLeft />
             Back
           </Button>

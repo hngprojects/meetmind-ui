@@ -27,7 +27,7 @@ const steps = [
 export default function HowItWorks() {
   return (
     <section id="how-it-works" className="bg-[#FFFFFF] py-16">
-      <div className="max-w-7xl flex flex-col mx-auto px-6 md:px-10 lg:px-20 w-full">
+      <div className="max-w-360 flex flex-col mx-auto px-6 md:px-10 lg:px-20 w-full">
         {/* Section label */}
         <h2 className="text-[#0F172A] text-[30px] md:text-[40px] font-semibold text-center">
           How it works
@@ -51,7 +51,7 @@ export default function HowItWorks() {
                 alt={`${step.title} illustration`}
                 width={240}
                 height={180}
-                className="w-60 h-auto rounded-lg mb-6"
+                className="w-full h-[245px] rounded-lg mb-6"
               />
 
               {/* Step Number */}
@@ -74,13 +74,14 @@ export default function HowItWorks() {
 
         {/* Interview Smarter Section */}
         <div className="grid grid-cols-1 md:grid-cols-2 items-center mt-20 w-full gap-12">
-          <div className="max-w-full h-92.25 lg:h-120.5 overflow-hidden rounded-xl">
+          <div className="relative max-w-full h-92.25 lg:h-120.5 overflow-hidden rounded-xl">
             <Image
               src="/images/interview-image.jpg"
               alt="Professional conducting a video interview"
-              width={80}
-              height={80}
-              className="w-full h-full object-cover scale-110"
+              fill
+              sizes="(max-width: 768px) 100vw, 50vw"
+              className="object-cover scale-110"
+              priority
             />
           </div>
           <div className="row-start-1 gap-4 md:col-start-2 flex flex-col items-start">
