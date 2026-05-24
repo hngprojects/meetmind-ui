@@ -168,7 +168,8 @@ const Dashboardnavbar = () => {
       <SignOutModal
         isOpen={isSignOutModalOpen}
         onClose={() => setIsSignOutModalOpen(false)}
-        onSignOut={() => {
+        onSignOut={(_signOutAllDevices) => {
+          // If true, implement logic to clear all sessions here
           setIsSignOutModalOpen(false);
           router.push("/sign-in");
         }}
