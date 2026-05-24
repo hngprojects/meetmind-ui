@@ -11,10 +11,10 @@ type dashLinks = {
 
 const Dashnavlist = () => {
   const dashnav: dashLinks[] = [
-    { title: "Dashboard", link: "/Dashboard", id: 0 },
-    { title: "Candidates", link: "/Candidates", id: 1 },
-    { title: "Interviews", link: "/Interviews", id: 2 },
-    { title: "Calender", link: "/Calendar", id: 3 },
+    { title: "Dashboard", link: "/dashboard", id: 0 },
+    { title: "Candidates", link: "/candidates", id: 1 },
+    { title: "Interviews", link: "/interviews", id: 2 },
+    { title: "Calender", link: "/calendar", id: 3 },
   ];
   // track page
   const pathname = usePathname();
