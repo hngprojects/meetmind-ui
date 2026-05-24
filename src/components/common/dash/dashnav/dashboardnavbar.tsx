@@ -16,6 +16,9 @@ const Dashboardnavbar = () => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
+  // Unread notification count — wire to real API when backend is ready
+  const unreadNotificationCount = 3;
+
   // Close dropdown when clicking outside
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -57,7 +60,10 @@ const Dashboardnavbar = () => {
 
           {/* icons & profile dropdown */}
           <div className="flex flex-row items-center justify-end gap-6 w-[40%]">
-            <button className="p-1 hover:bg-gray-50 rounded-full transition-colors cursor-pointer">
+            <button
+              type="button"
+              className="p-1 hover:bg-gray-50 rounded-full transition-colors cursor-pointer"
+            >
               <Image
                 src="/icons/magnifying-lens.svg"
                 alt="search-icon"
@@ -65,14 +71,25 @@ const Dashboardnavbar = () => {
                 height={20}
               />
             </button>
-            <button className="p-1 hover:bg-gray-50 rounded-full transition-colors cursor-pointer">
+
+            {/* Bell icon → Notifications page */}
+            <Link
+              href="/notifications"
+              className="relative p-1 hover:bg-gray-50 rounded-full transition-colors cursor-pointer"
+              aria-label={`Notifications, ${unreadNotificationCount} unread`}
+            >
               <Image
                 src="/icons/bell-notification.svg"
                 alt="bell-notification"
                 width={20}
                 height={20}
               />
-            </button>
+              {unreadNotificationCount > 0 && (
+                <span className="absolute -top-0.5 -right-0.5 w-4 h-4 rounded-full bg-[#EF4444] text-white text-[9px] font-bold flex items-center justify-center leading-none">
+                  {unreadNotificationCount > 9 ? "9+" : unreadNotificationCount}
+                </span>
+              )}
+            </Link>
 
             {/* Profile Dropdown Container */}
             <div className="relative" ref={dropdownRef}>
