@@ -22,9 +22,7 @@ const columnHelper = createColumnHelper<Candidate>();
 
 export const candidateColumns = [
   columnHelper.accessor("name", {
-    header: ({ column }) => {
-      <SortableHeader title="Name" column={column} />;
-    },
+    header: ({ column }) => <SortableHeader title="Name" column={column} />,
     meta: { widthClass: "w-[28%]" },
     cell: ({ row: { original } }) => (
       <div className="flex items-center gap-3">
@@ -64,9 +62,7 @@ export const candidateColumns = [
     ),
   }),
   columnHelper.accessor("score", {
-    header: ({ column }) => {
-      <SortableHeader title="Scores" column={column} />;
-    },
+    header: ({ column }) => <SortableHeader title="Scores" column={column} />,
     meta: { widthClass: "w-[12%]" },
     cell: (info) => <ScoreBar score={info.getValue()} />,
   }),

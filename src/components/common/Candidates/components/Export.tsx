@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import { FiArrowLeft, FiCopy } from "react-icons/fi";
+import { FiCopy } from "react-icons/fi";
 import { LuFileSpreadsheet } from "react-icons/lu";
 import { HiOutlineDownload } from "react-icons/hi";
 import { Button } from "@/components/ui/button";

@@ -61,8 +61,6 @@ const CandidatesGridView = ({ table }: { table: TanstackTable<Candidate> }) => {
 
               <div className="flex items-center justify-between gap-2 pt-2">
                 <ScoreBar score={candidate.score} />
-
-                <ScoreBar score={candidate.score} />
                 <button
                   className={cn(
                     "flex h-9 w-9 items-center justify-center rounded-full",

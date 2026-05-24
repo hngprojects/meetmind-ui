@@ -9,7 +9,7 @@ const StatusBadge = ({ status }: { status: CandidateStatus }) => {
     CandidateStatus,
     { container: string; dot: string; text: string }
   > = {
-    Ongoing: {
+    ongoing: {
       container: "bg-warning-bg border-warning/20",
       dot: "bg-warning",
       text: "text-warning-text",
@@ -19,14 +19,14 @@ const StatusBadge = ({ status }: { status: CandidateStatus }) => {
       dot: "bg-error",
       text: "text-error-text",
     },
-    Completed: {
+    completed: {
       container: "bg-bg-success border-success/20",
       dot: "bg-success",
       text: "text-text-success",
     },
   };
 
-  const config = statusConfig[status] || statusConfig["Ongoing"];
+  const config = statusConfig[status] || statusConfig["ongoing"];
   return (
     <Badge
       variant="outline"
