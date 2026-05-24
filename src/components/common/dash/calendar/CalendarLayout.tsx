@@ -5,10 +5,12 @@ type CalendarLayoutProps = {
 
 const CalendarLayout = ({ sidebar, panel }: CalendarLayoutProps) => {
   return (
-    <section className="flex gap-8">
-      <div className="w-[35%]">{sidebar}</div>
+    <section className="flex items-start gap-6">
+      {/* Left Sidebar */}
+      <div className="w-[478px] flex-shrink-0">{sidebar}</div>
 
-      <div className="w-[65%]">{panel}</div>
+      {/* Right Panel */}
+      <div className="flex-1">{panel}</div>
     </section>
   );
 };
