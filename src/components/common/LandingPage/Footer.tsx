@@ -41,10 +41,22 @@ const footerColumns = [
 ];
 
 const socialLinks = [
-  { name: "LinkedIn", icon: "/icons/linkedin-outline.svg", href: "/coming-soon" },
-  { name: "Facebook", icon: "/icons/facebook-outline.svg", href: "/coming-soon" },
+  {
+    name: "LinkedIn",
+    icon: "/icons/linkedin-outline.svg",
+    href: "/coming-soon",
+  },
+  {
+    name: "Facebook",
+    icon: "/icons/facebook-outline.svg",
+    href: "/coming-soon",
+  },
   { name: "GitHub", icon: "/icons/github-outline.svg", href: "/coming-soon" },
-  { name: "Instagram", icon: "/icons/instagram-outline.svg", href: "/coming-soon" },
+  {
+    name: "Instagram",
+    icon: "/icons/instagram-outline.svg",
+    href: "/coming-soon",
+  },
 ];
 
 export default function Footer() {

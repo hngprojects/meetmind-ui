@@ -1,15 +1,30 @@
+"use client";
+
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { onboardingStore } from "../../../../store/onboardingStore";
 import TonePicker from "../onboarding/TonePicker";
 import { ToggleCard } from "../onboarding/ToggleCard";
 import { GoArrowLeft } from "react-icons/go";
+import { useMutation } from "@tanstack/react-query";
+import { onboardingAPI } from "@/lib/api/onboarding";
 
 const Step3 = () => {
   const data = onboardingStore((state) => state.data);
   const updateData = onboardingStore((state) => state.updateData);
   const nextStep = onboardingStore((state) => state.nextStep);
   const prevStep = onboardingStore((state) => state.prevStep);
+  const addToast = onboardingStore((s) => s.addToast);
+  const mutation = useMutation({
+    mutationKey: ["onboarding", "preferences"],
+    mutationFn: onboardingAPI.setPreferences,
+    onSuccess: () => {
+      nextStep();
+    },
+    onError: () => {
+      addToast("Failed to save preferences", "error");
+    },
+  });
   return (
     <div className="flex flex-col justify-center gap-6 md:w-full lg:w-auto">
       <div className="flex flex-col items-center justify-center">
@@ -85,13 +100,24 @@ const Step3 = () => {
 
         <div className="flex flex-col gap-2 items-center">
           <Button
-            onClick={nextStep}
+            onClick={() =>
+              mutation.mutate({
+                tone: data.tone,
+                preferences: data.preferences,
+              })
+            }
+            disabled={mutation.isPending}
             size="lg"
             className="w-full bg-primary hover:bg-primary/90 text-primary-foreground"
           >
-            Continue
+            {mutation.isPending ? "Saving..." : "Continue"}
           </Button>
-          <Button onClick={prevStep} variant="ghost" className="w-fit">
+          <Button
+            onClick={prevStep}
+            disabled={mutation.isPending}
+            variant="ghost"
+            className="w-fit"
+          >
             <GoArrowLeft /> Back
           </Button>
         </div>

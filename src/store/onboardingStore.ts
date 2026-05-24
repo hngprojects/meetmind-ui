@@ -1,7 +1,15 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 
-interface OnboardingData {
+type ToastType = "success" | "error" | "info";
+
+interface Toast {
+  id: string;
+  message: string;
+  type: ToastType;
+}
+
+export interface OnboardingData {
   companyName: string;
   role: string;
   hires: string;
@@ -17,15 +25,16 @@ interface OnboardingData {
 interface OnboardingState {
   step: StepNumber;
   data: OnboardingData;
-  isSubmitting: boolean;
   setStep: (step: StepNumber) => void;
   nextStep: () => void;
   prevStep: () => void;
   updateData: (partial: Partial<OnboardingData>) => void;
+  toasts: Toast[];
+  addToast: (message: string, type?: ToastType) => void;
+  removeToast: (id: string) => void;
   validateStep: () => boolean;
   hasAttemptedStep: boolean;
   setHasAttemptedStep: (value: boolean) => void;
-  submitOnboarding: () => Promise<void>;
   reset: () => void;
 }
 
@@ -49,20 +58,37 @@ export const onboardingStore = create<OnboardingState>()(
     (set, get) => ({
       step: 1,
       data: initialData,
-      isSubmitting: false,
+      toasts: [],
       hasAttemptedStep: false,
       setHasAttemptedStep: (value) => set({ hasAttemptedStep: value }),
       setStep: (step) => set({ step }),
       nextStep: () => {
+        set({ hasAttemptedStep: true });
         const { step, validateStep } = get();
         if (!validateStep()) {
-          set({ hasAttemptedStep: true });
           return;
-        } 
+        }
         set({
           step: Math.min(step + 1, 5) as StepNumber,
           hasAttemptedStep: false,
         });
+      },
+      addToast: (message, type = "info") => {
+        const id =
+          globalThis.crypto?.randomUUID?.() ??
+          `${Date.now()}-${Math.random().toString(16).slice(2)}`;
+
+        set((state) => ({
+          toasts: [...state.toasts, { id, message, type }],
+        }));
+        setTimeout(() => {
+          get().removeToast(id);
+        }, 3000);
+      },
+      removeToast: (id) => {
+        set((state) => ({
+          toasts: state.toasts.filter((t) => t.id !== id),
+        }));
       },
       prevStep: () => {
         set((state) => ({
@@ -95,31 +121,6 @@ export const onboardingStore = create<OnboardingState>()(
         };
 
         return validators[step]();
-      },
-      submitOnboarding: async () => {
-        const { data, isSubmitting } = get();
-        if (isSubmitting) return;
-
-        set({ isSubmitting: true });
-
-        try {
-          const response = await fetch(
-            "the actual api route. For when you talk to the backend",
-            {
-              method: "POST",
-              headers: { "Content-Type": "application/json" },
-              body: JSON.stringify(data),
-            },
-          );
-          if (!response.ok) throw new Error("Failed to submit onboarding");
-          const result = await response.json();
-          return result;
-          // NOTE TO ANYONE REVIEWING THIS PART: The api call is not complete. I just wanted to put it in place so that I wont forget.
-        } catch (error) {
-          console.error("Onboarding failed:", error);
-        } finally {
-          set({ isSubmitting: false });
-        }
       },
       reset: () =>
         set({

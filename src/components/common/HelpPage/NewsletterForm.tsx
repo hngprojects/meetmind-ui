@@ -49,7 +49,11 @@ export function NewsletterForm({ variant = "dark" }: NewsletterFormProps) {
           err.response?.data?.message ||
           err.response?.data?.error?.details?.[0]?.msg ||
           "Something went wrong. Please try again.";
-        setError(typeof raw === "string" ? raw : "Something went wrong. Please try again.");
+        setError(
+          typeof raw === "string"
+            ? raw
+            : "Something went wrong. Please try again.",
+        );
       } else {
         setError("Unexpected error. Please try again.");
       }
@@ -89,9 +93,9 @@ export function NewsletterForm({ variant = "dark" }: NewsletterFormProps) {
           type="email"
           value={email}
           onChange={(e) => {
-  setEmail(e.target.value);
-  if (error) setError(null);
-}}
+            setEmail(e.target.value);
+            if (error) setError(null);
+          }}
           placeholder="Enter your email"
           required
           disabled={isLoading}
