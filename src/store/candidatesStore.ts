@@ -8,6 +8,8 @@ export interface CandidateFilters {
   search: string;
   sortBy: "date" | "score" | "name";
   sortDirection: "asc" | "desc";
+  page: number;
+  pageSize: number;
 }
 
 interface CandidatesState {
@@ -16,14 +18,6 @@ interface CandidatesState {
   filters: CandidateFilters;
   setFilters: (filters: Partial<CandidateFilters>) => void;
   resetFilters: () => void;
-  search: string;
-  setSearch: (v: string) => void;
-  page: number;
-  setPage: (p: number) => void;
-
-  pageSize: number;
-  setPageSize: (n: number) => void;
-
   selectedCandidateId: string | null;
   setSelectedCandidateId: (id: string | null) => void;
   exportOpen: boolean;
@@ -36,6 +30,8 @@ const initialFilters: CandidateFilters = {
   search: "",
   sortBy: "date",
   sortDirection: "desc",
+  page: 1,
+  pageSize: 20,
 };
 
 export const useCandidatesStore = create<CandidatesState>((set) => ({
@@ -47,17 +43,10 @@ export const useCandidatesStore = create<CandidatesState>((set) => ({
       filters: {
         ...state.filters,
         ...newFilters,
+        page: newFilters.page ?? 1,
       },
     })),
   resetFilters: () => set({ filters: initialFilters }),
-  search: "",
-  setSearch: (v) => set({ search: v }),
-  sortBy: "date",
-  sortDirection: "desc",
-  page: 1,
-  setPage: (p) => set({ page: p }),
-  pageSize: 20,
-  setPageSize: (n) => set({ pageSize: n }),
   selectedCandidateId: null,
   setSelectedCandidateId: (id) => set({ selectedCandidateId: id }),
   exportOpen: false,
