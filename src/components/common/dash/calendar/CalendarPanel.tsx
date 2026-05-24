@@ -1,10 +1,19 @@
-const CalendarPanel = () => {
+type CalendarPanelProps = {
+  selectedDate: number;
+  currentDate: Date;
+};
+
+const CalendarPanel = ({ selectedDate, currentDate }: CalendarPanelProps) => {
+  const currentMonth = currentDate.toLocaleString("default", { month: "long" });
+
+  const currentYear = currentDate.getFullYear();
+
   return (
     <section>
       <div className="flex items-start justify-between">
         <div>
           <h2 className="text-[28px] font-semibold text-[#18181B]">
-            Appointments for June 13, 2025
+            Appointments for {currentMonth} {selectedDate}, {currentYear}
           </h2>
 
           <p className="mt-1 text-sm text-[#71717A]">Select the dates</p>
