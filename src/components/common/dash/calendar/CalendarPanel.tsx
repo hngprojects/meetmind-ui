@@ -3,13 +3,22 @@
 import { useState } from "react";
 import AppointmentCard from "./AppointmentCard";
 import EmptyState from "./EmptyState";
+import type { Appointment } from "@/lib/appointmentTypes";
 
 type CalendarPanelProps = {
   selectedDate: number;
   currentDate: Date;
+  selectedAppointment: Appointment | null;
+  setSelectedAppointment: React.Dispatch<
+    React.SetStateAction<Appointment | null>
+  >;
 };
 
-const CalendarPanel = ({ selectedDate, currentDate }: CalendarPanelProps) => {
+const CalendarPanel = ({
+  selectedDate,
+  currentDate,
+  setSelectedAppointment,
+}: CalendarPanelProps) => {
   const currentMonth = currentDate.toLocaleString("default", { month: "long" });
 
   const currentYear = currentDate.getFullYear();
@@ -28,6 +37,7 @@ const CalendarPanel = ({ selectedDate, currentDate }: CalendarPanelProps) => {
           email: "preciousjoe@gmail.com",
           role: "Frontend Developer",
           time: "Tomorrow 10:00AM - 10:30AM",
+          date: "Friday, June 13, 2025",
         },
 
         {
@@ -36,6 +46,7 @@ const CalendarPanel = ({ selectedDate, currentDate }: CalendarPanelProps) => {
           email: "sarahwilson@gmail.com",
           role: "UI Designer",
           time: "Tomorrow 11:00AM - 11:30AM",
+          date: "Friday, June 13, 2025",
         },
       ],
     },
@@ -51,6 +62,7 @@ const CalendarPanel = ({ selectedDate, currentDate }: CalendarPanelProps) => {
           email: "michaelbrown@gmail.com",
           role: "Backend Engineer",
           time: "10:30AM - 11:15AM",
+          date: "Wednesday, June 25, 2025",
         },
 
         {
@@ -59,6 +71,7 @@ const CalendarPanel = ({ selectedDate, currentDate }: CalendarPanelProps) => {
           email: "emilydavis@gmail.com",
           role: "Product Designer",
           time: "11:00AM - 12:00PM",
+          date: "Wednesday, June 25, 2025",
         },
       ],
     },
@@ -114,6 +127,13 @@ const CalendarPanel = ({ selectedDate, currentDate }: CalendarPanelProps) => {
                     email={appointment.email}
                     role={appointment.role}
                     time={appointment.time}
+                    onClick={() => {
+                      setSelectedAppointment((previousAppointment) =>
+                        previousAppointment?.id === appointment.id
+                          ? null
+                          : appointment,
+                      );
+                    }}
                   />
                 ))}
               </div>
