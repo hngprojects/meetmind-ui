@@ -142,6 +142,13 @@
   --color-primary: var(--primary);
   --color-popover-foreground: var(--popover-foreground);
   --color-popover: var(--popover);
+
+  /* =============== STATUS BADGE COLORS =============== */
+  --color-badge-live-bg: #f5f3ff;
+  --color-badge-live-text: #7c3aed;
+  --color-badge-upcoming-bg: #fff7ed;
+  --color-badge-upcoming-text: #c2410c;
+  --color-badge-upcoming-dot: #ea580c;
 }
 
 :root {
@@ -224,6 +231,13 @@
   --color-belief-card-bg: `#1f2937`;
   --color-timeline-bg: `#111827`;
   --color-mission-bg: `#111827`;
+
+  /* STATUS BADGE COLORS - Dark Mode */
+  --color-badge-live-bg: oklch(0.269 0.08 280);
+  --color-badge-live-text: oklch(0.78 0.15 280);
+  --color-badge-upcoming-bg: oklch(0.269 0.05 60);
+  --color-badge-upcoming-text: oklch(0.75 0.12 40);
+  --color-badge-upcoming-dot: oklch(0.68 0.15 35);
 }
 
 @layer base {
