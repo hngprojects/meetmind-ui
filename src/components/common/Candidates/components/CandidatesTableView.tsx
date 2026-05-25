@@ -11,7 +11,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { candidateColumns } from "./columns";
-import { Candidate } from "../types";
+import { Candidate } from "@/lib/types/candidates";
 
 const CandidatesTableView = ({
   table,

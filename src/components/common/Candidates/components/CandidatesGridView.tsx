@@ -1,6 +1,6 @@
 import React from "react";
 import { Table as TanstackTable } from "@tanstack/react-table";
-import { Candidate } from "../types";
+import { Candidate } from "@/lib/types/candidates";
 import { Card, CardContent } from "@/components/ui/card";
 import ScoreBar from "./ScoreBar";
 import StatusBadge from "./StatusBadge";

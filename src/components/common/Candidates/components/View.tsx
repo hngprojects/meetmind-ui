@@ -19,7 +19,7 @@ const View = () => {
   const setExportOpen = useCandidatesStore((s) => s.setExportOpen);
   const { data, isLoading, isError } = useCandidates(filters);
 
-  const candidates = data?.data ?? [];
+  const candidates = data?.candidates ?? [];
   const pagination = data?.pagination;
 
   // eslint-disable-next-line react-hooks/incompatible-library

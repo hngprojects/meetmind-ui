@@ -1,6 +1,6 @@
 import { createColumnHelper } from "@tanstack/react-table";
 import { FiChevronRight } from "react-icons/fi";
-import { Candidate } from "../types";
+import { Candidate } from "@/lib/types/candidates";
 import ScoreBar from "./ScoreBar";
 import StatusBadge from "./StatusBadge";
 import ActionBadge from "./ActionBadge";
@@ -61,7 +61,7 @@ export const candidateColumns = [
     meta: { widthClass: "w-[15%]" },
     cell: (info) => <StatusBadge status={info.getValue()} />,
   }),
-  columnHelper.accessor("date", {
+  columnHelper.accessor("createdAt", {
     header: ({ column }) => {
       return (
         <button

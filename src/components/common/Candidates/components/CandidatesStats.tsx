@@ -1,5 +1,5 @@
 import React, { useMemo } from "react";
-import { Candidate } from "../types";
+import { Candidate } from "@/lib/types/candidates";
 
 type Props = {
   data: Candidate[];
@@ -9,8 +9,8 @@ const CandidatesStats = ({ data }: Props) => {
   const stats = useMemo(() => {
     return {
       total: data.length,
-      completed: data.filter((c) => c.status === "Completed").length,
-      ongoing: data.filter((c) => c.status === "Ongoing").length,
+      completed: data.filter((c) => c.status === "completed").length,
+      ongoing: data.filter((c) => c.status === "ongoing").length,
       needsAttention: data.filter((c) => c.status === "needs_review").length,
     };
   }, [data]);

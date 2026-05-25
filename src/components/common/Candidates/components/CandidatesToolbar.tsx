@@ -28,8 +28,6 @@ const STATUS_OPTIONS: { label: string; value: StatusValue }[] = [
 ];
 
 const CandidatesToolbar = () => {
-  const search = useCandidatesStore((s) => s.search);
-  const setSearch = useCandidatesStore((s) => s.setSearch);
   const filters = useCandidatesStore((s) => s.filters);
   const setFilters = useCandidatesStore((s) => s.setFilters);
   const setExportOpen = useCandidatesStore((s) => s.setExportOpen);
@@ -44,8 +42,13 @@ const CandidatesToolbar = () => {
           type="text"
           placeholder="Search candidates by name, role, or email"
           className="pl-10 pr-4 h-10 border-button-outline-border text-color-text-color-primary focus-visible:ring-1 focus-visible:ring-input-border-focus rounded-lg"
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
+          value={filters.search}
+          onChange={(e) =>
+            setFilters({
+              search: e.target.value,
+              page: 1,
+            })
+          }
         />
       </div>
 
@@ -97,13 +100,13 @@ const CandidatesToolbar = () => {
           className="h-10 px-4 gap-2 border-button-outline-border text-color-text-subtext font-medium rounded-lg"
           onClick={() =>
             setFilters({
-              ...filters,
-              sortBy: "date",
+              sortBy: filters.sortBy === "date" ? "name" : "date",
               sortDirection: filters.sortDirection === "asc" ? "desc" : "asc",
+              page: 1,
             })
           }
         >
-          <span>Sort by Date</span>
+          <span>Sort by {filters.sortBy}</span>
           <LuArrowDownAZ className="h-4 w-4 text-color-text-secondary" />
         </Button>
 
