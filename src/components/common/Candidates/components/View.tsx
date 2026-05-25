@@ -6,7 +6,7 @@ import { useCandidatesStore } from "@/store/candidatesStore";
 import { useCandidates } from "@/lib/hooks/useCandidates";
 import CandidatesGridView from "./CandidatesGridView";
 import CandidatesTableView from "./CandidatesTableView";
-import { candidateColumns } from "./columns";
+import { getCandidateColumns } from "./columns";
 import CandidatesToolbar from "./CandidatesToolbar";
 import CandidatesStats from "./CandidatesStats";
 import ExportModal from "./Export";
@@ -17,15 +17,32 @@ const View = () => {
   const filters = useCandidatesStore((s) => s.filters);
   const exportOpen = useCandidatesStore((s) => s.exportOpen);
   const setExportOpen = useCandidatesStore((s) => s.setExportOpen);
-  const { data, isLoading, isError } = useCandidates(filters);
+
+  const queryParams = {
+    q: filters.search,
+    status: filters.status === "all" ? undefined : filters.status,
+    sortBy: filters.sortBy,
+    sortDirection: filters.sortDirection,
+    page: filters.page,
+    pageSize: filters.pageSize,
+  };
+
+  const { data, isLoading, isError } = useCandidates(queryParams);
 
   const candidates = data?.candidates ?? [];
   const pagination = data?.pagination;
 
+  const setFilters = useCandidatesStore((s) => s.setFilters);
+
+  const columns = getCandidateColumns({
+    filters,
+    setFilters,
+  });
+
   // eslint-disable-next-line react-hooks/incompatible-library
   const table = useReactTable({
     data: candidates,
-    columns: candidateColumns,
+    columns,
     getCoreRowModel: getCoreRowModel(),
   });
 

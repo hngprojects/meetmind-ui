@@ -1,10 +1,10 @@
 import { createColumnHelper } from "@tanstack/react-table";
-import { FiChevronRight } from "react-icons/fi";
+import { FiChevronRight, FiArrowUp, FiArrowDown } from "react-icons/fi";
 import { Candidate } from "@/lib/types/candidates";
 import ScoreBar from "./ScoreBar";
 import StatusBadge from "./StatusBadge";
 import ActionBadge from "./ActionBadge";
-import { FiArrowUp, FiArrowDown } from "react-icons/fi";
+import { CandidateFilters } from "@/store/candidatesStore";
 
 export const getInitials = (name: string) => {
   return name
@@ -17,16 +17,42 @@ export const getInitials = (name: string) => {
 
 const columnHelper = createColumnHelper<Candidate>();
 
-export const candidateColumns = [
+type ColumnsProps = {
+  filters: CandidateFilters;
+  setFilters: (filters: Partial<CandidateFilters>) => void;
+};
+
+const getSortIcon = (active: boolean, direction: "asc" | "desc") => {
+  if (!active) return <FiArrowDown className="opacity-40" />;
+
+  return direction === "asc" ? <FiArrowUp /> : <FiArrowDown />;
+};
+
+const handleSort = (
+  field: "name" | "score" | "date",
+  filters: CandidateFilters,
+  setFilters: (filters: Partial<CandidateFilters>) => void,
+) => {
+  const isSameField = filters.sortBy === field;
+
+  setFilters({
+    sortBy: field,
+    sortDirection:
+      isSameField && filters.sortDirection === "asc" ? "desc" : "asc",
+    page: 1,
+  });
+};
+
+export const getCandidateColumns = ({ filters, setFilters }: ColumnsProps) => [
   columnHelper.accessor("name", {
-    header: ({ column }) => {
+    header: ({}) => {
       return (
         <button
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          onClick={() => handleSort("name", filters, setFilters)}
           className="flex items-center gap-1"
         >
           Name
-          {column.getIsSorted() === "asc" ? <FiArrowUp /> : <FiArrowDown />}
+          {getSortIcon(filters.sortBy === "name", filters.sortDirection)}
         </button>
       );
     },
@@ -62,14 +88,14 @@ export const candidateColumns = [
     cell: (info) => <StatusBadge status={info.getValue()} />,
   }),
   columnHelper.accessor("createdAt", {
-    header: ({ column }) => {
+    header: () => {
       return (
         <button
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          onClick={() => handleSort("date", filters, setFilters)}
           className="flex items-center gap-1"
         >
           Date
-          {column.getIsSorted() === "asc" ? <FiArrowUp /> : <FiArrowDown />}
+          {getSortIcon(filters.sortBy === "date", filters.sortDirection)}
         </button>
       );
     },
@@ -79,14 +105,14 @@ export const candidateColumns = [
     ),
   }),
   columnHelper.accessor("score", {
-    header: ({ column }) => {
+    header: () => {
       return (
         <button
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          onClick={() => handleSort("score", filters, setFilters)}
           className="flex items-center gap-1"
         >
           Scores
-          {column.getIsSorted() === "asc" ? <FiArrowUp /> : <FiArrowDown />}
+          {getSortIcon(filters.sortBy === "score", filters.sortDirection)}
         </button>
       );
     },
