@@ -103,12 +103,8 @@
   --color-calendar-bg-primary: #171717;
   --color-text-primary-foreground: #fafafa;
   --color-calendar-border: #e4e4e7;
-  --color-newsletter-subtext: #e1e3e4;
-  --color-newsletter-btn-bg: #f7f9fb;
-  --color-newsletter-btn-text: #02505e;
-  --color-belief-card-bg: #f7f9fb;
-  --color-timeline-bg: #f7f9fb;
-  --color-mission-bg: #f7f9fb;
+  --color-calendar-card-hover: #f8f8f8;
+  --color-calendar-avatar: #b5b7bd;
 
   /* =============== SCROLLBAR COLORS =============== */
   --color-scrollbar-track: #f3f4f6;

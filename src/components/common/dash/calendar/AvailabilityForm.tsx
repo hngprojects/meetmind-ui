@@ -25,7 +25,7 @@ const AvailabilityForm = () => {
       </div>
 
       {showAvailability && (
-        <div className="border-t border-calendar-border px-5 py-5">
+        <div className="px-5">
           <div className="space-y-5">
             {/* Time Inputs */}
             <div className="flex items-center gap-3">
@@ -63,7 +63,7 @@ const AvailabilityForm = () => {
 
               <select
                 className=" h-12 w-full rounded-lg border border-calendar-border
-                        px-4 text-sm outline-none"
+                        px-4 text-sm outline-none cursor-pointer"
               >
                 <option>Precious Joe</option>
               </select>
@@ -105,7 +105,7 @@ const AvailabilityForm = () => {
             <button
               className="flex h-12 w-full md:w-[190px] items-center justify-center rounded-lg 
                 cursor-pointer bg-text-primary text-sm font-medium text-white transition-opacity 
-                hover:opacity-90"
+                hover:opacity-90 mb-6"
             >
               Schedule Meeting
             </button>
