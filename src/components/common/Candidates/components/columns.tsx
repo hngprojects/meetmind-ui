@@ -5,6 +5,7 @@ import ScoreBar from "./ScoreBar";
 import StatusBadge from "./StatusBadge";
 import ActionBadge from "./ActionBadge";
 import { CandidateFilters } from "@/store/candidatesStore";
+import { formatRelativeDate, formatDate } from "../helpers/date";
 
 export const getInitials = (name: string) => {
   return name
@@ -100,9 +101,15 @@ export const getCandidateColumns = ({ filters, setFilters }: ColumnsProps) => [
       );
     },
     meta: { widthClass: "w-[15%]" },
-    cell: (info) => (
-      <span className="text-color-text-subtext">{info.getValue()}</span>
-    ),
+    cell: (info) => {
+      const date = info.getValue();
+
+      return (
+        <span className="text-color-text-subtext" title={formatDate(date)}>
+          {formatRelativeDate(date)}
+        </span>
+      );
+    },
   }),
   columnHelper.accessor("score", {
     header: () => {

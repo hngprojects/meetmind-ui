@@ -57,7 +57,7 @@ const View = () => {
   return (
     <div>
       <div className="flex flex-col gap-4">
-        <CandidatesStats data={candidates} />
+        <CandidatesStats stats={data?.stats} />
         <CandidatesToolbar />
       </div>
       {viewMode === "list" ? (

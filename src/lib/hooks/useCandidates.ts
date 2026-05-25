@@ -30,6 +30,7 @@ export const useCandidates = (params: CandidateQueryParams) => {
     select: (res) => ({
       candidates: res.data,
       pagination: res.pagination,
+      stats: res.stats,
     }),
   });
 };

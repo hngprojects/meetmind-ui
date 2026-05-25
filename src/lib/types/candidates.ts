@@ -30,6 +30,7 @@ export interface Pagination {
 export interface CandidatesResponse {
   data: Candidate[];
   pagination: Pagination;
+  stats: CandidateStats;
 }
 
 export interface CandidateQueryParams {
@@ -39,4 +40,11 @@ export interface CandidateQueryParams {
   sortDirection?: "asc" | "desc";
   page?: number;
   pageSize?: number;
+}
+
+export interface CandidateStats {
+  total: number;
+  completed: number;
+  ongoing: number;
+  needs_review: number;
 }

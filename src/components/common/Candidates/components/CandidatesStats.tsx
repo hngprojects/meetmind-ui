@@ -1,19 +1,18 @@
-import React, { useMemo } from "react";
-import { Candidate } from "@/lib/types/candidates";
+import React from "react";
+import { CandidateStats as CandidateStatsType } from "@/lib/types/candidates";
 
 type Props = {
-  data: Candidate[];
+  stats?: CandidateStatsType;
 };
 
-const CandidatesStats = ({ data }: Props) => {
-  const stats = useMemo(() => {
-    return {
-      total: data.length,
-      completed: data.filter((c) => c.status === "completed").length,
-      ongoing: data.filter((c) => c.status === "ongoing").length,
-      needsAttention: data.filter((c) => c.status === "needs_review").length,
-    };
-  }, [data]);
+const CandidatesStats = ({ stats }: Props) => {
+  const safeStats = stats ?? {
+    total: 0,
+    completed: 0,
+    ongoing: 0,
+    needs_review: 0,
+  };
+
   return (
     <div className="flex bg-bg-secondary rounded-lg w-full divide-x divide-text-white-secondary">
       <div className="p-6 flex-1 flex flex-col justify-between items-start gap-2">
@@ -21,21 +20,21 @@ const CandidatesStats = ({ data }: Props) => {
           Total Candidates
         </p>
         <p className="text-4xl font-semibold text-text-purple-accent">
-          {stats.total}
+          {safeStats.total ?? 0}
         </p>
       </div>
 
       <div className="p-6 flex-1 flex flex-col justify-between items-start gap-2">
         <p className="text-[18px] font-normal text-text-secondary">Completed</p>
         <p className="text-4xl font-semibold text-text-color-secondary">
-          {stats.completed}
+          {safeStats.completed ?? 0}
         </p>
       </div>
 
       <div className="p-6 flex-1 flex flex-col justify-between items-start gap-2">
         <p className="text-[18px] font-normal text-text-secondary">Ongoing</p>
         <p className="text-4xl font-semibold text-text-color-secondary">
-          {stats.ongoing}
+          {safeStats.ongoing ?? 0}
         </p>
       </div>
 
@@ -44,7 +43,7 @@ const CandidatesStats = ({ data }: Props) => {
           Needs attention
         </p>
         <p className="text-4xl font-semibold text-error">
-          {stats.needsAttention}
+          {safeStats.needs_review ?? 0}
         </p>
       </div>
     </div>
