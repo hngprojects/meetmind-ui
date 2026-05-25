@@ -35,6 +35,7 @@ const CalendarCard = ({
 }: CalendarCardProps) => {
   const currentMonth = months[currentDate.getMonth()];
   const currentYear = currentDate.getFullYear();
+  const today = new Date();
 
   const firstDayOfMonth = new Date(
     currentYear,
@@ -47,13 +48,44 @@ const CalendarCard = ({
     currentDate.getMonth() + 1,
     0,
   ).getDate();
+  const daysInPreviousMonth = new Date(
+    currentYear,
+    currentDate.getMonth(),
+    0,
+  ).getDate();
 
   const calendarDays = Array.from(
     { length: daysInMonth },
     (_, index) => index + 1,
   );
-  const leadingEmptyDays = Array.from({ length: firstDayOfMonth }, () => null);
-  const allCalendarDays = [...leadingEmptyDays, ...calendarDays];
+  const isCurrentMonth =
+    today.getMonth() === currentDate.getMonth() &&
+    today.getFullYear() === currentYear;
+  const todayDate = today.getDate();
+  const previousMonthDays = Array.from(
+    { length: firstDayOfMonth },
+    (_, index) => daysInPreviousMonth - firstDayOfMonth + index + 1,
+  );
+  const currentCalendarDays = [
+    ...previousMonthDays.map((day) => ({
+      day,
+      isCurrentMonth: false,
+    })),
+
+    ...calendarDays.map((day) => ({
+      day,
+      isCurrentMonth: true,
+    })),
+  ];
+  const remainingDays =
+    currentCalendarDays.length % 7 === 0
+      ? 0
+      : 7 - (currentCalendarDays.length % 7);
+  const nextMonthDays = Array.from({ length: remainingDays }, (_, index) => ({
+    day: index + 1,
+    isCurrentMonth: false,
+  }));
+  const allCalendarDays = [...currentCalendarDays, ...nextMonthDays];
 
   // Navigation functions
   const handlePreviousMonth = () => {
@@ -113,26 +145,30 @@ const CalendarCard = ({
 
       {/* Dates */}
       <div className=" mt-5 grid grid-cols-7 gap-y-4 px-5 pb-6">
-        {allCalendarDays.map((day, index) => {
-          if (day === null) {
-            return <div key={`empty-${index}`} />;
-          }
-
+        {allCalendarDays.map((calendarDay, index) => {
           return (
             <button
-              onClick={() => setSelectedDate(day)}
-              key={`${day}-${index}`}
+              key={`${calendarDay.day}-${index}`}
+              onClick={() => {
+                if (calendarDay.isCurrentMonth) {
+                  setSelectedDate(calendarDay.day);
+                }
+              }}
               className={`
                 mx-auto flex h-9 w-9 items-center justify-center rounded-md
                 text-sm font-medium transition-colors cursor-pointer
                 ${
-                  selectedDate === day
-                    ? "bg-calendar-bg-primary text-text-primary-foreground"
-                    : "text-calendar-primary hover:bg-soft-white"
+                  !calendarDay.isCurrentMonth
+                    ? "text-text-placeholder"
+                    : selectedDate === calendarDay.day
+                      ? "bg-calendar-bg-primary text-text-primary-foreground"
+                      : isCurrentMonth && todayDate === calendarDay.day
+                        ? "bg-soft-white text-calendar-primary"
+                        : "text-calendar-primary hover:bg-soft-white"
                 }
               `}
             >
-              {day}
+              {calendarDay.day}
             </button>
           );
         })}
