@@ -11,6 +11,7 @@ type Props = {
   onSelect: (id: string) => void;
 };
 
+// ==================== 🧩Main Component ====================
 export default function InterviewListSidebar({
   items,
   selectedId,
