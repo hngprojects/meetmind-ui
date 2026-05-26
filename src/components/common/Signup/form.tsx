@@ -67,8 +67,9 @@ const Signform = () => {
       localStorage.setItem("token", access_token);
 
       setFormData(data);
-      setIsSuccess(true);
+
       if (next_step === "verify_email") {
+        setIsSuccess(true);
         router.push("/verify-email");
         return;
       }

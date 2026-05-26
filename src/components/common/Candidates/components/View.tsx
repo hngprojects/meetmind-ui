@@ -21,13 +21,15 @@ const View = () => {
   const queryParams = {
     q: filters.search,
     status: filters.status === "all" ? undefined : filters.status,
+    role: filters.role ?? undefined,
     sortBy: filters.sortBy,
     sortDirection: filters.sortDirection,
     page: filters.page,
     pageSize: filters.pageSize,
   };
 
-  const { data, isLoading, isError, error } = useCandidates(queryParams);
+  const { data, isLoading, isError, error, refetch } =
+    useCandidates(queryParams);
 
   const candidates = data?.candidates ?? [];
   const pagination = data?.pagination;
@@ -120,7 +122,7 @@ const View = () => {
         )}
 
         <button
-          onClick={() => window.location.reload()}
+          onClick={() => refetch()}
           className="mt-4 px-4 py-2 rounded-lg bg-black text-white"
         >
           Retry

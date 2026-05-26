@@ -16,7 +16,9 @@ export const getCandidates = async (
 };
 
 export const getCandidate = async (id: string): Promise<Candidate> => {
-  const response = await api.get(`/api/v1/candidates/${id}`);
+  const response = await api.get(
+    `/api/v1/candidates//${encodeURIComponent(id)}`,
+  );
 
   return response.data;
 };
@@ -43,8 +45,15 @@ export const exportCandidates = async (
   if (data instanceof Blob) {
     return data;
   }
+
+  let text: string;
   try {
-    const text = await data.text();
+    text = await data.text();
+  } catch {
+    throw new Error("Export failed: invalid response format");
+  }
+
+  try {
     const json = JSON.parse(text);
     throw new Error(json?.message || "Export not implemented on backend yet");
   } catch {
