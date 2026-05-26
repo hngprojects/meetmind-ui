@@ -36,6 +36,7 @@ export interface CandidatesResponse {
 export interface CandidateQueryParams {
   q?: string;
   status?: CandidateStatus;
+  role?: string;
   sortBy?: string;
   sortDirection?: "asc" | "desc";
   page?: number;

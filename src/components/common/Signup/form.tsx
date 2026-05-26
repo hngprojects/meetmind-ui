@@ -73,6 +73,8 @@ const Signform = () => {
         router.push("/verify-email");
         return;
       }
+
+      setServerError("Unable to continue signup. Please try again.");
     } catch (error) {
       if (axios.isAxiosError(error)) {
         const responseData = error.response?.data;
