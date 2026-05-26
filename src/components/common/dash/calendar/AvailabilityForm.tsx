@@ -1,8 +1,12 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { HiOutlineMail } from "react-icons/hi";
 import type { Appointment, TimeOption } from "@/lib/appointmentTypes";
+import {
+  availableEndTimes,
+  availableStartTimes,
+} from "@/lib/calendar/timeOptions";
 
 type AvailabilityFormProps = {
   selectedAppointment: Appointment | null;
@@ -13,57 +17,19 @@ type AvailabilityFormProps = {
   setIsSuccessModalOpen: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
-const availableStartTimes = [
-  {
-    hour: "10",
-    minute: "00",
-    period: "AM",
-  },
-
-  {
-    hour: "11",
-    minute: "00",
-    period: "AM",
-  },
-
-  {
-    hour: "10",
-    minute: "30",
-    period: "AM",
-  },
-
-  {
-    hour: "11",
-    minute: "00",
-    period: "PM",
-  },
-];
-
-const availableEndTimes = [
-  {
-    hour: "10",
-    minute: "30",
-    period: "AM",
-  },
-
-  {
-    hour: "11",
-    minute: "30",
-    period: "PM",
-  },
-
-  {
-    hour: "11",
-    minute: "15",
-    period: "PM",
-  },
-
-  {
-    hour: "12",
-    minute: "00",
-    period: "PM",
-  },
-];
+const isStartBeforeEnd = (start: TimeOption, end: TimeOption): boolean => {
+  const convertTo24Hour = (time: TimeOption) => {
+    let hour = Number(time.hour);
+    if (time.period === "PM" && hour !== 12) {
+      hour += 12;
+    }
+    if (time.period === "AM" && hour === 12) {
+      hour = 0;
+    }
+    return hour * 60 + Number(time.minute);
+  };
+  return convertTo24Hour(start) < convertTo24Hour(end);
+};
 
 const AvailabilityForm = ({
   selectedAppointment,
@@ -78,9 +44,37 @@ const AvailabilityForm = ({
   const [showStartDropdown, setShowStartDropdown] = useState(false);
 
   const [showEndDropdown, setShowEndDropdown] = useState(false);
+  const startDropdownRef = useRef<HTMLDivElement | null>(null);
+  const endDropdownRef = useRef<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      const target = event.target as Node;
+
+      if (
+        startDropdownRef.current &&
+        !startDropdownRef.current.contains(target)
+      ) {
+        setShowStartDropdown(false);
+      }
+
+      if (endDropdownRef.current && !endDropdownRef.current.contains(target)) {
+        setShowEndDropdown(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
 
   const isFormComplete =
-    selectedAppointment && selectedStartTime && selectedEndTime;
+    selectedAppointment &&
+    selectedStartTime &&
+    selectedEndTime &&
+    isStartBeforeEnd(selectedStartTime, selectedEndTime);
 
   return (
     <section className="rounded-lg border border-calendar-border bg-white">
@@ -106,9 +100,11 @@ const AvailabilityForm = ({
             {/* Time Inputs */}
             <div className="flex items-center gap-3">
               {/* Start Time */}
-              <div className="relative">
+              <div ref={startDropdownRef} className="relative">
                 <button
                   type="button"
+                  aria-expanded={showStartDropdown}
+                  aria-controls="start-time-dropdown"
                   onClick={() => setShowStartDropdown(!showStartDropdown)}
                   className="
                     flex h-12 w-[150px] items-center justify-between
@@ -137,6 +133,7 @@ const AvailabilityForm = ({
 
                 {showStartDropdown && (
                   <div
+                    id="start-time-dropdown"
                     className="absolute left-0 top-14 z-20 w-[150px] rounded-xl 
                       border border-calendar-border bg-white p-2 shadow-md"
                   >
@@ -166,9 +163,11 @@ const AvailabilityForm = ({
               <div className="h-px w-6 bg-text-divider" />
 
               {/* End Time */}
-              <div className="relative">
+              <div ref={endDropdownRef} className="relative">
                 <button
                   type="button"
+                  aria-expanded={showEndDropdown}
+                  aria-controls="end-time-dropdown"
                   onClick={() => setShowEndDropdown(!showEndDropdown)}
                   className="
                     flex h-12 w-[150px] items-center justify-between
@@ -197,6 +196,7 @@ const AvailabilityForm = ({
 
                 {showEndDropdown && (
                   <div
+                    id="end-time-dropdown"
                     className="absolute left-0 top-14 z-20 w-[150px] rounded-xl 
                       border border-calendar-border bg-white p-2 shadow-md"
                   >

@@ -1,4 +1,6 @@
 import { TimeOption } from "@/lib/appointmentTypes";
+import { getCandidateInitials } from "@/lib/calendar/appointmentUtils";
+import { formatTimeRange } from "@/lib/calendar/timeUtils";
 import { FiChevronRight } from "react-icons/fi";
 
 type AppointmentCardProps = {
@@ -19,13 +21,7 @@ const AppointmentCard = ({
   onClick,
 }: AppointmentCardProps) => {
   // Generate user's initials
-  const initials = candidate
-    .split(" ")
-    .filter(Boolean)
-    .map((word) => word.charAt(0))
-    .join("")
-    .toUpperCase()
-    .slice(0, 2);
+  const initials = getCandidateInitials(candidate);
 
   return (
     <button
@@ -56,11 +52,7 @@ const AppointmentCard = ({
           </p>
 
           <p className=" mt-3 text-sm text-calendar-secondary">
-            {startTime.hour}:{startTime.minute}
-            {startTime.period}
-            {" - "}
-            {endTime.hour}:{endTime.minute}
-            {endTime.period}
+            {formatTimeRange(startTime, endTime)}
           </p>
         </div>
       </div>

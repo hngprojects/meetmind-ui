@@ -16,9 +16,9 @@ const CalendarLayout = ({
 
       {/* Main Panel */}
       <div
-        className={`
-      ${detailsPanel ? "w-full lg:w-[355px] flex-shrink-0" : "flex-1"}
-    `}
+        className={
+          detailsPanel ? "w-full lg:w-[355px] flex-shrink-0" : "flex-1"
+        }
       >
         {panel}
       </div>

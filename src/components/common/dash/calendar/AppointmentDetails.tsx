@@ -33,7 +33,7 @@ const AppointmentDetails = ({
     : `${appointment.endTime.hour}:${appointment.endTime.minute} ${appointment.endTime.period}`;
 
   return (
-    <section className="rounded-[32px] bg-calendar-appointement p-6">
+    <section className="rounded-[32px] bg-calendar-appointment p-6">
       {/* Inner Profile Card */}
       <div
         className="rounded-[20px] border border-calendar-border

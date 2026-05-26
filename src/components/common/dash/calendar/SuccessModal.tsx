@@ -16,10 +16,14 @@ const SuccessModal = ({ appointment, onClose }: SuccessModalProps) => {
     .toUpperCase()
     .slice(0, 2);
 
-  const formattedDate = new Date(appointment.date).toLocaleDateString("en-US", {
-    month: "long",
-    day: "numeric",
-  });
+  const dateObject = new Date(appointment.date);
+
+  const formattedDate = isNaN(dateObject.getTime())
+    ? "Invalid date"
+    : dateObject.toLocaleDateString("en-US", {
+        month: "long",
+        day: "numeric",
+      });
 
   return (
     <div
