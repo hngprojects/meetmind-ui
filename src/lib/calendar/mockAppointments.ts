@@ -2,6 +2,7 @@ export const appointmentGroups = [
   {
     id: 1,
     date: "Friday, June 13, 2025",
+    dateISO: "2025-06-13",
 
     appointments: [
       {
@@ -49,6 +50,7 @@ export const appointmentGroups = [
   {
     id: 2,
     date: "Wednesday, June 25, 2025",
+    dateISO: "2025-06-25",
 
     appointments: [
       {

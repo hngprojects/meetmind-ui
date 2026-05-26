@@ -30,15 +30,17 @@ const CalendarPanel = ({
   const currentYear = currentDate.getFullYear();
   const [selectedView, setSelectedView] = useState("today");
 
-  const todayAppointments = appointmentGroups.filter((group) => {
-    const appointmentDate = new Date(group.date);
+  const selectedDateKey = new Date(
+    currentYear,
+    currentDate.getMonth(),
+    selectedDate,
+  )
+    .toISOString()
+    .slice(0, 10);
 
-    return (
-      appointmentDate.getDate() === selectedDate &&
-      appointmentDate.getMonth() === currentDate.getMonth() &&
-      appointmentDate.getFullYear() === currentYear
-    );
-  });
+  const todayAppointments = appointmentGroups.filter(
+    (group) => group.dateISO === selectedDateKey,
+  );
 
   return (
     <section>
