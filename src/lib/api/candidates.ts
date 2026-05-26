@@ -17,7 +17,7 @@ export const getCandidates = async (
 
 export const getCandidate = async (id: string): Promise<Candidate> => {
   const response = await api.get(
-    `/api/v1/candidates//${encodeURIComponent(id)}`,
+    `/api/v1/candidates/${encodeURIComponent(id)}`,
   );
 
   return response.data;
@@ -53,11 +53,16 @@ export const exportCandidates = async (
     throw new Error("Export failed: invalid response format");
   }
 
+  let json: { message?: string } | null = null;
   try {
-    const json = JSON.parse(text);
-    throw new Error(json?.message || "Export not implemented on backend yet");
-  } catch (err) {
-    console.error(err);
+    json = JSON.parse(text);
+  } catch {
     throw new Error("Export failed: invalid response format");
   }
+
+  throw new Error(
+    typeof json?.message === "string" && json.message.trim().length > 0
+      ? json.message
+      : "Export not implemented on backend yet",
+  );
 };

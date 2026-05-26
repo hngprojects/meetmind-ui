@@ -99,11 +99,20 @@ const CandidatesToolbar = () => {
           variant="ghost"
           className="h-10 px-4 gap-2 border-button-outline-border text-color-text-subtext font-medium rounded-lg"
           onClick={() =>
-            setFilters({
-              sortBy: filters.sortBy === "date" ? "name" : "date",
-              sortDirection: filters.sortDirection === "asc" ? "desc" : "asc",
-              page: 1,
-            })
+            setFilters(
+              (() => {
+                const nextSortBy = filters.sortBy === "date" ? "name" : "date";
+                const sameField = nextSortBy === filters.sortBy;
+                return {
+                  sortBy: nextSortBy,
+                  sortDirection:
+                    sameField && filters.sortDirection === "asc"
+                      ? "desc"
+                      : "asc",
+                  page: 1,
+                };
+              })(),
+            )
           }
         >
           <span>Sort by {filters.sortBy}</span>

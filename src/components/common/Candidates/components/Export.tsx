@@ -23,6 +23,7 @@ const ExportModal = ({ open, onClose }: ExportModalProps) => {
     const params: CandidateQueryParams = {
       q: filters.search,
       status: filters.status === "all" ? undefined : filters.status,
+      role: filters.role ?? undefined,
       sortBy: filters.sortBy,
       sortDirection: filters.sortDirection,
       page: filters.page,
