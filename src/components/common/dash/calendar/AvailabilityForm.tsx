@@ -10,6 +10,7 @@ type AvailabilityFormProps = {
   setSelectedStartTime: React.Dispatch<React.SetStateAction<TimeOption | null>>;
   selectedEndTime: TimeOption | null;
   setSelectedEndTime: React.Dispatch<React.SetStateAction<TimeOption | null>>;
+  setIsSuccessModalOpen: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
 const availableStartTimes = [
@@ -70,12 +71,16 @@ const AvailabilityForm = ({
   setSelectedStartTime,
   selectedEndTime,
   setSelectedEndTime,
+  setIsSuccessModalOpen,
 }: AvailabilityFormProps) => {
   const [showAvailability, setShowAvailability] = useState(true);
 
   const [showStartDropdown, setShowStartDropdown] = useState(false);
 
   const [showEndDropdown, setShowEndDropdown] = useState(false);
+
+  const isFormComplete =
+    selectedAppointment && selectedStartTime && selectedEndTime;
 
   return (
     <section className="rounded-lg border border-calendar-border bg-white">
@@ -270,11 +275,20 @@ const AvailabilityForm = ({
 
             {/* Button */}
             <button
-              className="flex h-12 w-full md:w-[190px] items-center justify-center rounded-lg 
-                cursor-pointer bg-text-primary text-sm font-medium text-white transition-opacity 
-                hover:opacity-90 mb-6"
+              type="button"
+              disabled={!isFormComplete}
+              onClick={() => setIsSuccessModalOpen(true)}
+              className={`
+                mb-6 flex h-12 w-full md:w-[190px] items-center justify-center rounded-lg
+                text-sm font-medium transition-opacity
+                ${
+                  isFormComplete
+                    ? "cursor-pointer bg-text-primary text-white hover:opacity-90"
+                    : "cursor-not-allowed bg-gray-300 text-gray-500"
+                }
+              `}
             >
-              Schedule Meeting
+              Schedule Interview
             </button>
           </div>
         </div>

@@ -6,6 +6,7 @@ import CalendarPanel from "./CalendarPanel";
 import CalendarSidebar from "./CalendarSidebar";
 import type { Appointment, TimeOption } from "@/lib/appointmentTypes";
 import AppointmentDetails from "./AppointmentDetails";
+import SuccessModal from "./SuccessModal";
 
 const Calendar = () => {
   const [selectedDate, setSelectedDate] = useState(new Date().getDate());
@@ -22,53 +23,65 @@ const Calendar = () => {
     null,
   );
 
+  const [isSuccessModalOpen, setIsSuccessModalOpen] = useState(false);
+
   return (
-    <CalendarLayout
-      sidebar={
-        <CalendarSidebar
-          selectedDate={selectedDate}
-          setSelectedDate={setSelectedDate}
-          currentDate={currentDate}
-          setCurrentDate={setCurrentDate}
-          selectedAppointment={selectedAppointment}
-          selectedStartTime={selectedStartTime}
-          setSelectedStartTime={setSelectedStartTime}
-          selectedEndTime={selectedEndTime}
-          setSelectedEndTime={setSelectedEndTime}
-        />
-      }
-      panel={
-        <CalendarPanel
-          selectedDate={selectedDate}
-          currentDate={currentDate}
-          selectedAppointment={selectedAppointment}
-          setSelectedAppointment={setSelectedAppointment}
-          setSelectedStartTime={setSelectedStartTime}
-          setSelectedEndTime={setSelectedEndTime}
-        />
-      }
-      detailsPanel={
-        selectedAppointment ? (
-          <AppointmentDetails
-            appointment={selectedAppointment}
+    <>
+      <CalendarLayout
+        sidebar={
+          <CalendarSidebar
+            selectedDate={selectedDate}
+            setSelectedDate={setSelectedDate}
+            currentDate={currentDate}
+            setCurrentDate={setCurrentDate}
+            selectedAppointment={selectedAppointment}
             selectedStartTime={selectedStartTime}
+            setSelectedStartTime={setSelectedStartTime}
             selectedEndTime={selectedEndTime}
-            onCancel={() => {
-              setSelectedAppointment(null);
-
-              setSelectedStartTime(null);
-
-              setSelectedEndTime(null);
-            }}
-            onReschedule={() => {
-              setSelectedStartTime(null);
-
-              setSelectedEndTime(null);
-            }}
+            setSelectedEndTime={setSelectedEndTime}
+            setIsSuccessModalOpen={setIsSuccessModalOpen}
           />
-        ) : null
-      }
-    />
+        }
+        panel={
+          <CalendarPanel
+            selectedDate={selectedDate}
+            currentDate={currentDate}
+            selectedAppointment={selectedAppointment}
+            setSelectedAppointment={setSelectedAppointment}
+            setSelectedStartTime={setSelectedStartTime}
+            setSelectedEndTime={setSelectedEndTime}
+          />
+        }
+        detailsPanel={
+          selectedAppointment ? (
+            <AppointmentDetails
+              appointment={selectedAppointment}
+              selectedStartTime={selectedStartTime}
+              selectedEndTime={selectedEndTime}
+              onCancel={() => {
+                setSelectedAppointment(null);
+
+                setSelectedStartTime(null);
+
+                setSelectedEndTime(null);
+              }}
+              onReschedule={() => {
+                setSelectedStartTime(null);
+
+                setSelectedEndTime(null);
+              }}
+            />
+          ) : null
+        }
+      />
+
+      {isSuccessModalOpen && (
+        <SuccessModal
+          appointment={selectedAppointment}
+          onClose={() => setIsSuccessModalOpen(false)}
+        />
+      )}
+    </>
   );
 };
 

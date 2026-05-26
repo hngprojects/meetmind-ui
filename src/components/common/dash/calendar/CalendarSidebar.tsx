@@ -8,12 +8,11 @@ type CalendarSidebarProps = {
   currentDate: Date;
   setCurrentDate: React.Dispatch<React.SetStateAction<Date>>;
   selectedAppointment: Appointment | null;
-
   selectedStartTime: TimeOption | null;
   setSelectedStartTime: React.Dispatch<React.SetStateAction<TimeOption | null>>;
-
   selectedEndTime: TimeOption | null;
   setSelectedEndTime: React.Dispatch<React.SetStateAction<TimeOption | null>>;
+  setIsSuccessModalOpen: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
 const CalendarSidebar = ({
@@ -26,6 +25,7 @@ const CalendarSidebar = ({
   setSelectedStartTime,
   selectedEndTime,
   setSelectedEndTime,
+  setIsSuccessModalOpen,
 }: CalendarSidebarProps) => {
   return (
     <aside className="space-y-0">
@@ -42,6 +42,7 @@ const CalendarSidebar = ({
         setSelectedStartTime={setSelectedStartTime}
         selectedEndTime={selectedEndTime}
         setSelectedEndTime={setSelectedEndTime}
+        setIsSuccessModalOpen={setIsSuccessModalOpen}
       />
     </aside>
   );

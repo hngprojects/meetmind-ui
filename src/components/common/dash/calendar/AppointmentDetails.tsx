@@ -73,7 +73,7 @@ const AppointmentDetails = ({
           onClick={onReschedule}
           className="flex px-2 py-2.5 h-12 flex-1 items-center justify-center gap-2 rounded-lg border
             border-accent-teal bg-white text-base font-medium text-text-primary
-            transition-colors hover:bg-soft-white"
+            transition-colors hover:bg-soft-white cursor-pointer"
         >
           <FiCalendar className="text-lg" />
           Reschedule
@@ -85,8 +85,7 @@ const AppointmentDetails = ({
           onClick={onCancel}
           className="flex px-2 py-2.5 h-12 flex-1 items-center justify-center gap-2 rounded-lg border
             border-alert bg-white text-base font-medium text-alert transition-colors 
-            hover:bg-red-50
-        "
+            hover:bg-red-50 cursor-pointer"
         >
           <FiX className="text-lg" />
           Cancel
