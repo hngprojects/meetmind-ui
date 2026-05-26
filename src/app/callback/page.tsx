@@ -23,7 +23,7 @@ const GoogleCallback = () => {
 
     if (token) {
       localStorage.setItem("auth_token", token);
-      router.replace("/dashboard");
+      router.replace("/Dashboard");
       return;
     }
 
