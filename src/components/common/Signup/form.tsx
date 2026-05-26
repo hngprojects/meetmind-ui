@@ -68,10 +68,16 @@ const Signform = () => {
 
       setFormData(data);
       setIsSuccess(true);
-      if (next_step === "verify_email") {
+      if (
+        next_step === "verify_email" ||
+        response.status === 201 ||
+        response.status === 200
+      ) {
         router.push("/verify-email");
         return;
       }
+      // Fallback redirect just in case
+      router.push("/verify-email");
     } catch (error) {
       if (axios.isAxiosError(error)) {
         const responseData = error.response?.data;
