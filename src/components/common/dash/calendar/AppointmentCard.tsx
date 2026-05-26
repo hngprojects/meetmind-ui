@@ -1,10 +1,12 @@
+import { TimeOption } from "@/lib/appointmentTypes";
 import { FiChevronRight } from "react-icons/fi";
 
 type AppointmentCardProps = {
   candidate: string;
   email: string;
   role: string;
-  time: string;
+  startTime: TimeOption;
+  endTime: TimeOption;
   onClick: () => void;
 };
 
@@ -12,7 +14,8 @@ const AppointmentCard = ({
   candidate,
   email,
   role,
-  time,
+  startTime,
+  endTime,
   onClick,
 }: AppointmentCardProps) => {
   // Generate user's initials
@@ -52,7 +55,13 @@ const AppointmentCard = ({
             {email}
           </p>
 
-          <p className=" mt-3 text-sm text-calendar-secondary">{time}</p>
+          <p className=" mt-3 text-sm text-calendar-secondary">
+            {startTime.hour}:{startTime.minute}
+            {startTime.period}
+            {" - "}
+            {endTime.hour}:{endTime.minute}
+            {endTime.period}
+          </p>
         </div>
       </div>
 

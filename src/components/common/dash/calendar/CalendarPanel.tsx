@@ -36,7 +36,17 @@ const CalendarPanel = ({
           candidate: "Precious Joe",
           email: "preciousjoe@gmail.com",
           role: "Frontend Developer",
-          time: "Tomorrow 10:00AM - 10:30AM",
+          startTime: {
+            hour: "10",
+            minute: "00",
+            period: "AM",
+          },
+
+          endTime: {
+            hour: "10",
+            minute: "30",
+            period: "AM",
+          },
           date: "Friday, June 13, 2025",
         },
 
@@ -45,7 +55,19 @@ const CalendarPanel = ({
           candidate: "Sarah Wilson",
           email: "sarahwilson@gmail.com",
           role: "UI Designer",
-          time: "Tomorrow 11:00AM - 11:30AM",
+
+          startTime: {
+            hour: "11",
+            minute: "00",
+            period: "AM",
+          },
+
+          endTime: {
+            hour: "11",
+            minute: "30",
+            period: "AM",
+          },
+
           date: "Friday, June 13, 2025",
         },
       ],
@@ -61,7 +83,19 @@ const CalendarPanel = ({
           candidate: "Michael Brown",
           email: "michaelbrown@gmail.com",
           role: "Backend Engineer",
-          time: "10:30AM - 11:15AM",
+
+          startTime: {
+            hour: "10",
+            minute: "30",
+            period: "AM",
+          },
+
+          endTime: {
+            hour: "11",
+            minute: "15",
+            period: "AM",
+          },
+
           date: "Wednesday, June 25, 2025",
         },
 
@@ -70,7 +104,19 @@ const CalendarPanel = ({
           candidate: "Emily Davis",
           email: "emilydavis@gmail.com",
           role: "Product Designer",
-          time: "11:00AM - 12:00PM",
+
+          startTime: {
+            hour: "11",
+            minute: "00",
+            period: "AM",
+          },
+
+          endTime: {
+            hour: "12",
+            minute: "00",
+            period: "PM",
+          },
+
           date: "Wednesday, June 25, 2025",
         },
       ],
@@ -126,7 +172,8 @@ const CalendarPanel = ({
                     candidate={appointment.candidate}
                     email={appointment.email}
                     role={appointment.role}
-                    time={appointment.time}
+                    startTime={appointment.startTime}
+                    endTime={appointment.endTime}
                     onClick={() => {
                       setSelectedAppointment((previousAppointment) =>
                         previousAppointment?.id === appointment.id

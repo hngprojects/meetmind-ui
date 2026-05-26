@@ -3,7 +3,8 @@ export type Appointment = {
   candidate: string;
   email: string;
   role: string;
-  time: string;
+  startTime: TimeOption;
+  endTime: TimeOption;
   date: string;
 };
 

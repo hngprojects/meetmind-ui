@@ -67,7 +67,11 @@ const AppointmentDetails = ({ appointment }: AppointmentDetailsProps) => {
             text-calendar-secondary
           "
           >
-            {appointment.time}
+            {appointment.startTime.hour}:{appointment.startTime.minute}
+            {appointment.startTime.period}
+            {" - "}
+            {appointment.endTime.hour}:{appointment.endTime.minute}
+            {appointment.endTime.period}
           </p>
         </div>
       </div>
