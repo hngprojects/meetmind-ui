@@ -6,3 +6,9 @@ export type Appointment = {
   time: string;
   date: string;
 };
+
+export type TimeOption = {
+  hour: string;
+  minute: string;
+  period: string;
+};

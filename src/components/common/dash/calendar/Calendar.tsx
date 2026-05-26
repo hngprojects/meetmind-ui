@@ -4,7 +4,7 @@ import { useState } from "react";
 import CalendarLayout from "./CalendarLayout";
 import CalendarPanel from "./CalendarPanel";
 import CalendarSidebar from "./CalendarSidebar";
-import type { Appointment } from "@/lib/appointmentTypes";
+import type { Appointment, TimeOption } from "@/lib/appointmentTypes";
 import AppointmentDetails from "./AppointmentDetails";
 
 const Calendar = () => {
@@ -14,6 +14,14 @@ const Calendar = () => {
   const [selectedAppointment, setSelectedAppointment] =
     useState<Appointment | null>(null);
 
+  const [selectedStartTime, setSelectedStartTime] = useState<TimeOption | null>(
+    null,
+  );
+
+  const [selectedEndTime, setSelectedEndTime] = useState<TimeOption | null>(
+    null,
+  );
+
   return (
     <CalendarLayout
       sidebar={
@@ -22,6 +30,11 @@ const Calendar = () => {
           setSelectedDate={setSelectedDate}
           currentDate={currentDate}
           setCurrentDate={setCurrentDate}
+          selectedAppointment={selectedAppointment}
+          selectedStartTime={selectedStartTime}
+          setSelectedStartTime={setSelectedStartTime}
+          selectedEndTime={selectedEndTime}
+          setSelectedEndTime={setSelectedEndTime}
         />
       }
       panel={

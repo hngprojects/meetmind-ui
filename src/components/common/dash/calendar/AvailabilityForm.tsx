@@ -2,9 +2,80 @@
 
 import { useState } from "react";
 import { HiOutlineMail } from "react-icons/hi";
+import type { Appointment, TimeOption } from "@/lib/appointmentTypes";
 
-const AvailabilityForm = () => {
+type AvailabilityFormProps = {
+  selectedAppointment: Appointment | null;
+  selectedStartTime: TimeOption | null;
+  setSelectedStartTime: React.Dispatch<React.SetStateAction<TimeOption | null>>;
+  selectedEndTime: TimeOption | null;
+  setSelectedEndTime: React.Dispatch<React.SetStateAction<TimeOption | null>>;
+};
+
+const availableStartTimes = [
+  {
+    hour: "10",
+    minute: "00",
+    period: "AM",
+  },
+
+  {
+    hour: "11",
+    minute: "00",
+    period: "AM",
+  },
+
+  {
+    hour: "10",
+    minute: "30",
+    period: "AM",
+  },
+
+  {
+    hour: "11",
+    minute: "00",
+    period: "PM",
+  },
+];
+
+const availableEndTimes = [
+  {
+    hour: "10",
+    minute: "30",
+    period: "AM",
+  },
+
+  {
+    hour: "11",
+    minute: "30",
+    period: "PM",
+  },
+
+  {
+    hour: "11",
+    minute: "15",
+    period: "PM",
+  },
+
+  {
+    hour: "12",
+    minute: "00",
+    period: "PM",
+  },
+];
+
+const AvailabilityForm = ({
+  selectedAppointment,
+  selectedStartTime,
+  setSelectedStartTime,
+  selectedEndTime,
+  setSelectedEndTime,
+}: AvailabilityFormProps) => {
   const [showAvailability, setShowAvailability] = useState(true);
+
+  const [showStartDropdown, setShowStartDropdown] = useState(false);
+
+  const [showEndDropdown, setShowEndDropdown] = useState(false);
 
   return (
     <section className="rounded-lg border border-calendar-border bg-white">
@@ -30,30 +101,120 @@ const AvailabilityForm = () => {
             {/* Time Inputs */}
             <div className="flex items-center gap-3">
               {/* Start Time */}
-              <div
-                className="flex h-12 w-[150px] items-center justify-between
-                  rounded-lg border border-calendar-border px-4"
-              >
-                <span className="text-sm text-text-subtext">00:00</span>
+              <div className="relative">
+                <button
+                  type="button"
+                  onClick={() => setShowStartDropdown(!showStartDropdown)}
+                  className="
+                    flex h-12 w-[150px] items-center justify-between
+                    rounded-lg border border-calendar-border
+                    px-4
+                  "
+                >
+                  <div className="flex items-center gap-1">
+                    <span className="text-sm text-text-subtext">
+                      {selectedStartTime?.hour || "00"}
+                    </span>
 
-                <div className="h-6 w-px bg-calendar-border" />
+                    <span className="text-sm text-text-subtext">:</span>
 
-                <span className="text-sm text-text-subtext">AM</span>
+                    <span className="text-sm text-text-subtext">
+                      {selectedStartTime?.minute || "00"}
+                    </span>
+                  </div>
+
+                  <div className="h-6 w-px bg-calendar-border" />
+
+                  <span className="text-sm text-text-subtext">
+                    {selectedStartTime?.period || "AM"}
+                  </span>
+                </button>
+
+                {showStartDropdown && (
+                  <div
+                    className="absolute left-0 top-14 z-20 w-[150px] rounded-xl 
+                      border border-calendar-border bg-white p-2 shadow-md"
+                  >
+                    {availableStartTimes.map((time, index) => (
+                      <button
+                        key={index}
+                        type="button"
+                        onClick={() => {
+                          setSelectedStartTime(time);
+                          setShowStartDropdown(false);
+                        }}
+                        className="flex w-full items-center justify-between
+                        rounded-lg px-3 py-2 text-sm hover:bg-soft-white"
+                      >
+                        <span>
+                          {time.hour}:{time.minute}
+                        </span>
+
+                        <span>{time.period}</span>
+                      </button>
+                    ))}
+                  </div>
+                )}
               </div>
 
               {/* Divider */}
               <div className="h-px w-6 bg-text-divider" />
 
               {/* End Time */}
-              <div
-                className=" flex h-12 w-[150px] items-center justify-between
-                  rounded-lg border border-calendar-border px-4"
-              >
-                <span className="text-sm text-text-subtext">00:00</span>
+              <div className="relative">
+                <button
+                  type="button"
+                  onClick={() => setShowEndDropdown(!showEndDropdown)}
+                  className="
+                    flex h-12 w-[150px] items-center justify-between
+                    rounded-lg border border-calendar-border
+                    px-4
+                  "
+                >
+                  <div className="flex items-center gap-1">
+                    <span className="text-sm text-text-subtext">
+                      {selectedEndTime?.hour || "00"}
+                    </span>
 
-                <div className="h-6 w-px bg-calendar-border" />
+                    <span className="text-sm text-text-subtext">:</span>
 
-                <span className="text-sm text-text-subtext">PM</span>
+                    <span className="text-sm text-text-subtext">
+                      {selectedEndTime?.minute || "00"}
+                    </span>
+                  </div>
+
+                  <div className="h-6 w-px bg-calendar-border" />
+
+                  <span className="text-sm text-text-subtext">
+                    {selectedEndTime?.period || "PM"}
+                  </span>
+                </button>
+
+                {showEndDropdown && (
+                  <div
+                    className="absolute left-0 top-14 z-20 w-[150px] rounded-xl 
+                      border border-calendar-border bg-white p-2 shadow-md"
+                  >
+                    {availableEndTimes.map((time, index) => (
+                      <button
+                        key={index}
+                        type="button"
+                        onClick={() => {
+                          setSelectedEndTime(time);
+                          setShowEndDropdown(false);
+                        }}
+                        className="flex w-full items-center justify-between
+                        rounded-lg px-3 py-2 text-sm hover:bg-soft-white"
+                      >
+                        <span>
+                          {time.hour}:{time.minute}
+                        </span>
+
+                        <span>{time.period}</span>
+                      </button>
+                    ))}
+                  </div>
+                )}
               </div>
             </div>
 
@@ -65,7 +226,9 @@ const AvailabilityForm = () => {
                 className=" h-12 w-full rounded-lg border border-calendar-border
                         px-4 text-sm outline-none cursor-pointer"
               >
-                <option>Precious Joe</option>
+                <option value={selectedAppointment?.candidate || ""}>
+                  {selectedAppointment?.candidate || "Select Candidate"}
+                </option>
               </select>
             </div>
 
@@ -83,6 +246,8 @@ const AvailabilityForm = () => {
 
                 <input
                   type="email"
+                  value={selectedAppointment?.email || ""}
+                  readOnly
                   placeholder="you@company.com"
                   className=" w-full bg-transparent text-sm outline-none"
                 />
@@ -95,6 +260,8 @@ const AvailabilityForm = () => {
 
               <input
                 type="text"
+                value={selectedAppointment?.role || ""}
+                readOnly
                 placeholder="-"
                 className=" h-12 w-full rounded-lg border border-calendar-border
                   px-4 text-sm outline-none"

@@ -29,8 +29,8 @@ const AppointmentCard = ({
       type="button"
       onClick={onClick}
       className=" flex items-start justify-between rounded-2xl border 
-                border-calendar-border bg-bg-secondary px-6 py-5 transition-colors 
-                text-full w-full hover:bg-soft-white cursor-pointer"
+                border-calendar-border bg-background px-6 py-5 transition-colors 
+                text-full w-full hover:bg-bg-secondary cursor-pointer"
     >
       {/* Left Content */}
       <div className="flex items-start gap-4">
