@@ -43,6 +43,10 @@ const Calendar = () => {
           currentDate={currentDate}
           selectedAppointment={selectedAppointment}
           setSelectedAppointment={setSelectedAppointment}
+          selectedStartTime={selectedStartTime}
+          setSelectedStartTime={setSelectedStartTime}
+          selectedEndTime={selectedEndTime}
+          setSelectedEndTime={setSelectedEndTime}
         />
       }
       detailsPanel={

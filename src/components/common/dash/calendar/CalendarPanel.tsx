@@ -3,7 +3,7 @@
 import { useState } from "react";
 import AppointmentCard from "./AppointmentCard";
 import EmptyState from "./EmptyState";
-import type { Appointment } from "@/lib/appointmentTypes";
+import type { Appointment, TimeOption } from "@/lib/appointmentTypes";
 
 type CalendarPanelProps = {
   selectedDate: number;
@@ -12,12 +12,21 @@ type CalendarPanelProps = {
   setSelectedAppointment: React.Dispatch<
     React.SetStateAction<Appointment | null>
   >;
+  selectedStartTime: TimeOption | null;
+  setSelectedStartTime: React.Dispatch<React.SetStateAction<TimeOption | null>>;
+  selectedEndTime: TimeOption | null;
+  setSelectedEndTime: React.Dispatch<React.SetStateAction<TimeOption | null>>;
 };
 
 const CalendarPanel = ({
   selectedDate,
   currentDate,
+  selectedAppointment,
   setSelectedAppointment,
+  selectedStartTime,
+  setSelectedStartTime,
+  selectedEndTime,
+  setSelectedEndTime,
 }: CalendarPanelProps) => {
   const currentMonth = currentDate.toLocaleString("default", { month: "long" });
 
@@ -175,11 +184,23 @@ const CalendarPanel = ({
                     startTime={appointment.startTime}
                     endTime={appointment.endTime}
                     onClick={() => {
-                      setSelectedAppointment((previousAppointment) =>
-                        previousAppointment?.id === appointment.id
-                          ? null
-                          : appointment,
-                      );
+                      const isSameAppointment =
+                        selectedAppointment?.id === appointment.id;
+
+                      if (isSameAppointment) {
+                        setSelectedAppointment(null);
+
+                        setSelectedStartTime(null);
+                        setSelectedEndTime(null);
+
+                        return;
+                      }
+
+                      setSelectedAppointment(appointment);
+
+                      setSelectedStartTime(appointment.startTime);
+
+                      setSelectedEndTime(appointment.endTime);
                     }}
                   />
                 ))}
