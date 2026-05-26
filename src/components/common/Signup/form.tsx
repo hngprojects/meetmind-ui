@@ -62,9 +62,14 @@ const Signform = () => {
       setIsSuccess(false);
       const response = await api.post("/api/v1/auth/signup", data);
 
-      const { access_token, next_step } = response.data;
+      const access_token =
+        response.data?.data?.access_token || response.data?.access_token;
+      const next_step =
+        response.data?.data?.next_step || response.data?.next_step;
 
-      localStorage.setItem("token", access_token);
+      if (access_token) {
+        localStorage.setItem("token", access_token);
+      }
 
       setFormData(data);
       setIsSuccess(true);
@@ -84,10 +89,15 @@ const Signform = () => {
         const message =
           responseData?.error?.details?.[0]?.msg ||
           responseData?.message ||
+          error.message ||
           "Something went wrong. Try again.";
         setServerError(message);
       } else {
-        setServerError("Unexpected error. Please try again.");
+        setServerError(
+          error instanceof Error
+            ? error.message
+            : "Unexpected error. Please try again.",
+        );
       }
     } finally {
       setIsLoading(false);
