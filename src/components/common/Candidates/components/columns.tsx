@@ -6,13 +6,17 @@ import StatusBadge from "./StatusBadge";
 import ActionBadge from "./ActionBadge";
 import { CandidateFilters } from "@/store/candidatesStore";
 import { formatRelativeDate, formatDate } from "../helpers/date";
+import SortableHeader from "./SortableHeader";
+import { Button } from "@/components/ui/button";
 
 export const getInitials = (name: string) => {
   return name
+    .trim()
     .split(" ")
+    .filter(Boolean)
     .map((part) => part[0])
-    .join("")
     .slice(0, 2)
+    .join("")
     .toUpperCase();
 };
 
@@ -46,17 +50,16 @@ const handleSort = (
 
 export const getCandidateColumns = ({ filters, setFilters }: ColumnsProps) => [
   columnHelper.accessor("name", {
-    header: ({}) => {
-      return (
-        <button
-          onClick={() => handleSort("name", filters, setFilters)}
-          className="flex items-center gap-1"
-        >
-          Name
-          {getSortIcon(filters.sortBy === "name", filters.sortDirection)}
-        </button>
-      );
-    },
+    header: () => (
+      <SortableHeader
+        title="Name"
+        onfunction={getSortIcon(
+          filters.sortBy === "name",
+          filters.sortDirection,
+        )}
+        onClick={() => handleSort("name", filters, setFilters)}
+      />
+    ),
     meta: { widthClass: "w-[28%]" },
     cell: ({ row: { original } }) => (
       <div className="flex items-center gap-3">
@@ -89,17 +92,16 @@ export const getCandidateColumns = ({ filters, setFilters }: ColumnsProps) => [
     cell: (info) => <StatusBadge status={info.getValue()} />,
   }),
   columnHelper.accessor("createdAt", {
-    header: () => {
-      return (
-        <button
-          onClick={() => handleSort("date", filters, setFilters)}
-          className="flex items-center gap-1"
-        >
-          Date
-          {getSortIcon(filters.sortBy === "date", filters.sortDirection)}
-        </button>
-      );
-    },
+    header: () => (
+      <SortableHeader
+        title="Date"
+        onfunction={getSortIcon(
+          filters.sortBy === "date",
+          filters.sortDirection,
+        )}
+        onClick={() => handleSort("date", filters, setFilters)}
+      />
+    ),
     meta: { widthClass: "w-[15%]" },
     cell: (info) => {
       const date = info.getValue();
@@ -112,17 +114,16 @@ export const getCandidateColumns = ({ filters, setFilters }: ColumnsProps) => [
     },
   }),
   columnHelper.accessor("score", {
-    header: () => {
-      return (
-        <button
-          onClick={() => handleSort("score", filters, setFilters)}
-          className="flex items-center gap-1"
-        >
-          Scores
-          {getSortIcon(filters.sortBy === "score", filters.sortDirection)}
-        </button>
-      );
-    },
+    header: () => (
+      <SortableHeader
+        title="Scores"
+        onfunction={getSortIcon(
+          filters.sortBy === "score",
+          filters.sortDirection,
+        )}
+        onClick={() => handleSort("score", filters, setFilters)}
+      />
+    ),
     meta: { widthClass: "w-[12%]" },
     cell: (info) => <ScoreBar score={info.getValue()} />,
   }),
@@ -136,9 +137,13 @@ export const getCandidateColumns = ({ filters, setFilters }: ColumnsProps) => [
     meta: { widthClass: "w-[5%]" },
     cell: () => (
       <div className="text-right text-color-text-divider">
-        <button className="p-1 hover:text-color-text-color-primary transition-colors">
+        <Button
+          type="button"
+          variant="ghost"
+          className="p-1 hover:text-color-text-color-primary transition-colors"
+        >
           <FiChevronRight className="h-5 w-5" />
-        </button>
+        </Button>
       </div>
     ),
   }),

@@ -159,10 +159,31 @@ export async function getTranscript(id: string): Promise<TranscriptMessage[]> {
 
 // ── Export transcript ──────────────────────────────────────────────────────────
 // GET /api/v1/interviews/{interview_id}/transcript/export
+// Returns a plain text file (.txt) as a direct download
 
-export async function exportTranscript(id: string): Promise<unknown> {
-  const res = await api.get(`/api/v1/interviews/${id}/transcript/export`);
-  return unwrapData(res.data);
+export async function exportTranscript(id: string): Promise<void> {
+  const res = await api.get(`/api/v1/interviews/${id}/transcript/export`, {
+    responseType: "blob", // ← tell axios to treat response as binary
+  });
+
+  // Extract filename from content-disposition header or use a fallback
+  const disposition = String(res.headers["content-disposition"] ?? "");
+  const encodedName =
+    disposition.match(/filename\*\s*=\s*UTF-8''([^;]+)/i)?.[1] ?? null;
+  const plainName =
+    disposition.match(/filename\s*=\s*"([^"]+)"/i)?.[1] ??
+    disposition.match(/filename\s*=\s*([^;]+)/i)?.[1] ??
+    null;
+  const parsedName = encodedName ? decodeURIComponent(encodedName) : plainName;
+  const filename = (parsedName ?? `transcript_${id}.txt`).trim();
+
+  // Create a temporary link and trigger the download
+  const url = URL.createObjectURL(new Blob([res.data], { type: "text/plain" }));
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = filename;
+  a.click();
+  URL.revokeObjectURL(url);
 }
 
 // ── Stop transcript ────────────────────────────────────────────────────────────
@@ -306,7 +327,7 @@ function mapApiToDetail(raw: ApiInterview, id: string): InterviewDetail {
     observation: "",
     highlights: [],
     redFlags: [],
-    sessionPhase: "live_transcript",
+    // sessionPhase: "live_transcript",
     elapsed: "",
     participants: 0,
   };

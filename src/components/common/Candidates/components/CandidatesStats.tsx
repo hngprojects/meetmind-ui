@@ -1,5 +1,6 @@
 import React from "react";
 import { CandidateStats as CandidateStatsType } from "@/lib/types/candidates";
+import StatCard from "./StatCard";
 
 type Props = {
   stats?: CandidateStatsType;
@@ -65,6 +66,30 @@ const CandidatesStats = ({ stats, loading }: Props) => {
           {safeStats.needs_review ?? 0}
         </p>
       </div>
+
+      <StatCard
+        label="Total Candidates"
+        value={safeStats.total}
+        valueClassName="text-text-purple-accent"
+      />
+
+      <StatCard
+        label="Completed"
+        value={safeStats.completed}
+        valueClassName="text-text-color-secondary"
+      />
+
+      <StatCard
+        label="Ongoing"
+        value={safeStats.ongoing}
+        valueClassName="text-text-color-secondary"
+      />
+
+      <StatCard
+        label="Needs attention"
+        value={safeStats.needs_review}
+        valueClassName="text-error"
+      />
     </div>
   );
 };
