@@ -12,9 +12,7 @@ type CalendarPanelProps = {
   setSelectedAppointment: React.Dispatch<
     React.SetStateAction<Appointment | null>
   >;
-  selectedStartTime: TimeOption | null;
   setSelectedStartTime: React.Dispatch<React.SetStateAction<TimeOption | null>>;
-  selectedEndTime: TimeOption | null;
   setSelectedEndTime: React.Dispatch<React.SetStateAction<TimeOption | null>>;
 };
 
@@ -23,9 +21,7 @@ const CalendarPanel = ({
   currentDate,
   selectedAppointment,
   setSelectedAppointment,
-  selectedStartTime,
   setSelectedStartTime,
-  selectedEndTime,
   setSelectedEndTime,
 }: CalendarPanelProps) => {
   const currentMonth = currentDate.toLocaleString("default", { month: "long" });
