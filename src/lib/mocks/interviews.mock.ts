@@ -59,10 +59,10 @@ export const MOCK_INTERVIEW_DETAIL: InterviewDetail = {
   date: "May 2, 2025",
   time: "11:00 AM WAT",
   duration: "1hr",
-  platform: "zoom", // was "Discord" — must be InterviewPlatform
+  platform: "zoom",
   questionProgress: "9/10",
   aiTone: "Friendly",
-  participationMode: "standard", // was missing
+  participationMode: "standard",
   status: "in_progress",
   listStatus: "live",
   rating: null,
@@ -70,12 +70,12 @@ export const MOCK_INTERVIEW_DETAIL: InterviewDetail = {
     "Validate product judgement, visual hierarchy, and how Temitope handles tradeoffs with engineering.",
   keySkills: ["Communication", "technical depth", "Collaboration", "ownership"],
   jobDescription:
-    "Design intuitive product experiences across web and mobile, working closely with engineering and product teams.", // was missing
+    "Design intuitive product experiences across web and mobile, working closely with engineering and product teams.",
   scoringRubric:
-    "Evaluate on systems thinking, communication clarity, portfolio outcomes, and cross-functional collaboration.", // was missing
-  scheduledStart: "2025-05-02T11:00:00.000Z", // was missing
-  scheduledEnd: "2025-05-02T12:00:00.000Z", // was missing
-  callLink: null, // was missing
+    "Evaluate on systems thinking, communication clarity, portfolio outcomes, and cross-functional collaboration.",
+  scheduledStart: "2025-05-02T11:00:00.000Z",
+  scheduledEnd: "2025-05-02T12:00:00.000Z",
+  callLink: null,
   observation:
     "Temitope demonstrated strong systems thinking and proactively asked about engineering constraints before proposing solutions. Portfolio presentation was outcome-focused.",
   highlights: [
@@ -87,8 +87,7 @@ export const MOCK_INTERVIEW_DETAIL: InterviewDetail = {
     "Limited experience working with large cross-functional teams (10+ people)",
     "Vague on metrics and success measurements frameworks",
   ],
-  sessionPhase: "live_transcript",
-  elapsed: "5:47",
+  elapsed: "05:47",
   participants: 2,
 };
 
@@ -113,7 +112,7 @@ export const MOCK_TRANSCRIPT: TranscriptMessage[] = [
     id: "3",
     speaker: "meet_mind",
     speakerLabel: "Meet Mind",
-    timestamp: "05:46",
+    timestamp: "05:48",
     content: "What changed after you revised that flow?",
     isTyping: true,
     isActive: true,

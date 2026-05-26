@@ -3,20 +3,25 @@
 import InterviewListSidebar from "@/components/interviews/InterviewListSidebar";
 import InterviewTabs from "@/components/interviews/InterviewTabs";
 import ChatTab from "@/components/interviews/tabs/ChatTab";
+import TranscriptTab from "@/components/interviews/tabs/TranscriptTab";
 import {
   useChatHistory,
   useInterview,
   useInterviewsList,
+  useTranscript,
 } from "@/hooks/useInterviews";
-import type { InterviewTab } from "@/types/interview";
-import { useState } from "react";
+import type { InterviewTab, SessionPhase } from "@/types/interview";
+import { useEffect, useState } from "react";
 import { HiOutlineArrowLeft, HiOutlineBars3 } from "react-icons/hi2";
 
 // ==================== 🧩Main Component ====================
 export default function InterviewsWorkspace() {
   const [selectedId, setSelectedId] = useState<string | null>(null);
-  const [activeTab, setActiveTab] = useState<InterviewTab>("chat");
+  const [activeTab, setActiveTab] = useState<InterviewTab>("transcript");
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  // const [sessionPhase, setSessionPhase] =
+  //   useState<SessionPhase>("live_transcript");
+  const [sessionPhase, setSessionPhase] = useState<SessionPhase>("connecting");
 
   const {
     data: list = [],
@@ -26,31 +31,44 @@ export default function InterviewsWorkspace() {
 
   const currentSelectedId = selectedId ?? list[0]?.id ?? null;
 
+  useEffect(() => {
+    function run() {
+      setSessionPhase("live_transcript");
+    }
+
+    run();
+  }, [currentSelectedId]);
+
   const {
     data: interview,
     isLoading: interviewLoading,
     error: interviewError,
   } = useInterview(currentSelectedId);
 
-  const { data: chat = [] } = useChatHistory(currentSelectedId);
+  // Pass interview status so hooks only poll when live
+  const { data: chat = [] } = useChatHistory(
+    currentSelectedId,
+    interview?.status,
+  );
+  const { data: transcript = [] } = useTranscript(
+    currentSelectedId,
+    interview?.status,
+  );
 
-  // ── Handle interview selection on mobile (closes sidebar after pick) ──
   const handleSelect = (id: string) => {
     setSelectedId(id);
     setSidebarOpen(false);
   };
 
-  // ── Skeletons ──
   if (listLoading) {
     return (
       <div className="flex flex-col gap-4 sm:flex-row sm:gap-6">
-        <div className="h-[12rem] w-full animate-pulse rounded-2xl bg-[var(--color-bg-divider)] sm:h-[37.5rem] sm:w-[23.75rem]" />
+        <div className="h-48 w-full animate-pulse rounded-2xl bg-[var(--color-bg-divider)] sm:h-[37.5rem] sm:w-[23.75rem]" />
         <div className="h-[37.5rem] flex-1 animate-pulse rounded-2xl bg-[var(--color-bg-divider)]" />
       </div>
     );
   }
 
-  // ── List-level error ──
   if (listError) {
     return (
       <div className="flex h-[37.5rem] items-center justify-center text-center">
@@ -59,18 +77,17 @@ export default function InterviewsWorkspace() {
             Failed to load interviews
           </p>
           <p className="mt-1 text-sm text-[var(--color-text-secondary)]">
-            {"Something went wrong. Please try again."}
+            Something went wrong. Please try again.
           </p>
         </div>
       </div>
     );
   }
 
-  // ── Interview-level empty / loading / error states ──
   const renderEmptyState = () => {
     if (list.length === 0) {
       return (
-        <div className="flex h-full flex-col items-center justify-center gap-2 text-center mt-4 md:mt-0">
+        <div className="mt-4 flex h-full flex-col items-center justify-center gap-2 text-center md:mt-0">
           <p className="font-medium text-[var(--color-text-color-secondary)]">
             No interviews yet
           </p>
@@ -110,9 +127,21 @@ export default function InterviewsWorkspace() {
     );
   };
 
+  const detailPanelProps = {
+    activeTab,
+    setActiveTab,
+    interview,
+    interviewLoading,
+    renderEmptyState,
+    chat,
+    transcript,
+    sessionPhase,
+    setSessionPhase,
+  };
+
   return (
     <div className="mx-auto w-full lg:max-w-[85%]">
-      {/* ── Mobile: top bar with menu toggle ── */}
+      {/* ── Mobile: top bar ── */}
       <div className="mb-3 flex items-center gap-3 sm:hidden">
         <button
           type="button"
@@ -129,8 +158,6 @@ export default function InterviewsWorkspace() {
             </span>
           )}
         </button>
-
-        {/* Show selected interview name on mobile header */}
         {interview && (
           <p className="truncate text-sm font-semibold text-[var(--color-text-color-primary)]">
             {interview.candidateName} — {interview.roleTitle}
@@ -138,7 +165,7 @@ export default function InterviewsWorkspace() {
         )}
       </div>
 
-      {/* ── Mobile: slide-down sidebar drawer ── */}
+      {/* ── Mobile: sidebar drawer ── */}
       {sidebarOpen && (
         <div className="mb-4 sm:hidden">
           <div className="mb-2 flex items-center justify-between">
@@ -162,40 +189,38 @@ export default function InterviewsWorkspace() {
         </div>
       )}
 
-      {/* ── Desktop: side-by-side layout ── */}
+      {/* ── Desktop ── */}
       <div className="hidden gap-6 sm:flex">
         <InterviewListSidebar
           items={list}
           selectedId={currentSelectedId}
           onSelect={setSelectedId}
         />
-
-        <DetailsPanel
-          activeTab={activeTab}
-          setActiveTab={setActiveTab}
-          interview={interview}
-          interviewLoading={interviewLoading}
-          renderEmptyState={renderEmptyState}
-          chat={chat}
-        />
+        <DetailsPanel {...detailPanelProps} />
       </div>
 
-      {/* ── Mobile: full-width detail panel ── */}
+      {/* ── Mobile ── */}
       <div className="sm:hidden">
-        <DetailsPanel
-          activeTab={activeTab}
-          setActiveTab={setActiveTab}
-          interview={interview}
-          interviewLoading={interviewLoading}
-          renderEmptyState={renderEmptyState}
-          chat={chat}
-        />
+        <DetailsPanel {...detailPanelProps} />
       </div>
     </div>
   );
 }
 
-// ── Extracted to avoid duplication between mobile/desktop ──
+// ── Types ──────────────────────────────────────────────────────────────────────
+
+type DetailsPanelProps = {
+  activeTab: InterviewTab;
+  setActiveTab: (tab: InterviewTab) => void;
+  interview: ReturnType<typeof useInterview>["data"];
+  interviewLoading: boolean;
+  renderEmptyState: () => React.ReactNode;
+  chat: ReturnType<typeof useChatHistory>["data"];
+  transcript: ReturnType<typeof useTranscript>["data"];
+  sessionPhase: SessionPhase;
+  setSessionPhase: (phase: SessionPhase) => void;
+};
+
 function DetailsPanel({
   activeTab,
   setActiveTab,
@@ -203,14 +228,10 @@ function DetailsPanel({
   interviewLoading,
   renderEmptyState,
   chat,
-}: {
-  activeTab: InterviewTab;
-  setActiveTab: (tab: InterviewTab) => void;
-  interview: ReturnType<typeof useInterview>["data"];
-  interviewLoading: boolean;
-  renderEmptyState: () => React.ReactNode;
-  chat: ReturnType<typeof useChatHistory>["data"];
-}) {
+  transcript,
+  sessionPhase,
+  setSessionPhase,
+}: DetailsPanelProps) {
   return (
     <section className="flex min-h-[40rem] flex-1 flex-col overflow-hidden rounded-2xl border border-[var(--color-card-border)] bg-[var(--color-card-bg)] shadow-sm">
       <InterviewTabs active={activeTab} onChange={setActiveTab} />
@@ -218,7 +239,17 @@ function DetailsPanel({
         {!interview || interviewLoading ? (
           renderEmptyState()
         ) : (
-          <>{activeTab === "chat" && <ChatTab messages={chat ?? []} />}</>
+          <>
+            {activeTab === "chat" && <ChatTab messages={chat ?? []} />}
+            {activeTab === "transcript" && (
+              <TranscriptTab
+                interview={interview}
+                messages={transcript ?? []}
+                sessionPhase={sessionPhase}
+                onPhaseChange={setSessionPhase}
+              />
+            )}
+          </>
         )}
       </div>
     </section>

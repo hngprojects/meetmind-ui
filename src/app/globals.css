@@ -64,6 +64,7 @@
   --color-error: #ef4444;
   --color-error-bg: #fee2e2;
   --color-error-text: #991b1b;
+  --color-error-dark: #dc2626;
 
   --color-warning: #f59e0b;
   --color-warning-bg: #fef3c7;
@@ -100,6 +101,45 @@
   /* =============== SCROLLBAR COLORS =============== */
   --color-scrollbar-track: #f3f4f6;
   --color-scrollbar-thumb: #d1d5db;
+
+  /* =============== STATUS BADGE COLORS =============== */
+  --color-badge-live-bg: #f5f3ff;
+  --color-badge-live-text: #7c3aed;
+  --color-badge-upcoming-bg: #fff7ed;
+  --color-badge-upcoming-text: #c2410c;
+  --color-badge-upcoming-dot: #ea580c;
+
+  /* =============== SESSION STATE COLORS =============== */
+
+  /* Purple (thinking / speaking / live_transcript) */
+  --color-session-purple-text: #7c3aed;
+  --color-session-purple-text-dark: #6d28d9;
+  --color-session-purple-bg: #f5f3ff;
+  --color-session-purple-border: #ddd6fe;
+  --color-session-purple-icon-bg: #ede9fe;
+
+  /* Green (listening) */
+  --color-session-green-text: #047857;
+  --color-session-green-bg: #ecfdf3;
+  --color-session-green-border: #a7f3d0;
+  --color-session-green-icon-bg: #d1fae5;
+
+  /* Orange (connecting / reconnecting) */
+  --color-session-orange-text: #c2410c;
+  --color-session-orange-text-dark: #b45309;
+  --color-session-orange-dot: #ea580c;
+  --color-session-orange-bg: #fffbeb;
+  --color-session-orange-border: #fcd34d;
+  --color-session-orange-icon-bg: #ffedd5;
+
+  /* Connection lost */
+  --color-light-grayish-red: #fac5c5;
+  --color-dark-red: #d93e3e;
+  --color-light-red: #fdecec;
+
+  --color-session-connection-lost-text: #fac5c5;
+  --color-session-connection-lost-border: #fdecec;
+  --color-session-connection-lost-bg: #fdecec;
 
   /* =============== RADIUS =============== */
   --radius-sm: calc(var(--radius) * 0.6);
@@ -140,13 +180,6 @@
   --color-primary: var(--primary);
   --color-popover-foreground: var(--popover-foreground);
   --color-popover: var(--popover);
-
-  /* =============== STATUS BADGE COLORS =============== */
-  --color-badge-live-bg: #f5f3ff;
-  --color-badge-live-text: #7c3aed;
-  --color-badge-upcoming-bg: #fff7ed;
-  --color-badge-upcoming-text: #c2410c;
-  --color-badge-upcoming-dot: #ea580c;
 }
 
 :root {
@@ -247,7 +280,6 @@
   }
   html {
     @apply font-sans;
-
     scroll-behavior: smooth;
   }
 }
