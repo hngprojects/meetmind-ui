@@ -28,9 +28,7 @@ function VerifyEmailContent() {
       if (isMounted) setIsVerifying(true);
       if (isMounted) setError(null);
       try {
-        await api
-          .get(`/api/v1/auth/verify-email?token=${token}`)
-          .catch(() => new Promise((resolve) => setTimeout(resolve, 2000)));
+        await api.get(`/api/v1/auth/verify-email?token=${token}`);
 
         if (isMounted) {
           setIsVerified(true);
