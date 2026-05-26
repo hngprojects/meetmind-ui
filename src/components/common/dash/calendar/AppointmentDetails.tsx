@@ -1,14 +1,18 @@
-import type { Appointment } from "@/lib/appointmentTypes";
+import type { Appointment, TimeOption } from "@/lib/appointmentTypes";
 import { FiCalendar, FiX } from "react-icons/fi";
 
 type AppointmentDetailsProps = {
   appointment: Appointment;
+  selectedStartTime: TimeOption | null;
+  selectedEndTime: TimeOption | null;
   onCancel: () => void;
   onReschedule: () => void;
 };
 
 const AppointmentDetails = ({
   appointment,
+  selectedStartTime,
+  selectedEndTime,
   onCancel,
   onReschedule,
 }: AppointmentDetailsProps) => {
@@ -19,6 +23,14 @@ const AppointmentDetails = ({
     .join("")
     .toUpperCase()
     .slice(0, 2);
+
+  const displayStartTime = selectedStartTime
+    ? `${selectedStartTime.hour}:${selectedStartTime.minute} ${selectedStartTime.period}`
+    : `${appointment.startTime.hour}:${appointment.startTime.minute} ${appointment.startTime.period}`;
+
+  const displayEndTime = selectedEndTime
+    ? `${selectedEndTime.hour}:${selectedEndTime.minute} ${selectedEndTime.period}`
+    : `${appointment.endTime.hour}:${appointment.endTime.minute} ${appointment.endTime.period}`;
 
   return (
     <section className="rounded-[32px] bg-calendar-appointement p-6">
@@ -48,11 +60,7 @@ const AppointmentDetails = ({
 
           {/* Time */}
           <p className="mt-3 text-center text-sm text-text-subtext">
-            {appointment.startTime.hour}:{appointment.startTime.minute}
-            {appointment.startTime.period}
-            {" - "}
-            {appointment.endTime.hour}:{appointment.endTime.minute}
-            {appointment.endTime.period}
+            {displayStartTime} - {displayEndTime}
           </p>
         </div>
       </div>

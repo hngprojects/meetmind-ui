@@ -53,6 +53,8 @@ const Calendar = () => {
         selectedAppointment ? (
           <AppointmentDetails
             appointment={selectedAppointment}
+            selectedStartTime={selectedStartTime}
+            selectedEndTime={selectedEndTime}
             onCancel={() => {
               setSelectedAppointment(null);
 
