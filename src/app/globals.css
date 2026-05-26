@@ -105,6 +105,8 @@
   --color-calendar-border: #e4e4e7;
   --color-calendar-card-hover: #f8f8f8;
   --color-calendar-avatar: #b5b7bd;
+  --color-calendar-appointement: #fefeff;
+  --color-alert: #ef4444;
 
   /* =============== SCROLLBAR COLORS =============== */
   --color-scrollbar-track: #f3f4f6;

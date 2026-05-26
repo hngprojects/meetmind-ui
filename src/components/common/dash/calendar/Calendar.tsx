@@ -51,7 +51,21 @@ const Calendar = () => {
       }
       detailsPanel={
         selectedAppointment ? (
-          <AppointmentDetails appointment={selectedAppointment} />
+          <AppointmentDetails
+            appointment={selectedAppointment}
+            onCancel={() => {
+              setSelectedAppointment(null);
+
+              setSelectedStartTime(null);
+
+              setSelectedEndTime(null);
+            }}
+            onReschedule={() => {
+              setSelectedStartTime(null);
+
+              setSelectedEndTime(null);
+            }}
+          />
         ) : null
       }
     />
