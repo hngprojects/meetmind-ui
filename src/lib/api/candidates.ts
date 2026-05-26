@@ -48,6 +48,7 @@ export const exportCandidates = async (
     const json = JSON.parse(text);
     throw new Error(json?.message || "Export not implemented on backend yet");
   } catch (err) {
+    console.error(err);
     throw new Error("Export failed: invalid response format");
   }
 };
