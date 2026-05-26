@@ -109,6 +109,9 @@ export const useAuthStore = create<AuthState>((set) => ({
       clearOnboardingProgress();
 
       set({
+        user: null,
+        token: null,
+        isAuthenticated: false,
         isHydrated: true,
       });
     }

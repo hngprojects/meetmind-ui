@@ -39,9 +39,11 @@ const GoogleCallback = () => {
           name: user.name,
         };
 
+        if (!isMounted) {
+          localStorage.removeItem("token");
+          return;
+        }
         setAuth(authUser, token);
-
-        if (!isMounted) return;
 
         if (!user.onboarding_completed) {
           router.replace("/onboarding");

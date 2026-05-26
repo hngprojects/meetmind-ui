@@ -68,9 +68,9 @@ const Signform = () => {
       const { access_token, next_step } = responseData;
 
       setFormData(data);
-      setIsSuccess(true);
 
       if (next_step === "verify_email") {
+        setIsSuccess(true);
         router.push("/verify-email");
         return;
       }
@@ -91,6 +91,7 @@ const Signform = () => {
       };
 
       setAuth(authUser, access_token);
+      setIsSuccess(true);
 
       router.push("/onboarding");
     } catch (error) {
