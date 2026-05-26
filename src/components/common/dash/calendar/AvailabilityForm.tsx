@@ -94,7 +94,7 @@ const AvailabilityForm = ({
 
         <button
           onClick={() => setShowAvailability(!showAvailability)}
-          className="text-[14px] font-normal text-text-primary"
+          className="text-[14px] font-normal text-text-primary cursor-pointer"
         >
           {showAvailability ? "Hide" : "Show"}
         </button>
