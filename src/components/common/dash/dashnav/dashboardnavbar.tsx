@@ -168,6 +168,7 @@ const Dashboardnavbar = () => {
       <SignOutModal
         isOpen={isSignOutModalOpen}
         onClose={() => setIsSignOutModalOpen(false)}
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         onSignOut={(_signOutAllDevices) => {
           // If true, implement logic to clear all sessions here
           setIsSignOutModalOpen(false);
