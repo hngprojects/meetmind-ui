@@ -36,7 +36,7 @@ export function ContactForm() {
     try {
       setIsLoading(true);
       setError(null);
-      await api.post("/api/v1/contact", formData);
+      await api.post(`/api/v1/support/contact`, formData);
       setIsSuccess(true);
       setFormData({ name: "", email: "", subject: "", message: "" });
     } catch (err) {

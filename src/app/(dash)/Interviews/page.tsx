@@ -1,5 +1,5 @@
-function page() {
-  return <div>page</div>;
-}
+import InterviewsWorkspace from "@/components/interviews/InterviewsWorkspace";
 
-export default page;
+export default function InterviewsPage() {
+  return <InterviewsWorkspace />;
+}

@@ -8,7 +8,7 @@ const footerColumns = [
       { label: "Features", href: "/coming-soon" },
       { label: "Use Cases", href: "/coming-soon" },
       { label: "Pricing", href: "/pricing" },
-      { label: "ChangeLog", href: "/coming-soon" },
+      { label: "ChangeLog", href: "/change-logs" },
     ],
   },
   {
@@ -44,18 +44,17 @@ const socialLinks = [
   {
     name: "LinkedIn",
     icon: "/icons/linkedin-outline.svg",
-    href: "/coming-soon",
+    href: "https://www.linkedin.com/company/122284193/admin/dashboard/",
   },
   {
-    name: "Facebook",
-    icon: "/icons/facebook-outline.svg",
-    href: "/coming-soon",
+    name: "x",
+    icon: "/icons/x-twitter.svg",
+    href: "https://x.com/ThinkTalk_mm",
   },
-  { name: "GitHub", icon: "/icons/github-outline.svg", href: "/coming-soon" },
   {
     name: "Instagram",
     icon: "/icons/instagram-outline.svg",
-    href: "/coming-soon",
+    href: "https://www.instagram.com/thinktalk_mm",
   },
 ];
 
