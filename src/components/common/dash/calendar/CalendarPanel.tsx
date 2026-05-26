@@ -30,6 +30,16 @@ const CalendarPanel = ({
   const currentYear = currentDate.getFullYear();
   const [selectedView, setSelectedView] = useState("today");
 
+  const todayAppointments = appointmentGroups.filter((group) => {
+    const appointmentDate = new Date(group.date);
+
+    return (
+      appointmentDate.getDate() === selectedDate &&
+      appointmentDate.getMonth() === currentDate.getMonth() &&
+      appointmentDate.getFullYear() === currentYear
+    );
+  });
+
   return (
     <section>
       <div className="flex items-start justify-between">
@@ -61,7 +71,53 @@ const CalendarPanel = ({
       <div className="mt-1 border-t border-calendar-border" />
 
       {selectedView === "today" ? (
-        <EmptyState />
+        todayAppointments.length > 0 ? (
+          <div className="mt-6 space-y-8">
+            {todayAppointments.map((group) => (
+              <section key={group.id}>
+                {/* Date Heading */}
+                <h3 className="mb-4 text-sm font-medium text-calendar-secondary">
+                  {group.date}
+                </h3>
+
+                {/* Appointment Cards */}
+                <div className="space-y-4">
+                  {group.appointments.map((appointment) => (
+                    <AppointmentCard
+                      key={appointment.id}
+                      candidate={appointment.candidate}
+                      email={appointment.email}
+                      role={appointment.role}
+                      startTime={appointment.startTime}
+                      endTime={appointment.endTime}
+                      onClick={() => {
+                        const isSameAppointment =
+                          selectedAppointment?.id === appointment.id;
+
+                        if (isSameAppointment) {
+                          setSelectedAppointment(null);
+
+                          setSelectedStartTime(null);
+                          setSelectedEndTime(null);
+
+                          return;
+                        }
+
+                        setSelectedAppointment(appointment);
+
+                        setSelectedStartTime(appointment.startTime);
+
+                        setSelectedEndTime(appointment.endTime);
+                      }}
+                    />
+                  ))}
+                </div>
+              </section>
+            ))}
+          </div>
+        ) : (
+          <EmptyState />
+        )
       ) : (
         <div className="mt-6 space-y-8">
           {appointmentGroups.map((group) => (

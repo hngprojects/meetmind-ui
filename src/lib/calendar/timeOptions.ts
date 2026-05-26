@@ -36,13 +36,13 @@ export const availableEndTimes: TimeOption[] = [
   {
     hour: "11",
     minute: "30",
-    period: "PM",
+    period: "AM",
   },
 
   {
     hour: "11",
     minute: "15",
-    period: "PM",
+    period: "AM",
   },
 
   {

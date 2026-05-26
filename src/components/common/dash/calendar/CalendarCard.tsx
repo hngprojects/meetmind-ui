@@ -84,6 +84,28 @@ const CalendarCard = ({
   }));
   const allCalendarDays = [...currentCalendarDays, ...nextMonthDays];
 
+  const getDayCellClassName = (calendarDay: {
+    day: number;
+    isCurrentMonth: boolean;
+  }) => {
+    const baseClasses =
+      "mx-auto flex h-9 w-9 items-center justify-center rounded-md text-sm font-medium transition-colors cursor-pointer";
+
+    if (!calendarDay.isCurrentMonth) {
+      return `${baseClasses} text-text-placeholder`;
+    }
+
+    if (selectedDate === calendarDay.day) {
+      return `${baseClasses} bg-calendar-bg-primary text-text-primary-foreground`;
+    }
+
+    if (isCurrentMonth && todayDate === calendarDay.day) {
+      return `${baseClasses} bg-soft-white text-calendar-primary`;
+    }
+
+    return `${baseClasses} text-calendar-primary hover:bg-soft-white`;
+  };
+
   // Navigation functions
   const handlePreviousMonth = () => {
     setCurrentDate(new Date(currentYear, currentDate.getMonth() - 1, 1));
@@ -151,19 +173,7 @@ const CalendarCard = ({
                   setSelectedDate(calendarDay.day);
                 }
               }}
-              className={`
-                mx-auto flex h-9 w-9 items-center justify-center rounded-md
-                text-sm font-medium transition-colors cursor-pointer
-                ${
-                  !calendarDay.isCurrentMonth
-                    ? "text-text-placeholder"
-                    : selectedDate === calendarDay.day
-                      ? "bg-calendar-bg-primary text-text-primary-foreground"
-                      : isCurrentMonth && todayDate === calendarDay.day
-                        ? "bg-soft-white text-calendar-primary"
-                        : "text-calendar-primary hover:bg-soft-white"
-                }
-              `}
+              className={getDayCellClassName(calendarDay)}
             >
               {calendarDay.day}
             </button>
