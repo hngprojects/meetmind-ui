@@ -2,7 +2,9 @@
 import React, { useState, useRef, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import Dashnavlist from "./dashnavlist";
+import SignOutModal from "./SignOutModal";
 import { MdKeyboardArrowDown } from "react-icons/md";
 import {
   LuUser,
@@ -14,7 +16,9 @@ import {
 
 const Dashboardnavbar = () => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [isSignOutModalOpen, setIsSignOutModalOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
+  const router = useRouter();
 
   // Unread notification count — wire to real API when backend is ready
   const unreadNotificationCount = 3;
@@ -159,14 +163,17 @@ const Dashboardnavbar = () => {
                   </div>
 
                   <div className="border-t border-gray-50 pt-1">
-                    <Link
-                      href="/sign-in"
-                      onClick={() => setIsDropdownOpen(false)}
-                      className="flex items-center gap-3 px-4 py-2 text-sm text-red-600 hover:bg-red-50 transition-colors"
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setIsDropdownOpen(false);
+                        setIsSignOutModalOpen(true);
+                      }}
+                      className="w-full flex items-center gap-3 px-4 py-2 text-sm text-[#EF4444] hover:bg-red-50 transition-colors cursor-pointer"
                     >
                       <LuLogOut className="text-lg" />
                       <span>Sign out</span>
-                    </Link>
+                    </button>
                   </div>
                 </div>
               )}
@@ -174,6 +181,16 @@ const Dashboardnavbar = () => {
           </div>
         </div>
       </div>
+
+      <SignOutModal
+        isOpen={isSignOutModalOpen}
+        onClose={() => setIsSignOutModalOpen(false)}
+        onSignOut={(_signOutAllDevices) => {
+          // If true, implement logic to clear all sessions here
+          setIsSignOutModalOpen(false);
+          router.push("/sign-in");
+        }}
+      />
     </section>
   );
 };
