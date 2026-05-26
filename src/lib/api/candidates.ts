@@ -20,3 +20,34 @@ export const getCandidate = async (id: string): Promise<Candidate> => {
 
   return response.data;
 };
+
+/* export const exportCandidates = async (params: CandidateQueryParams) => {
+  const response = await api.get("/api/v1/candidates/export", {
+    params,
+    responseType: "blob",
+  });
+
+  return response.data;
+};
+ */
+
+export const exportCandidates = async (
+  params: CandidateQueryParams,
+): Promise<Blob> => {
+  const response = await api.get("/api/v1/candidates/export", {
+    params,
+    responseType: "blob",
+  });
+
+  const data = response.data;
+  if (data instanceof Blob) {
+    return data;
+  }
+  try {
+    const text = await data.text();
+    const json = JSON.parse(text);
+    throw new Error(json?.message || "Export not implemented on backend yet");
+  } catch (err) {
+    throw new Error("Export failed: invalid response format");
+  }
+};

@@ -6,6 +6,9 @@ import { LuFileSpreadsheet } from "react-icons/lu";
 import { HiOutlineDownload } from "react-icons/hi";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
+import { useCandidatesStore } from "@/store/candidatesStore";
+import { useExportCandidates } from "@/lib/hooks/useExport";
+import { CandidateQueryParams } from "@/lib/types/candidates";
 
 interface ExportModalProps {
   open: boolean;
@@ -13,6 +16,40 @@ interface ExportModalProps {
 }
 
 const ExportModal = ({ open, onClose }: ExportModalProps) => {
+  const filters = useCandidatesStore((s) => s.filters);
+  const { mutateAsync, isPending } = useExportCandidates();
+
+  const handleExport = async () => {
+    const params: CandidateQueryParams = {
+      q: filters.search,
+      status: filters.status === "all" ? undefined : filters.status,
+      sortBy: filters.sortBy,
+      sortDirection: filters.sortDirection,
+      page: filters.page,
+      pageSize: filters.pageSize,
+    };
+
+    try {
+      const blob = await mutateAsync(params);
+
+      const filename = `candidates-export-${Date.now()}.csv`;
+
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement("a");
+
+      a.href = url;
+      a.download = filename;
+      document.body.appendChild(a);
+      a.click();
+
+      a.remove();
+      window.URL.revokeObjectURL(url);
+
+      onClose();
+    } catch (err) {
+      console.error("Export failed:", err);
+    }
+  };
   return (
     <Dialog open={open} onOpenChange={(isOpen) => !isOpen && onClose()}>
       <DialogContent className="max-w-110 rounded-3xl p-8 bg-popover border-color-card-border shadow-xl outline-none gap-0 [&&_button[absolute]]:hidden">
@@ -69,15 +106,20 @@ const ExportModal = ({ open, onClose }: ExportModalProps) => {
         <div className="flex items-center justify-between gap-3 w-full">
           <Button
             variant="ghost"
+            disabled={isPending}
             className="flex-1 h-11 border border-button-outline-border text-color-button-primary-bg font-semibold rounded-xl hover:bg-color-bg-secondary gap-2"
           >
             <FiCopy className="h-4 w-4 stroke-2" />
             Copy to Clipboard
           </Button>
 
-          <Button className="flex-1 h-11 bg-color-button-primary-bg hover:bg-color-button-primary-bg/90 text-color-button-primary-text font-semibold rounded-xl gap-2 shadow-none">
+          <Button
+            onClick={handleExport}
+            disabled={isPending}
+            className="flex-1 h-11 bg-color-button-primary-bg hover:bg-color-button-primary-bg/90 text-color-button-primary-text font-semibold rounded-xl gap-2 shadow-none"
+          >
             <HiOutlineDownload className="h-5 w-5 stroke-2" />
-            Export
+            {isPending ? "Exporting..." : "Export"}
           </Button>
         </div>
       </DialogContent>
