@@ -4,6 +4,9 @@ import InterviewListSidebar from "@/components/interviews/InterviewListSidebar";
 import InterviewTabs from "@/components/interviews/InterviewTabs";
 import ChatTab from "@/components/interviews/tabs/ChatTab";
 import TranscriptTab from "@/components/interviews/tabs/TranscriptTab";
+import SummaryTab from "@/components/interviews/tabs/SummaryTab";
+import ScorecardTab from "@/components/interviews/tabs/ScorecardTab";
+import ProfileTab from "@/components/interviews/tabs/ProfileTab";
 import {
   useChatHistory,
   useInterview,
@@ -249,6 +252,9 @@ function DetailsPanel({
                 onPhaseChange={setSessionPhase}
               />
             )}
+            {activeTab === "summary" && <SummaryTab interview={interview} />}
+            {activeTab === "scorecard" && <ScorecardTab interview={interview} />}
+            {activeTab === "profile" && <ProfileTab interview={interview} />}
           </>
         )}
       </div>
