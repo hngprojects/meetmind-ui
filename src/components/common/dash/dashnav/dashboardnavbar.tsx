@@ -12,10 +12,13 @@ import {
   LuCreditCard,
   LuCircleHelp,
   LuLogOut,
+  LuMenu,
+  LuX,
 } from "react-icons/lu";
 
 const Dashboardnavbar = () => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isSignOutModalOpen, setIsSignOutModalOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const router = useRouter();
@@ -39,31 +42,40 @@ const Dashboardnavbar = () => {
 
   return (
     <section className="border-b border-[#E5E7EB] bg-white sticky top-0 z-50">
-      <div className="flex flex-row justify-between py-6 px-16 items-center">
-        {/* Logo + Brand Name */}
-        <div className="flex gap-3 w-[30%]">
+      <div className="flex flex-row justify-between py-4 md:py-6 px-4 md:px-8 lg:px-16 items-center">
+        {/* Mobile Menu Button + Logo */}
+        <div className="flex items-center gap-2 md:gap-3 shrink-0">
+          <button
+            type="button"
+            className="md:hidden p-1.5 -ml-1.5 text-gray-600 hover:bg-gray-100 rounded-lg cursor-pointer transition-colors"
+            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+            aria-label="Toggle mobile menu"
+          >
+            {isMobileMenuOpen ? <LuX size={24} /> : <LuMenu size={24} />}
+          </button>
+          
           <Link href="/" className="flex items-center gap-2">
             <Image
               src="/icons/meetmind-logo.svg"
               alt="MeetMind Logo"
               width={32}
               height={32}
-              className="h-8 w-auto"
+              className="h-7 w-auto md:h-8"
             />
+            <p className="font-bold text-[20px] md:text-[24px]">
+              Meet<span className="text-[#4F46E5]">Mind</span>
+            </p>
           </Link>
-          <p className="font-bold text-[24px]">
-            Meet<span className="text-[#4F46E5]">Mind</span>
-          </p>
         </div>
 
-        <div className="flex items-center justify-end h-10 w-[70%] gap-8">
-          {/* navlist */}
-          <div className="h-10 bg-card flex rounded-lg items-center justify-center w-[50%]">
+        <div className="flex items-center justify-end h-10 flex-1 gap-4 md:gap-8">
+          {/* Desktop navlist */}
+          <div className="hidden md:flex h-10 bg-card rounded-lg items-center justify-center">
             <Dashnavlist />
           </div>
 
           {/* icons & profile dropdown */}
-          <div className="flex flex-row items-center justify-end gap-6 w-[40%]">
+          <div className="flex flex-row items-center justify-end gap-3 md:gap-6 shrink-0">
             <button
               type="button"
               className="p-1 hover:bg-gray-50 rounded-full transition-colors cursor-pointer"
@@ -181,6 +193,13 @@ const Dashboardnavbar = () => {
           </div>
         </div>
       </div>
+
+      {/* Mobile Menu Dropdown */}
+      {isMobileMenuOpen && (
+        <div className="md:hidden border-t border-gray-100 bg-white px-4 py-4 absolute w-full left-0 top-full shadow-md animate-in slide-in-from-top-2 duration-150">
+          <Dashnavlist mobile onLinkClick={() => setIsMobileMenuOpen(false)} />
+        </div>
+      )}
 
       <SignOutModal
         isOpen={isSignOutModalOpen}
