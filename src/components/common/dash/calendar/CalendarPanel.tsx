@@ -30,13 +30,17 @@ const CalendarPanel = ({
   const currentYear = currentDate.getFullYear();
   const [selectedView, setSelectedView] = useState("today");
 
-  const selectedDateKey = new Date(
+  const selectedDateObject = new Date(
     currentYear,
     currentDate.getMonth(),
     selectedDate,
-  )
-    .toISOString()
-    .slice(0, 10);
+  );
+
+  const selectedDateKey = [
+    selectedDateObject.getFullYear(),
+    String(selectedDateObject.getMonth() + 1).padStart(2, "0"),
+    String(selectedDateObject.getDate()).padStart(2, "0"),
+  ].join("-");
 
   const todayAppointments = appointmentGroups.filter(
     (group) => group.dateISO === selectedDateKey,

@@ -1,4 +1,13 @@
-export const appointmentGroups = [
+import type { Appointment } from "@/lib/appointmentTypes";
+
+type AppointmentGroup = {
+  id: number;
+  date: string;
+  dateISO: string;
+  appointments: Appointment[];
+};
+
+export const appointmentGroups: AppointmentGroup[] = [
   {
     id: 1,
     date: "Friday, June 13, 2025",

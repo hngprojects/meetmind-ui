@@ -124,6 +124,7 @@ const CalendarCard = ({
       {/* Header */}
       <div className="flex items-center justify-between px-5 pt-5">
         <button
+          aria-label="Previous month"
           onClick={handlePreviousMonth}
           className=" flex h-8 w-8 items-center justify-center rounded-md border 
             border-calendar-border cursor-pointer"
@@ -136,6 +137,7 @@ const CalendarCard = ({
         </h2>
 
         <button
+          aria-label="Next month"
           onClick={handleNextMonth}
           className=" flex h-8 w-8 items-center justify-center rounded-md border 
             border-calendar-border cursor-pointer"
@@ -168,6 +170,7 @@ const CalendarCard = ({
           return (
             <button
               key={`${calendarDay.day}-${index}`}
+              disabled={!calendarDay.isCurrentMonth}
               onClick={() => {
                 if (calendarDay.isCurrentMonth) {
                   setSelectedDate(calendarDay.day);

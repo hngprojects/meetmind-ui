@@ -20,8 +20,8 @@ export const availableStartTimes: TimeOption[] = [
   },
 
   {
-    hour: "11",
-    minute: "00",
+    hour: "01",
+    minute: "20",
     period: "PM",
   },
 ];
@@ -46,7 +46,7 @@ export const availableEndTimes: TimeOption[] = [
   },
 
   {
-    hour: "12",
+    hour: "03",
     minute: "00",
     period: "PM",
   },

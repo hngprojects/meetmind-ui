@@ -78,6 +78,8 @@ const Calendar = () => {
       {isSuccessModalOpen && (
         <SuccessModal
           appointment={selectedAppointment}
+          selectedStartTime={selectedStartTime}
+          selectedEndTime={selectedEndTime}
           onClose={() => setIsSuccessModalOpen(false)}
         />
       )}

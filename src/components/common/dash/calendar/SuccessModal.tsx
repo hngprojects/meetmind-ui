@@ -1,13 +1,20 @@
 import { useEffect, useRef } from "react";
-import type { Appointment } from "@/lib/appointmentTypes";
+import type { Appointment, TimeOption } from "@/lib/appointmentTypes";
 import { getCandidateInitials } from "@/lib/calendar/appointmentUtils";
 
 type SuccessModalProps = {
   appointment: Appointment | null;
+  selectedStartTime: TimeOption | null;
+  selectedEndTime: TimeOption | null;
   onClose: () => void;
 };
 
-const SuccessModal = ({ appointment, onClose }: SuccessModalProps) => {
+const SuccessModal = ({
+  appointment,
+  selectedStartTime,
+  selectedEndTime,
+  onClose,
+}: SuccessModalProps) => {
   const modalReference = useRef<HTMLElement | null>(null);
 
   useEffect(() => {
@@ -76,6 +83,10 @@ const SuccessModal = ({ appointment, onClose }: SuccessModalProps) => {
         day: "numeric",
       });
 
+  const displayStartTime = selectedStartTime || appointment.startTime;
+
+  const displayEndTime = selectedEndTime || appointment.endTime;
+
   return (
     <div
       onClick={onClose}
@@ -137,11 +148,11 @@ const SuccessModal = ({ appointment, onClose }: SuccessModalProps) => {
             <p className="text-sm text-calendar-secondary">{formattedDate}</p>
 
             <p className="mt-1 text-base text-calendar-secondary">
-              {appointment.startTime.hour}:{appointment.startTime.minute}{" "}
-              {appointment.startTime.period}
+              {displayStartTime.hour}:{displayStartTime.minute}{" "}
+              {displayStartTime.period}
               {" - "}
-              {appointment.endTime.hour}:{appointment.endTime.minute}{" "}
-              {appointment.endTime.period}
+              {displayEndTime.hour}:{displayEndTime.minute}{" "}
+              {displayEndTime.period}
             </p>
           </div>
         </div>

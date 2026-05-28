@@ -11,5 +11,5 @@ export type Appointment = {
 export type TimeOption = {
   hour: string;
   minute: string;
-  period: string;
+  period: "AM" | "PM";
 };
