@@ -10,8 +10,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { candidateColumns } from "./columns";
-import { Candidate } from "../types";
+import { Candidate } from "@/lib/types/candidates";
 
 const CandidatesTableView = ({
   table,
@@ -69,7 +68,7 @@ const CandidatesTableView = ({
           ) : (
             <TableRow>
               <TableCell
-                colSpan={candidateColumns.length}
+                colSpan={table.getAllColumns().length}
                 className="h-32 text-center text-color-text-secondary"
               >
                 No candidates found.

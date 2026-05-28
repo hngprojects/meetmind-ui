@@ -2,6 +2,7 @@
 
 import React from "react";
 import { LuLogOut } from "react-icons/lu";
+import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 
 interface SignOutModalProps {
   isOpen: boolean;
@@ -19,23 +20,18 @@ const SignOutModal: React.FC<SignOutModalProps> = ({
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/40 p-4 animate-in fade-in duration-200">
-      <div
-        role="dialog"
-        aria-modal="true"
-        aria-labelledby="signout-modal-title"
-        className="bg-white rounded-[24px] max-w-[400px] w-full p-8 text-center shadow-xl animate-in zoom-in-95 duration-200"
-      >
+    <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
+      <DialogContent className="bg-white rounded-[24px] max-w-[400px] w-full p-8 text-center shadow-xl gap-0 outline-none [&&_button[absolute]]:hidden">
         <div className="mx-auto w-12 h-12 flex items-center justify-center mb-4">
           <LuLogOut className="text-[#EF4444] text-[32px] stroke-[1.5]" />
         </div>
 
-        <h2
+        <DialogTitle
           id="signout-modal-title"
           className="text-[18px] font-bold text-[#0F172A] mb-2"
         >
           Sign out of MeetMind?
-        </h2>
+        </DialogTitle>
 
         <p className="text-[14px] text-[#5E6470] mb-6 leading-relaxed">
           You&apos;ll be signed out of your current session.
@@ -67,6 +63,7 @@ const SignOutModal: React.FC<SignOutModalProps> = ({
           >
             Cancel
           </button>
+
           <button
             type="button"
             onClick={() => onSignOut(signOutAllDevices)}
@@ -75,8 +72,8 @@ const SignOutModal: React.FC<SignOutModalProps> = ({
             Sign out
           </button>
         </div>
-      </div>
-    </div>
+      </DialogContent>
+    </Dialog>
   );
 };
 
