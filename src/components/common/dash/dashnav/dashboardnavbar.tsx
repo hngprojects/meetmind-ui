@@ -5,6 +5,8 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import Dashnavlist from "./dashnavlist";
 import SignOutModal from "./SignOutModal";
+import { useAuthStore } from "@/store/authStore";
+import { MOCK_NOTIFICATIONS } from "@/lib/mocks/notifications.mock";
 import { MdKeyboardArrowDown } from "react-icons/md";
 import {
   LuUser,
@@ -19,9 +21,13 @@ const Dashboardnavbar = () => {
   const [isSignOutModalOpen, setIsSignOutModalOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const router = useRouter();
+  const logout = useAuthStore((state) => state.logout);
 
-  // Unread notification count — wire to real API when backend is ready
-  const unreadNotificationCount = 3;
+  // Unread count — derived from mock data until the real API is available.
+  // TODO: replace with useState + useEffect calling GET /api/notifications/unread-count
+  const unreadNotificationCount = MOCK_NOTIFICATIONS.filter(
+    (n) => n.status === "unread",
+  ).length;
 
   // Close dropdown when clicking outside
   useEffect(() => {
@@ -66,6 +72,7 @@ const Dashboardnavbar = () => {
           <div className="flex flex-row items-center justify-end gap-6 w-[40%]">
             <button
               type="button"
+              aria-label="Search"
               className="p-1 hover:bg-gray-50 rounded-full transition-colors cursor-pointer"
             >
               <Image

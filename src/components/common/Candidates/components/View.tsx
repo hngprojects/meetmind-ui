@@ -52,6 +52,11 @@ const View = () => {
     setFilters,
   });
 
+  // useReactTable intentionally returns new function refs on every render
+  // (TanStack Table design — see github.com/TanStack/table/issues/5557).
+  // The React Compiler trips on this via react-hooks/incompatible-library.
+  // Suppression is safe here: processedData (useMemo) and candidateColumns
+  // are stable, so stale-closure / memoization issues do not apply.
   // eslint-disable-next-line react-hooks/incompatible-library
   const table = useReactTable({
     data: candidates,

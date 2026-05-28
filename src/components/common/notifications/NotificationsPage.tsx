@@ -222,8 +222,16 @@ export default function NotificationsPage() {
       </div>
 
       {/* ── Tabs ── */}
-      <div className="flex items-center border-b border-[#E5E7EB] mb-6">
+      <div
+        role="tablist"
+        aria-label="Notification filters"
+        className="flex items-center border-b border-[#E5E7EB] mb-6"
+      >
         <button
+          id="tab-all"
+          role="tab"
+          aria-selected={activeTab === "all"}
+          aria-controls="tabpanel-notifications"
           type="button"
           onClick={() => setActiveTab("all")}
           className={cn(
@@ -237,6 +245,10 @@ export default function NotificationsPage() {
           All&nbsp;({totalCount})
         </button>
         <button
+          id="tab-unread"
+          role="tab"
+          aria-selected={activeTab === "unread"}
+          aria-controls="tabpanel-notifications"
           type="button"
           onClick={() => setActiveTab("unread")}
           className={cn(
@@ -252,18 +264,24 @@ export default function NotificationsPage() {
       </div>
 
       {/* ── Notification list / empty state ── */}
-      {visibleNotifications.length === 0 ? (
-        <EmptyState />
-      ) : (
-        <div className="flex flex-col gap-4">
-          {visibleNotifications.map((notification) => (
-            <NotificationCard
-              key={notification.id}
-              notification={notification}
-            />
-          ))}
-        </div>
-      )}
+      <div
+        id="tabpanel-notifications"
+        role="tabpanel"
+        aria-labelledby={`tab-${activeTab}`}
+      >
+        {visibleNotifications.length === 0 ? (
+          <EmptyState />
+        ) : (
+          <div className="flex flex-col gap-4">
+            {visibleNotifications.map((notification) => (
+              <NotificationCard
+                key={notification.id}
+                notification={notification}
+              />
+            ))}
+          </div>
+        )}
+      </div>
     </div>
   );
 }
