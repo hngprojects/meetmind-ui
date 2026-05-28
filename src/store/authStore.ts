@@ -40,8 +40,8 @@ export const useAuthStore = create<AuthState>((set) => ({
   isAuthenticated: false,
   isHydrated: false,
 
+  // Global login function, updates when user logs in
   setAuth: (user, token, refreshToken, accessTokenExpiresAt) => {
-    // ✅ Clear onboarding if different user logs in
     const storedUser = localStorage.getItem("user");
     if (storedUser) {
       try {
@@ -59,6 +59,8 @@ export const useAuthStore = create<AuthState>((set) => ({
     localStorage.setItem("refresh_token", refreshToken);
     localStorage.setItem("access_token_expires_at", accessTokenExpiresAt);
     setAuthCookie(token);
+    localStorage.setItem("refresh_token", refreshToken);
+    localStorage.setItem("access_token_expires_at", accessTokenExpiresAt);
 
     set({
       user,
