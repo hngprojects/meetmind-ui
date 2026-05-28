@@ -48,6 +48,8 @@ const CreatePage1 = () => {
               </div>
               <button
                 onClick={toggle}
+                type="button"
+                aria-label="Close create interview modal"
                 className="text-red-300 border border-red-200 hover:cursor-pointer
              rounded-full w-4 h-4 p-3 flex items-center justify-center"
               >

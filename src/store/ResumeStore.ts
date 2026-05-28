@@ -31,6 +31,9 @@ export const useResumeStore = create<ResumeUploadState>()(
       setExtractedDetails: (details) => set({ extractedDetails: details }),
       resetResume: () => set({ candidateId: null, extractedDetails: null }),
     }),
-    { name: "resume-store" },
+    {
+      name: "resume-store",
+      partialize: (state) => ({ candidateId: state.candidateId }),
+    },
   ),
 );

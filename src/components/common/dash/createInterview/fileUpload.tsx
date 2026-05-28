@@ -108,12 +108,12 @@ const FileUpload = () => {
           },
         },
       );
-      setStep1(false);
-      setStep2(true);
       if (response.status === 200 || response.status === 201) {
         // Save candidate_id and extracted_details to store
         setCandidateId(response.data.data.candidate_id);
         setExtractedDetails(response.data.data.extracted_details);
+        setStep1(false);
+        setStep2(true);
         reset();
         setFileName("");
         setFileSize(null);
@@ -122,8 +122,7 @@ const FileUpload = () => {
       if (axios.isAxiosError(error)) {
         const message =
           error.response?.data?.message ||
-          error.response?.data?.error?.details?.[0]?.msg ||
-          "Upload failed. Please try again.";
+          error.response?.data?.error?.details?.[0]?.msg;
         setServerError(message);
       } else {
         setServerError("Something went wrong. Please try again.");

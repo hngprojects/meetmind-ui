@@ -218,7 +218,10 @@ const Input = () => {
 
         {/* Portfolio Link */}
         <div className="flex flex-col gap-1">
-          <label htmlFor="keySkills" className="text-base text-text-subtext ">
+          <label
+            htmlFor="portfolioLink"
+            className="text-base text-text-subtext "
+          >
             Portfolio Link
           </label>
           <input
