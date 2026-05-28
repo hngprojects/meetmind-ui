@@ -1,4 +1,13 @@
 import { create } from "zustand";
+import { onboardingStore } from "./onboardingStore";
+import { clearAuthCookie, setAuthCookie } from "@/lib/auth-cookie";
+
+const ONBOARDING_STORAGE_KEY = "onboarding-storage";
+
+const clearOnboardingProgress = () => {
+  onboardingStore.getState().reset();
+  localStorage.removeItem(ONBOARDING_STORAGE_KEY);
+};
 
 interface AuthUser {
   id: string;
@@ -32,10 +41,25 @@ export const useAuthStore = create<AuthState>((set) => ({
   isHydrated: false,
 
   setAuth: (user, token, refreshToken, accessTokenExpiresAt) => {
+    // ✅ Clear onboarding if different user logs in
+    const storedUser = localStorage.getItem("user");
+    if (storedUser) {
+      try {
+        const previousUser = JSON.parse(storedUser) as AuthUser;
+        if (previousUser.id !== user.id) {
+          clearOnboardingProgress();
+        }
+      } catch {
+        clearOnboardingProgress();
+      }
+    }
+
     localStorage.setItem("token", token);
     localStorage.setItem("user", JSON.stringify(user));
     localStorage.setItem("refresh_token", refreshToken);
     localStorage.setItem("access_token_expires_at", accessTokenExpiresAt);
+    setAuthCookie(token);
+
     set({
       user,
       token,
@@ -50,6 +74,9 @@ export const useAuthStore = create<AuthState>((set) => ({
     localStorage.removeItem("user");
     localStorage.removeItem("refresh_token");
     localStorage.removeItem("access_token_expires_at");
+    clearAuthCookie();
+    clearOnboardingProgress();
+
     set({
       user: null,
       token: null,
@@ -83,6 +110,9 @@ export const useAuthStore = create<AuthState>((set) => ({
         localStorage.removeItem("user");
         localStorage.removeItem("refresh_token");
         localStorage.removeItem("access_token_expires_at");
+        clearAuthCookie();
+        clearOnboardingProgress();
+
         set({
           user: null,
           token: null,
@@ -93,7 +123,17 @@ export const useAuthStore = create<AuthState>((set) => ({
         });
       }
     } else {
-      set({ isHydrated: true });
+      clearAuthCookie();
+      clearOnboardingProgress();
+
+      set({
+        user: null,
+        token: null,
+        refreshToken: null,
+        accessTokenExpiresAt: null,
+        isAuthenticated: false,
+        isHydrated: true,
+      });
     }
   },
 }));
