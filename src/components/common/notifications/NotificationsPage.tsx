@@ -189,7 +189,12 @@ export default function NotificationsPage() {
             type="button"
             onClick={handleClearAll}
             disabled={totalCount === 0}
-            className="px-4 py-2 text-[13px] font-semibold rounded-xl border border-[#E5E7EB] text-[#374151] hover:bg-gray-50 transition-colors cursor-pointer disabled:opacity-40 disabled:cursor-not-a
+            className={
+              "px-4 py-2 text-[13px] font-semibold rounded-xl border " +
+              "border-[#E5E7EB] text-[#374151] hover:bg-gray-50 " +
+              "transition-colors cursor-pointer disabled:opacity-40 " +
+              "disabled:cursor-not-allowed"
+            }
           >
             Clear All
           </button>
