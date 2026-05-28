@@ -17,8 +17,8 @@ export default function AboutNewsletter() {
     setMessage("");
 
     try {
-      await api.post("/api/v1/subscriptions/email", {
-        email: email.trim(),
+      await api.post(`/api/v1/subscriptions/email/`, {
+        email: email,
       });
 
       setStatus("success");

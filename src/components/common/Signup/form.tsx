@@ -61,14 +61,11 @@ const Signform = () => {
       setServerError(null);
       setIsSuccess(false);
 
-      await api.post(
-        "https://api.staging.meetmind.hng14.com/api/v1/auth/signup",
-        data,
-      );
+      await api.post("/api/v1/auth/signup", data);
 
       setFormData(data);
       setIsSuccess(true);
-      router.push("/onboarding");
+      router.push("/verify-email");
     } catch (error) {
       if (axios.isAxiosError(error)) {
         const responseData = error.response?.data;

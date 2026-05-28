@@ -23,7 +23,7 @@ const Step5 = () => {
     mutationFn: onboardingAPI.completeOnboarding,
     onSuccess: () => {
       addToast("Onboarding completed successfully", "success");
-      router.push("/Dashboard");
+      router.push("/dashboard");
       reset();
     },
     onError: () => {

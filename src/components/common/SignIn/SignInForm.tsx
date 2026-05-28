@@ -60,9 +60,19 @@ const SignInForm = () => {
 
       localStorage.setItem("user", JSON.stringify(authUser));
 
-      setAuth(authUser, response.data.access_token);
+      setAuth(
+        authUser,
+        response.data.access_token,
+        response.data.refresh_token,
+        response.data.access_token_expires_at,
+      );
 
-      router.push("/onboarding");
+      // Check onboarding status from API response
+      if (!response.data.onboarding_completed) {
+        router.push("/onboarding");
+      } else {
+        router.push("/dashboard");
+      }
     } catch (error) {
       if (axios.isAxiosError(error)) {
         const detail = error.response?.data?.detail;
