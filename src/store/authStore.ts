@@ -25,8 +25,8 @@ interface AuthState {
   setAuth: (
     user: AuthUser,
     token: string,
-    refreshToken: string,
-    accessTokenExpiresAt: string,
+    refreshToken?: string | null,
+    accessTokenExpiresAt?: string | null,
   ) => void;
   logout: () => void;
   hydrateAuth: () => void;
@@ -41,7 +41,7 @@ export const useAuthStore = create<AuthState>((set) => ({
   isHydrated: false,
 
   // Global login function, updates when user logs in
-  setAuth: (user, token, refreshToken, accessTokenExpiresAt) => {
+  setAuth: (user, token, refreshToken = null, accessTokenExpiresAt = null) => {
     const storedUser = localStorage.getItem("user");
     if (storedUser) {
       try {
@@ -56,11 +56,19 @@ export const useAuthStore = create<AuthState>((set) => ({
 
     localStorage.setItem("token", token);
     localStorage.setItem("user", JSON.stringify(user));
-    localStorage.setItem("refresh_token", refreshToken);
-    localStorage.setItem("access_token_expires_at", accessTokenExpiresAt);
     setAuthCookie(token);
-    localStorage.setItem("refresh_token", refreshToken);
-    localStorage.setItem("access_token_expires_at", accessTokenExpiresAt);
+
+    if (refreshToken) {
+      localStorage.setItem("refresh_token", refreshToken);
+    } else {
+      localStorage.removeItem("refresh_token");
+    }
+
+    if (accessTokenExpiresAt) {
+      localStorage.setItem("access_token_expires_at", accessTokenExpiresAt);
+    } else {
+      localStorage.removeItem("access_token_expires_at");
+    }
 
     set({
       user,

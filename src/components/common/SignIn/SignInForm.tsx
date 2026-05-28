@@ -66,7 +66,6 @@ const SignInForm = () => {
         response.data.access_token,
         response.data.refresh_token,
         response.data.access_token_expires_at,
-        response.data.access_token,
       );
 
       const meRes = await api.get("/api/v1/users/me");

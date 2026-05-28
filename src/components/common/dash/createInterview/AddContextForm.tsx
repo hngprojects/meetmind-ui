@@ -106,8 +106,8 @@ export default function AddContextForm() {
           Key skills to assess
         </label>
         <input
-          type="skills"
-          id="name"
+          type="text"
+          id="skills"
           className="bg-white pt-2 placeholder:text-[#0F172A]"
           {...register("keySkills")}
           placeholder="Communication, technical depth…"
