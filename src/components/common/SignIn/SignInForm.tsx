@@ -13,6 +13,7 @@ import GoogleAuthButton from "./GoogleAuthButton";
 import AuthFooter from "@/components/common/SignIn/AuthFooter";
 import { useRouter } from "next/navigation";
 import { useAuthStore } from "@/store/authStore";
+import api from "@/lib/api";
 
 const SignInForm = () => {
   const [serverError, setServerError] = useState("");
@@ -67,8 +68,11 @@ const SignInForm = () => {
         response.data.access_token_expires_at,
       );
 
-      // Check onboarding status from API response
-      if (!response.data.onboarding_completed) {
+      const meRes = await api.get("/api/v1/users/me");
+
+      const user = meRes.data.data;
+
+      if (!user.onboarding_completed) {
         router.push("/onboarding");
       } else {
         router.push("/dashboard");
