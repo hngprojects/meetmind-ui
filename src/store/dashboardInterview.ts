@@ -27,6 +27,20 @@ interface DashboardState {
   getOverview: () => Promise<void>;
 }
 
+// ── Axios-shaped error helper ─────────────────────────────────────────────────
+
+interface AxiosLikeError {
+  response?: { data?: { message?: string } };
+  message?: string;
+}
+
+const getErrorMessage = (err: unknown): string => {
+  const e = err as AxiosLikeError;
+  return e?.response?.data?.message ?? e?.message ?? "Something went wrong";
+};
+
+// ── Store ─────────────────────────────────────────────────────────────────────
+
 export const useDashboardStore = create<DashboardState>((set) => ({
   overview: null,
   loading: false,
@@ -36,9 +50,9 @@ export const useDashboardStore = create<DashboardState>((set) => ({
     set({ loading: true, error: null });
     try {
       const data: DashboardResponse = await fetchDashboardOverview();
-      set({ overview: data.data }); // unwrap the nested `data`
-    } catch (err: string) {
-      set({ error: err.response?.data?.message ?? err.message });
+      set({ overview: data.data });
+    } catch (err: unknown) {
+      set({ error: getErrorMessage(err) });
     } finally {
       set({ loading: false });
     }
