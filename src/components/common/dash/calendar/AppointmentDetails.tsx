@@ -1,4 +1,5 @@
 import type { Appointment, TimeOption } from "@/lib/appointmentTypes";
+import { getCandidateInitials } from "@/lib/calendar/appointmentUtils";
 import { FiCalendar, FiX } from "react-icons/fi";
 
 type AppointmentDetailsProps = {
@@ -16,13 +17,7 @@ const AppointmentDetails = ({
   onCancel,
   onReschedule,
 }: AppointmentDetailsProps) => {
-  const initials = appointment.candidate
-    .split(" ")
-    .filter(Boolean)
-    .map((word) => word.charAt(0))
-    .join("")
-    .toUpperCase()
-    .slice(0, 2);
+  const initials = getCandidateInitials(appointment.candidate);
 
   const displayStartTime = selectedStartTime
     ? `${selectedStartTime.hour}:${selectedStartTime.minute} ${selectedStartTime.period}`

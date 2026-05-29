@@ -63,6 +63,7 @@ const CalendarPanel = ({
         </div>
 
         <select
+          aria-label="Filter appointments"
           value={selectedView}
           onChange={(event) => setSelectedView(event.target.value)}
           className="rounded-lg border border-calendar-border bg-white px-2 py-2

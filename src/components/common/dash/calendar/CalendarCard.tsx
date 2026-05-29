@@ -107,13 +107,20 @@ const CalendarCard = ({
   };
 
   // Navigation functions
-  const handlePreviousMonth = () => {
-    setCurrentDate(new Date(currentYear, currentDate.getMonth() - 1, 1));
+  const handleMonthChange = (offset: number) => {
+    const nextDate = new Date(currentYear, currentDate.getMonth() + offset, 1);
+    const maxDayInNextMonth = new Date(
+      nextDate.getFullYear(),
+      nextDate.getMonth() + 1,
+      0,
+    ).getDate();
+
+    setCurrentDate(nextDate);
+    setSelectedDate((prev) => Math.min(prev, maxDayInNextMonth));
   };
 
-  const handleNextMonth = () => {
-    setCurrentDate(new Date(currentYear, currentDate.getMonth() + 1, 1));
-  };
+  const handlePreviousMonth = () => handleMonthChange(-1);
+  const handleNextMonth = () => handleMonthChange(1);
 
   return (
     <section
