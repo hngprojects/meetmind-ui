@@ -9,41 +9,43 @@ const clearOnboardingProgress = () => {
   localStorage.removeItem(ONBOARDING_STORAGE_KEY);
 };
 
-// User type
 interface AuthUser {
   id: string;
   email: string;
   name: string;
 }
 
-// Store type
 interface AuthState {
   user: AuthUser | null;
   token: string | null;
+  refreshToken: string | null;
+  accessTokenExpiresAt: string | null;
   isAuthenticated: boolean;
-
-  setAuth: (user: AuthUser, token: string) => void;
-
+  isHydrated: boolean;
+  setAuth: (
+    user: AuthUser,
+    token: string,
+    refreshToken?: string | null,
+    accessTokenExpiresAt?: string | null,
+  ) => void;
   logout: () => void;
   hydrateAuth: () => void;
-  isHydrated: boolean;
 }
 
 export const useAuthStore = create<AuthState>((set) => ({
-  // Initial state
   user: null,
   token: null,
+  refreshToken: null,
+  accessTokenExpiresAt: null,
   isAuthenticated: false,
   isHydrated: false,
 
   // Global login function, updates when user logs in
-  setAuth: (user, token) => {
+  setAuth: (user, token, refreshToken = null, accessTokenExpiresAt = null) => {
     const storedUser = localStorage.getItem("user");
-
     if (storedUser) {
       try {
         const previousUser = JSON.parse(storedUser) as AuthUser;
-
         if (previousUser.id !== user.id) {
           clearOnboardingProgress();
         }
@@ -56,9 +58,23 @@ export const useAuthStore = create<AuthState>((set) => ({
     localStorage.setItem("user", JSON.stringify(user));
     setAuthCookie(token);
 
+    if (refreshToken) {
+      localStorage.setItem("refresh_token", refreshToken);
+    } else {
+      localStorage.removeItem("refresh_token");
+    }
+
+    if (accessTokenExpiresAt) {
+      localStorage.setItem("access_token_expires_at", accessTokenExpiresAt);
+    } else {
+      localStorage.removeItem("access_token_expires_at");
+    }
+
     set({
       user,
       token,
+      refreshToken,
+      accessTokenExpiresAt,
       isAuthenticated: true,
     });
   },
@@ -66,40 +82,52 @@ export const useAuthStore = create<AuthState>((set) => ({
   logout: () => {
     localStorage.removeItem("token");
     localStorage.removeItem("user");
+    localStorage.removeItem("refresh_token");
+    localStorage.removeItem("access_token_expires_at");
     clearAuthCookie();
     clearOnboardingProgress();
 
     set({
       user: null,
       token: null,
+      refreshToken: null,
+      accessTokenExpiresAt: null,
       isAuthenticated: false,
     });
   },
 
   hydrateAuth: () => {
     const token = localStorage.getItem("token");
-
     const storedUser = localStorage.getItem("user");
+    const refreshToken = localStorage.getItem("refresh_token");
+    const accessTokenExpiresAt = localStorage.getItem(
+      "access_token_expires_at",
+    );
 
     if (token && storedUser) {
       try {
         const user = JSON.parse(storedUser) as AuthUser;
-
         set({
           token,
           user,
+          refreshToken,
+          accessTokenExpiresAt,
           isAuthenticated: true,
           isHydrated: true,
         });
       } catch {
         localStorage.removeItem("token");
         localStorage.removeItem("user");
+        localStorage.removeItem("refresh_token");
+        localStorage.removeItem("access_token_expires_at");
         clearAuthCookie();
         clearOnboardingProgress();
 
         set({
           user: null,
           token: null,
+          refreshToken: null,
+          accessTokenExpiresAt: null,
           isAuthenticated: false,
           isHydrated: true,
         });
@@ -111,6 +139,8 @@ export const useAuthStore = create<AuthState>((set) => ({
       set({
         user: null,
         token: null,
+        refreshToken: null,
+        accessTokenExpiresAt: null,
         isAuthenticated: false,
         isHydrated: true,
       });
