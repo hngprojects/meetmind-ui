@@ -53,7 +53,7 @@ const Dashboardnavbar = () => {
           >
             {isMobileMenuOpen ? <LuX size={24} /> : <LuMenu size={24} />}
           </button>
-          
+
           <Link href="/" className="flex items-center gap-2">
             <Image
               src="/icons/meetmind-logo.svg"
@@ -204,8 +204,7 @@ const Dashboardnavbar = () => {
       <SignOutModal
         isOpen={isSignOutModalOpen}
         onClose={() => setIsSignOutModalOpen(false)}
-        onSignOut={(_signOutAllDevices) => {
-          // If true, implement logic to clear all sessions here
+        onSignOut={() => {
           setIsSignOutModalOpen(false);
           router.push("/sign-in");
         }}
