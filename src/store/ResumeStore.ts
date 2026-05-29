@@ -21,6 +21,8 @@ interface ResumeUploadState {
   resetResume: () => void;
 }
 
+const MAX_SKILLS = 10;
+
 // ── Store ─────────────────────────────────────────────────────────────────────
 export const useResumeStore = create<ResumeUploadState>()(
   persist(
@@ -28,8 +30,17 @@ export const useResumeStore = create<ResumeUploadState>()(
       candidateId: null,
       extractedDetails: null,
       setCandidateId: (id) => set({ candidateId: id }),
-      setExtractedDetails: (details) => set({ extractedDetails: details }),
-      resetResume: () => set({ candidateId: null, extractedDetails: null }),
+      setExtractedDetails: (details) =>
+        set({
+          extractedDetails: {
+            ...details,
+            skills: details.skills.slice(0, MAX_SKILLS), // ← cap at 10
+          },
+        }),
+      resetResume: () => {
+        set({ candidateId: null, extractedDetails: null });
+        localStorage.removeItem("resume-store");
+      },
     }),
     {
       name: "resume-store",

@@ -6,10 +6,14 @@ import {
   addContextSchema,
 } from "@/schemas/addContextSchema";
 import Buttons from "@/components/reuseable-component/buttons";
-import { useCreateStep3, useCreateStep4 } from "@/store/createInterviewStore";
+import {
+  useCreateStep3,
+  useCreateStep4,
+  useCreateStep5,
+} from "@/store/createInterviewStore";
 import { useResumeStore } from "@/store/ResumeStore";
 import { useUserDetailsStore } from "@/store/userDetail";
-import { FaArrowLeft } from "react-icons/fa";
+import { FaArrowLeft, FaArrowRight } from "react-icons/fa";
 
 export default function AddContextForm() {
   const { extractedDetails } = useResumeStore();
@@ -17,6 +21,7 @@ export default function AddContextForm() {
 
   const { setStep3 } = useCreateStep3();
   const { setStep4 } = useCreateStep4();
+  const { setStep5 } = useCreateStep5();
 
   const {
     register,
@@ -24,7 +29,7 @@ export default function AddContextForm() {
     formState: { errors, isSubmitting },
   } = useForm<AddContextFormData>({
     resolver: zodResolver(addContextSchema),
-    mode: "onSubmit",
+    mode: "onTouched",
     reValidateMode: "onChange",
     defaultValues: {
       roleTitle:
@@ -43,7 +48,7 @@ export default function AddContextForm() {
     setStep4(false);
   };
 
-  const onSubmit = (data: AddContextFormData) => {
+  const handleContinue = (data: AddContextFormData) => {
     setInterviewDetails({
       role_title: data.roleTitle,
       job_description: data.jobDescription,
@@ -53,10 +58,15 @@ export default function AddContextForm() {
         .filter(Boolean),
       custom_question: data.customQuestion ?? "",
     });
+    setStep4(false);
+    setStep5(true);
   };
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-5">
+    <form
+      onSubmit={handleSubmit(handleContinue)}
+      className="flex flex-col gap-5"
+    >
       {errors.root && (
         <p className="text-[#C0392B] text-sm text-center bg-[#FDEDEC] border border-[#F8C6C6] rounded-lg px-3 py-2">
           {errors.root.message}
@@ -148,9 +158,10 @@ export default function AddContextForm() {
           onClick={handleBack}
         />
         <Buttons
+          icon2={<FaArrowRight />}
           type="submit"
           disabled={isSubmitting}
-          text={isSubmitting ? "Saving…" : "Continue →"}
+          text={isSubmitting ? "Saving…" : "Continue"}
         />
       </div>
     </form>

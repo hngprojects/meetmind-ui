@@ -7,6 +7,7 @@ import {
 import Image from "next/image";
 import { useEffect, useState } from "react";
 import { FaArrowLeft, FaArrowRight } from "react-icons/fa";
+import StepIndicator from "./stepIndicator";
 
 type StepStatus = "pending" | "in-progress" | "completed";
 
@@ -16,7 +17,7 @@ interface Step {
 }
 
 const INITIAL_STEPS: Step[] = [
-  { label: "Reading CSV file", status: "pending" },
+  { label: "Reading file", status: "pending" },
   { label: "Validating data & structure", status: "pending" },
   { label: "Extracting candidate information", status: "pending" },
   { label: "Identifying roles & skills", status: "pending" },
@@ -121,13 +122,12 @@ export default function Analyzer() {
       delay = completedAt;
     });
 
-    // ✅ cleanup on unmount to avoid setState on an unmounted component
     return () => timeouts.forEach(clearTimeout);
-  }, []); // empty deps — runs once on mount, INITIAL_STEPS is a stable module constant
-
+  }, []);
   return (
     <div className="rounded-2xl text-lg px-3 flex flex-col gap-4">
-      <h1 className="font-bold">Processing data...</h1>
+      <StepIndicator currentStep={2} />
+      <h1 className="font-bold">Processing yourdata...</h1>
       <p className="text-text-subtext text-base">
         This may take a few minutes.
       </p>

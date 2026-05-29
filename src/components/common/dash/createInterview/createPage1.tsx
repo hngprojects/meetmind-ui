@@ -5,6 +5,8 @@ import {
   useCreateStep2,
   useCreateStep3,
   useCreateStep4,
+  useCreateStep5,
+  useCreateStep6,
   useCreateStore,
   useUpload,
 } from "@/store/createInterviewStore";
@@ -14,6 +16,9 @@ import FileUpload from "./fileUpload";
 import Analyzer from "./analyze";
 import Context from "./context";
 import Input from "./input";
+import ConfigureAI from "./configureAi";
+import ReviewLaunch from "./reviewLaunch";
+import StepIndicator from "./stepIndicator";
 
 const CreatePage1 = () => {
   // open the page
@@ -25,6 +30,9 @@ const CreatePage1 = () => {
   const { step2 } = useCreateStep2();
   const { step3 } = useCreateStep3();
   const { step4 } = useCreateStep4();
+  const { step5 } = useCreateStep5();
+  const { step6 } = useCreateStep6();
+  // const { step7 } = useCreateStep7();
 
   const handleClose = () => {
     toggle();
@@ -64,6 +72,7 @@ const CreatePage1 = () => {
             {/* step 1 */}
             {step1 && (
               <div className="flex flex-col gap-5">
+                <StepIndicator currentStep={1} />
                 {/* import candidate  */}
                 <h1 className="text-xl font-bold">Import Candidates</h1>
                 <p className="text-base text-text-subtext">
@@ -89,6 +98,10 @@ const CreatePage1 = () => {
             {step3 && <Input />}
             {/* step 4 */}
             {step4 && <Context />}
+
+            {step5 && <ConfigureAI />}
+
+            {step6 && <ReviewLaunch />}
           </div>
         </div>
       )}

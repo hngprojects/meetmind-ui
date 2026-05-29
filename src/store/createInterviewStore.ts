@@ -63,6 +63,13 @@ type Step6Store = {
   reset: () => void;
 };
 
+type Step7Store = {
+  step7: boolean;
+  toggle7: () => void;
+  setStep7: (value: boolean) => void;
+  reset: () => void;
+};
+
 interface AddContextState {
   contextData: AddContextFormData | null;
   interviewId: string | null;
@@ -81,6 +88,7 @@ const initialStep3State = { step3: false };
 const initialStep4State = { step4: false };
 const initialStep5State = { step5: false };
 const initialStep6State = { step6: false };
+const initialStep7State = { step7: false };
 
 // ── Stores ────────────────────────────────────────────────────────────────────
 
@@ -140,6 +148,13 @@ export const useCreateStep6 = create<Step6Store>((set) => ({
   reset: () => set(initialStep6State),
 }));
 
+export const useCreateStep7 = create<Step7Store>((set) => ({
+  ...initialStep7State,
+  toggle7: () => set((state) => ({ step7: !state.step7 })),
+  setStep7: (value) => set({ step7: value }),
+  reset: () => set(initialStep7State),
+}));
+
 export const useAddContextStore = create<AddContextState>()(
   persist(
     (set) => ({
@@ -168,6 +183,7 @@ export const resetAllStores = () => {
   useCreateStep4.getState().reset();
   useCreateStep5.getState().reset();
   useCreateStep6.getState().reset();
+  useCreateStep7.getState().reset();
 
   // Persisted stores — clears state + localStorage
   useAddContextStore.getState().resetContext();

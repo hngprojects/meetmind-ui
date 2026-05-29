@@ -1,8 +1,10 @@
 import AddContextForm from "./AddContextForm";
+import StepIndicator from "./stepIndicator";
 
 const Context = () => {
   return (
     <div className="flex flex-col gap-3">
+      <StepIndicator currentStep={2} />
       <h1 className="text-lg font-bold">Add Context</h1>
       <p className="text-base text-text-subtext">
         Tell the AI what to focus on

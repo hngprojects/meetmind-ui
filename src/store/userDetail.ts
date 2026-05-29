@@ -26,9 +26,9 @@ interface InterviewDetails {
 
 interface AIConfig {
   ai_tone: "professional" | "friendly" | "casual";
-  participation_mode: "brief" | "moderate" | "detailed";
-  platform: "zoom" | "google_meet";
-  call_link: string;
+  participation_mode: "passive" | "standard" | "proactive";
+  platform: "zoom" | "google_meet" | "livekit";
+  // call_link: string;
   scheduled_start: string;
   scheduled_end: string;
 }
@@ -97,9 +97,9 @@ export const useUserDetailsStore = create<UserDetailsState>()(
             10,
           ),
           ai_tone: aiConfig.ai_tone ?? "friendly",
-          participation_mode: aiConfig.participation_mode ?? "moderate",
-          platform: aiConfig.platform ?? "zoom",
-          call_link: aiConfig.call_link ?? "",
+          participation_mode: aiConfig.participation_mode ?? "standard", // ✅ "moderate" → "standard"
+          platform: aiConfig.platform ?? "livekit",
+          // call_link: aiConfig.call_link ?? "",
           scheduled_start: aiConfig.scheduled_start ?? "",
           scheduled_end: aiConfig.scheduled_end ?? "",
         };
