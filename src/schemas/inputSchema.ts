@@ -13,7 +13,7 @@ export const inputSchema = z.object({
     .trim()
     .nonempty("Phone number is required")
     .regex(
-      /^\+?234[789][01]\d{8}$/,
+      /^\+?(234|0)[789][01]\d{8}$/,
       "Please enter a valid Nigerian phone number",
     ),
   roleTitle: z

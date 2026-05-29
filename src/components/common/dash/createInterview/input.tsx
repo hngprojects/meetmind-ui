@@ -1,6 +1,6 @@
 "use client";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
+import { useForm, useWatch } from "react-hook-form";
 import { inputSchema, InputValuesType } from "@/schemas/inputSchema";
 import { useUserDetailsStore } from "@/store/userDetail";
 import { useResumeStore } from "@/store/ResumeStore";
@@ -43,7 +43,7 @@ const Input = () => {
   const {
     register,
     handleSubmit,
-    watch,
+    control,
     formState: { errors, isSubmitting },
   } = useForm<InputValuesType>({
     resolver: zodResolver(inputSchema),
@@ -55,8 +55,8 @@ const Input = () => {
       phone: candidate.phone || extractedDetails?.phone || "",
       roleTitle: candidate.current_role || extractedDetails?.current_role || "",
       yearsofExperience:
-        candidate.years_of_experience ||
-        extractedDetails?.years_of_experience ||
+        candidate.years_of_experience ??
+        extractedDetails?.years_of_experience ??
         undefined,
       keySkills:
         candidate.skills?.join(", ") ||
@@ -66,7 +66,8 @@ const Input = () => {
       portfolioLink: candidate.portfolio_url || "",
     },
   });
-
+  // ← replace watch() with useWatch()
+  const keySkillsValue = useWatch({ control, name: "keySkills" });
   const handleBack = () => {
     setStep3(false);
     setStep2(true);
@@ -200,8 +201,8 @@ const Input = () => {
             {...register("keySkills")}
             placeholder="Figma, Sketch, Adobe XD"
           />
-          {/* ✅ Live skill counter */}
-          <SkillCounter value={watch("keySkills")} />
+          {/*  Live skill counter */}
+          <SkillCounter value={keySkillsValue ?? ""} />
           {errors.keySkills && (
             <p className="text-[#C0392B] text-sm">{errors.keySkills.message}</p>
           )}

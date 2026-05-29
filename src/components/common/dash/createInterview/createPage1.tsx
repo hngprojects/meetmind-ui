@@ -1,5 +1,6 @@
 "use client";
 import {
+  resetAllStores,
   useCreateStep1,
   useCreateStep2,
   useCreateStep3,
@@ -33,6 +34,10 @@ const CreatePage1 = () => {
   const { step6 } = useCreateStep6();
   // const { step7 } = useCreateStep7();
 
+  const handleClose = () => {
+    toggle();
+    resetAllStores();
+  };
   // toggle step 2
 
   return (
@@ -55,7 +60,7 @@ const CreatePage1 = () => {
                 </p>
               </div>
               <button
-                onClick={toggle}
+                onClick={handleClose}
                 type="button"
                 aria-label="Close create interview modal"
                 className="text-red-300 border border-red-200 hover:cursor-pointer

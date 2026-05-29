@@ -13,7 +13,7 @@ export const configureAISchema = z.object({
     message: "Please select a platform",
   }),
 
-  call_link: z.string().trim().nonempty("Meeting link is required"),
+  // call_link: z.string().trim().nonempty("Meeting link is required"),
 
   scheduled_start: z.string().trim().nonempty("Start time is required"),
 

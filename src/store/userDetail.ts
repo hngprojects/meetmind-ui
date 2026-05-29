@@ -28,7 +28,7 @@ interface AIConfig {
   ai_tone: "professional" | "friendly" | "casual";
   participation_mode: "passive" | "standard" | "proactive";
   platform: "zoom" | "google_meet" | "livekit";
-  call_link: string;
+  // call_link: string;
   scheduled_start: string;
   scheduled_end: string;
 }
@@ -85,7 +85,7 @@ export const useUserDetailsStore = create<UserDetailsState>()(
             phone: candidate.phone ?? "",
             current_role: candidate.current_role ?? "",
             years_of_experience: candidate.years_of_experience ?? 0,
-            skills: (candidate.skills ?? []).slice(0, 10), // ✅ fixed parens
+            skills: (candidate.skills ?? []).slice(0, 10),
             location: candidate.location ?? "",
             portfolio_url: candidate.portfolio_url ?? "",
           },
@@ -99,7 +99,7 @@ export const useUserDetailsStore = create<UserDetailsState>()(
           ai_tone: aiConfig.ai_tone ?? "friendly",
           participation_mode: aiConfig.participation_mode ?? "standard", // ✅ "moderate" → "standard"
           platform: aiConfig.platform ?? "zoom",
-          call_link: aiConfig.call_link ?? "",
+          // call_link: aiConfig.call_link ?? "",
           scheduled_start: aiConfig.scheduled_start ?? "",
           scheduled_end: aiConfig.scheduled_end ?? "",
         };
@@ -110,6 +110,13 @@ export const useUserDetailsStore = create<UserDetailsState>()(
         localStorage.removeItem("user-details-store");
       },
     }),
-    { name: "user-details-store" },
+    {
+      name: "user-details-store",
+      // ── Only persist non-PII fields ──────────────────────────────────────
+      partialize: (state) => ({
+        interviewDetails: state.interviewDetails,
+        aiConfig: state.aiConfig,
+      }),
+    },
   ),
 );

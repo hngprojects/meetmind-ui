@@ -191,7 +191,7 @@ export default function ReviewLaunch() {
                   : "—"
           }
         />
-        <Row label="Meeting Link" value={aiConfig.call_link} />
+        {/* <Row label="Meeting Link" value={aiConfig.call_link} /> */}
         <Row
           label="Start"
           value={

@@ -1,5 +1,5 @@
 "use client";
-import { useForm } from "react-hook-form";
+import { useForm, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 
 import Buttons from "@/components/reuseable-component/buttons";
@@ -24,7 +24,7 @@ export default function ConfigureAI() {
   const {
     register,
     handleSubmit,
-    watch,
+    control,
     setValue,
     formState: { errors, isSubmitting },
   } = useForm<ConfigureAIFormData>({
@@ -35,15 +35,15 @@ export default function ConfigureAI() {
       ai_tone: aiConfig.ai_tone ?? "friendly",
       participation_mode: aiConfig.participation_mode ?? "standard",
       platform: aiConfig.platform ?? "livekit",
-      call_link: aiConfig.call_link ?? "",
+      // call_link: aiConfig.call_link ?? "",
       scheduled_start: aiConfig.scheduled_start ?? "",
       scheduled_end: aiConfig.scheduled_end ?? "",
     },
   });
 
-  const selectedTone = watch("ai_tone");
-  const selectedMode = watch("participation_mode");
-  const selectedPlatform = watch("platform");
+  const selectedTone = useWatch({ control, name: "ai_tone" });
+  const selectedMode = useWatch({ control, name: "participation_mode" });
+  const selectedPlatform = useWatch({ control, name: "platform" });
 
   const handleBack = () => {
     setStep5(false);
@@ -55,7 +55,7 @@ export default function ConfigureAI() {
       ai_tone: data.ai_tone,
       participation_mode: data.participation_mode,
       platform: data.platform ?? "livekit",
-      call_link: data.call_link,
+      // call_link: data.call_link,
       scheduled_start: data.scheduled_start,
       scheduled_end: data.scheduled_end,
     });
@@ -165,7 +165,7 @@ export default function ConfigureAI() {
       </div>
 
       {/* Call Link */}
-      <div className="flex flex-col gap-1">
+      {/* <div className="flex flex-col gap-1">
         <label htmlFor="call_link" className="text-base text-text-subtext">
           Call link
         </label>
@@ -180,7 +180,7 @@ export default function ConfigureAI() {
         {errors.call_link && (
           <p className="text-[#C0392B] text-sm">{errors.call_link.message}</p>
         )}
-      </div>
+      </div> */}
 
       {/* Schedule date & time */}
       <div className="flex flex-col gap-3">
