@@ -1,4 +1,5 @@
 import Image from "next/image";
+import TranscriptionCard from "./TranscriptionCard";
 
 export default function DashboardPreview() {
   return (
@@ -53,42 +54,7 @@ export default function DashboardPreview() {
             </div>
           </div>
           {/* Right Section */}
-          <div className="w-[275px] rounded-[18px] bg-[#EEF3F4] overflow-hidden">
-            <div className="relative h-[193px] overflow-hidden">
-              <Image
-                src="/images/zoom-transcription-options.png"
-                alt="Zoom transcription preview"
-                width={950}
-                height={594}
-                className="absolute -top-4 left-1/2 -translate-x-[50%]
-                  h-[193px] w-[350px] max-w-none"
-                priority
-              />
-            </div>
-
-            <div className="h-[131px] px-4 pt-0 py-3">
-              <div className="flex items-center gap-3 mb-4">
-                <div
-                  className="flex h-8 w-8 items-center justify-center rounded-full 
-                      bg-[#0F4D52] text-white text-xs font-semibold"
-                >
-                  AI
-                </div>
-
-                <div className="flex items-center gap-2 text-sm">
-                  <span className="font-semibold text-[#0A1628]">Alex</span>
-
-                  <span className="text-[#94A3B8]">speaking • 0:42</span>
-                </div>
-              </div>
-
-              <p className="text-xs leading-5 text-[#475569]">
-                &quot;I&apos;ve reviewed the candidate&apos;s portfolio.
-                I&apos;d like to ask about their experience with distributed
-                systems.&quot;
-              </p>
-            </div>
-          </div>
+          <TranscriptionCard />
         </div>
         {/* Mobile */}
         <div className="bg-[#FDFDFE] w-full max-w-sm rounded-2xl p-6 md:hidden">
@@ -112,7 +78,7 @@ export default function DashboardPreview() {
             />
           </div>
 
-          <div className="mt-8 flex flex-col gap-6">
+          <div className="mt-8 mb-6 flex flex-col gap-6">
             <div className="flex flex-col items-center border-r border-[#E1E3E4] pb-4">
               <h2 className="text-[36px] font-bold text-[#111827]">12,847</h2>
               <p className="text-[14px] text-[#6B7280]">Interviews analyzed</p>
@@ -131,42 +97,7 @@ export default function DashboardPreview() {
             </div>
           </div>
 
-          <div className="w-[275px] rounded-[18px] bg-[#EEF3F4] overflow-hidden">
-            <div className="relative h-[193px] overflow-hidden">
-              <Image
-                src="/images/zoom-transcription-options.png"
-                alt="Zoom transcription preview"
-                width={950}
-                height={594}
-                className="absolute -top-4 left-1/2 -translate-x-[50%]
-                  h-[193px] w-[350px] max-w-none"
-                priority
-              />
-            </div>
-
-            <div className="h-[131px] px-4 pt-0 py-3">
-              <div className="flex items-center gap-3 mb-4">
-                <div
-                  className="flex h-8 w-8 items-center justify-center rounded-full 
-                      bg-[#0F4D52] text-white text-xs font-semibold"
-                >
-                  AI
-                </div>
-
-                <div className="flex items-center gap-2 text-sm">
-                  <span className="font-semibold text-[#0A1628]">Alex</span>
-
-                  <span className="text-[#94A3B8]">speaking • 0:42</span>
-                </div>
-              </div>
-
-              <p className="text-xs leading-5 text-[#475569] mb-6">
-                &quot;I&apos;ve reviewed the candidate&apos;s portfolio.
-                I&apos;d like to ask about their experience with distributed
-                systems.&quot;
-              </p>
-            </div>
-          </div>
+          <TranscriptionCard />
         </div>
       </div>
     </section>

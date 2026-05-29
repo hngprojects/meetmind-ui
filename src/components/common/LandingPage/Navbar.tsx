@@ -3,7 +3,6 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { RiArrowDropDownLine } from "react-icons/ri";
 import { IoIosMenu } from "react-icons/io";
 import { MdOutlineCancel } from "react-icons/md";
 
@@ -79,7 +78,6 @@ export default function Navbar() {
               onClick={() => console.log("SDK menu clicked")}
             >
               <span>SDK</span>
-              <RiArrowDropDownLine className="w-4 h-4" />
             </Link>
           </div>
         </div>

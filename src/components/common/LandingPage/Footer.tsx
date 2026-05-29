@@ -5,7 +5,6 @@ const footerColumns = [
   {
     title: "Product",
     links: [
-      // { label: "Features", href: "/coming-soon" },
       { label: "Use Cases", href: "/coming-soon" },
       { label: "Pricing", href: "/pricing" },
       { label: "ChangeLog", href: "/change-logs" },
@@ -25,8 +24,6 @@ const footerColumns = [
     links: [
       { label: "Blog", href: "/blogpost" },
       { label: "Help Center", href: "/help" },
-      // { label: "Case Studies", href: "/coming-soon" },
-      // { label: "Tutorials", href: "/coming-soon" },
     ],
   },
   {
