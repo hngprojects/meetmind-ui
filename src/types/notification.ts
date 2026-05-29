@@ -6,7 +6,7 @@ export type NotificationCategory =
 
 export type NotificationStatus = "read" | "unread";
 
-export interface Notification {
+export interface AppNotification {
   id: string;
   category: NotificationCategory;
   title: string;

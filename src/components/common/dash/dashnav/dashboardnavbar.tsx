@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import Dashnavlist from "./dashnavlist";
 import SignOutModal from "./SignOutModal";
+import { useAuthStore } from "@/store/authStore";
 import { MdKeyboardArrowDown } from "react-icons/md";
 import {
   LuUser,
@@ -21,23 +22,47 @@ const Dashboardnavbar = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isSignOutModalOpen, setIsSignOutModalOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
+  const mobileMenuRef = useRef<HTMLDivElement>(null);
+  const mobileMenuButtonRef = useRef<HTMLButtonElement>(null);
   const router = useRouter();
+  const logout = useAuthStore((state) => state.logout);
 
   // Unread notification count — wire to real API when backend is ready
   const unreadNotificationCount = 3;
 
-  // Close dropdown when clicking outside
+  // Close open menus from outside clicks or Escape.
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
-      if (
-        dropdownRef.current &&
-        !dropdownRef.current.contains(event.target as Node)
-      ) {
+      const target = event.target as Node;
+
+      if (dropdownRef.current && !dropdownRef.current.contains(target)) {
         setIsDropdownOpen(false);
       }
+
+      if (
+        mobileMenuRef.current &&
+        mobileMenuButtonRef.current &&
+        !mobileMenuRef.current.contains(target) &&
+        !mobileMenuButtonRef.current.contains(target)
+      ) {
+        setIsMobileMenuOpen(false);
+      }
     };
+
+    const handleEscapeKey = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        setIsDropdownOpen(false);
+        setIsMobileMenuOpen(false);
+      }
+    };
+
     document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
+    document.addEventListener("keydown", handleEscapeKey);
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+      document.removeEventListener("keydown", handleEscapeKey);
+    };
   }, []);
 
   return (
@@ -46,9 +71,12 @@ const Dashboardnavbar = () => {
         {/* Mobile Menu Button + Logo */}
         <div className="flex items-center gap-2 md:gap-3 shrink-0">
           <button
+            ref={mobileMenuButtonRef}
             type="button"
             className="md:hidden p-1.5 -ml-1.5 text-gray-600 hover:bg-gray-100 rounded-lg cursor-pointer transition-colors"
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+            aria-expanded={isMobileMenuOpen}
+            aria-controls="mobile-nav-menu"
             aria-label="Toggle mobile menu"
           >
             {isMobileMenuOpen ? <LuX size={24} /> : <LuMenu size={24} />}
@@ -196,7 +224,11 @@ const Dashboardnavbar = () => {
 
       {/* Mobile Menu Dropdown */}
       {isMobileMenuOpen && (
-        <div className="md:hidden border-t border-gray-100 bg-white px-4 py-4 absolute w-full left-0 top-full shadow-md animate-in slide-in-from-top-2 duration-150">
+        <div
+          id="mobile-nav-menu"
+          ref={mobileMenuRef}
+          className="md:hidden border-t border-gray-100 bg-white px-4 py-4 absolute w-full left-0 top-full shadow-md animate-in slide-in-from-top-2 duration-150"
+        >
           <Dashnavlist mobile onLinkClick={() => setIsMobileMenuOpen(false)} />
         </div>
       )}
@@ -205,6 +237,7 @@ const Dashboardnavbar = () => {
         isOpen={isSignOutModalOpen}
         onClose={() => setIsSignOutModalOpen(false)}
         onSignOut={() => {
+          logout();
           setIsSignOutModalOpen(false);
           router.push("/sign-in");
         }}

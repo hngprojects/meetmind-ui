@@ -4,7 +4,10 @@ import React, { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { LuClock, LuBell, LuArrowLeft } from "react-icons/lu";
-import type { Notification, NotificationCategory } from "@/types/notification";
+import type {
+  AppNotification,
+  NotificationCategory,
+} from "@/types/notification";
 import { MOCK_NOTIFICATIONS } from "@/lib/mocks/notifications.mock";
 
 // ─── Category Badge ───────────────────────────────────────────────────────────
@@ -48,7 +51,7 @@ function CategoryBadge({ category }: { category: NotificationCategory }) {
 
 // ─── Notification Card ────────────────────────────────────────────────────────
 
-function NotificationCard({ notification }: { notification: Notification }) {
+function NotificationCard({ notification }: { notification: AppNotification }) {
   const isUnread = notification.status === "unread";
 
   return (
@@ -129,7 +132,7 @@ type Tab = "all" | "unread";
 export default function NotificationsPage() {
   const router = useRouter();
   const [notifications, setNotifications] =
-    useState<Notification[]>(MOCK_NOTIFICATIONS);
+    useState<AppNotification[]>(MOCK_NOTIFICATIONS);
   const [activeTab, setActiveTab] = useState<Tab>("all");
 
   const unreadCount = notifications.filter((n) => n.status === "unread").length;
