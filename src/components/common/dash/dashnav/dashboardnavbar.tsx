@@ -6,7 +6,7 @@ import { useRouter } from "next/navigation";
 import Dashnavlist from "./dashnavlist";
 import SignOutModal from "./SignOutModal";
 import { useAuthStore } from "@/store/authStore";
-import { MOCK_NOTIFICATIONS } from "@/lib/mocks/notifications.mock";
+import { useUnreadNotificationsCount } from "@/hooks/useNotifications";
 import { MdKeyboardArrowDown } from "react-icons/md";
 import {
   LuUser,
@@ -22,12 +22,7 @@ const Dashboardnavbar = () => {
   const dropdownRef = useRef<HTMLDivElement>(null);
   const router = useRouter();
   const logout = useAuthStore((state) => state.logout);
-
-  // Unread count — derived from mock data until the real API is available.
-  // TODO: replace with useState + useEffect calling GET /api/notifications/unread-count
-  const unreadNotificationCount = MOCK_NOTIFICATIONS.filter(
-    (n) => n.status === "unread",
-  ).length;
+  const { data: unreadNotificationCount = 0 } = useUnreadNotificationsCount();
 
   // Close dropdown when clicking outside
   useEffect(() => {
@@ -197,6 +192,7 @@ const Dashboardnavbar = () => {
           if (signOutAllDevices) {
             // Future logic for clearing all sessions
           }
+          logout();
           setIsSignOutModalOpen(false);
           router.push("/sign-in");
         }}
