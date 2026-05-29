@@ -41,6 +41,24 @@ type step4Store = {
   setStep4: (value: boolean) => void;
 };
 
+type step5Store = {
+  step5: boolean;
+  toggle5: () => void;
+  setStep5: (value: boolean) => void;
+};
+
+type step6Store = {
+  step6: boolean;
+  toggle6: () => void;
+  setStep6: (value: boolean) => void;
+};
+
+type step7Store = {
+  step7: boolean;
+  toggle7: () => void;
+  setStep7: (value: boolean) => void;
+};
+
 interface AddContextState {
   contextData: AddContextFormData | null;
   interviewId: string | null;
@@ -87,6 +105,24 @@ export const useCreateStep4 = create<step4Store>((set) => ({
   step4: false,
   toggle4: () => set((state) => ({ step4: !state.step4 })),
   setStep4: (value) => set({ step4: value }),
+}));
+
+export const useCreateStep5 = create<step5Store>((set) => ({
+  step5: false,
+  toggle5: () => set((state) => ({ step5: !state.step5 })),
+  setStep5: (value) => set({ step5: value }),
+}));
+
+export const useCreateStep6 = create<step6Store>((set) => ({
+  step6: false,
+  toggle6: () => set((state) => ({ step6: !state.step6 })),
+  setStep6: (value) => set({ step6: value }),
+}));
+
+export const useCreateStep7 = create<step7Store>((set) => ({
+  step7: false,
+  toggle7: () => set((state) => ({ step7: !state.step7 })),
+  setStep7: (value) => set({ step7: value }),
 }));
 
 export const useAddContextStore = create<AddContextState>()(

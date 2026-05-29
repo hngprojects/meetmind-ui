@@ -7,6 +7,7 @@ import {
 import Image from "next/image";
 import { useEffect, useState } from "react";
 import { FaArrowLeft, FaArrowRight } from "react-icons/fa";
+import StepIndicator from "./stepIndicator";
 
 type StepStatus = "pending" | "in-progress" | "completed";
 
@@ -127,6 +128,7 @@ export default function Analyzer() {
 
   return (
     <div className="rounded-2xl text-lg px-3 flex flex-col gap-4">
+      <StepIndicator currentStep={2} />
       <h1 className="font-bold">Processing loading your data...</h1>
       <p className="text-text-subtext text-base">
         This may take a few minutes.

@@ -6,7 +6,11 @@ import {
   addContextSchema,
 } from "@/schemas/addContextSchema";
 import Buttons from "@/components/reuseable-component/buttons";
-import { useCreateStep3, useCreateStep4 } from "@/store/createInterviewStore";
+import {
+  useCreateStep3,
+  useCreateStep4,
+  useCreateStep5,
+} from "@/store/createInterviewStore";
 import { useResumeStore } from "@/store/ResumeStore";
 import { useUserDetailsStore } from "@/store/userDetail";
 import { FaArrowLeft } from "react-icons/fa";
@@ -17,6 +21,7 @@ export default function AddContextForm() {
 
   const { setStep3 } = useCreateStep3();
   const { setStep4 } = useCreateStep4();
+  const { setStep5 } = useCreateStep5();
 
   const {
     register,
@@ -41,6 +46,11 @@ export default function AddContextForm() {
   const handleBack = () => {
     setStep3(true);
     setStep4(false);
+  };
+
+  const handleContinue = () => {
+    setStep4(false);
+    setStep5(true);
   };
 
   const onSubmit = (data: AddContextFormData) => {
@@ -149,6 +159,7 @@ export default function AddContextForm() {
         />
         <Buttons
           type="submit"
+          onClick={handleContinue}
           disabled={isSubmitting}
           text={isSubmitting ? "Saving…" : "Continue →"}
         />

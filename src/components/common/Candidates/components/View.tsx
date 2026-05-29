@@ -105,9 +105,7 @@ const View = () => {
   }
 
   if (isError) {
-    const message =
-      typedError?.response?.data?.message ||
-      "Something went wrong while loading candidates.";
+    const message = typedError?.response?.data?.message || "data coming soon.";
 
     const code = typedError?.response?.data?.code;
 

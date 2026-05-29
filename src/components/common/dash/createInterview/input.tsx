@@ -11,6 +11,7 @@ import {
 } from "@/store/createInterviewStore";
 import Buttons from "@/components/reuseable-component/buttons";
 import { FaArrowLeft, FaArrowRight } from "react-icons/fa";
+import StepIndicator from "./stepIndicator";
 
 const Input = () => {
   const { extractedDetails } = useResumeStore();
@@ -72,6 +73,7 @@ const Input = () => {
   };
   return (
     <div>
+      <StepIndicator currentStep={2} currentstyle="pb-6" />
       <div className="flex flex-col gap-4 pb-4">
         <h1 className="font-bold text-xl">Candidate Information</h1>
         <p className="text-text-subtext text-base">
