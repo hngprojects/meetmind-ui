@@ -97,7 +97,7 @@ export default function ConfigureAI() {
       <div className="flex flex-col gap-3">
         <h3 className="font-semibold text-base">Response Detailed Level</h3>
         <div className="flex flex-row gap-3">
-          {(["brief", "standard", "detailed"] as const).map((mode) => (
+          {(["passive", "standard", "proactive"] as const).map((mode) => (
             <button
               key={mode}
               type="button"

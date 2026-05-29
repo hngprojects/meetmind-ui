@@ -5,7 +5,7 @@ export const configureAISchema = z.object({
     message: "Please select an AI tone",
   }),
 
-  participation_mode: z.enum(["brief", "standard", "detailed"], {
+  participation_mode: z.enum(["passive", "standard", "proactive"], {
     message: "Please select a response detail level",
   }),
 

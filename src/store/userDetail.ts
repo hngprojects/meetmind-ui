@@ -26,7 +26,7 @@ interface InterviewDetails {
 
 interface AIConfig {
   ai_tone: "professional" | "friendly" | "casual";
-  participation_mode: "brief" | "standard" | "detailed";
+  participation_mode: "passive" | "standard" | "proactive";
   platform: "zoom" | "google_meet" | "livekit";
   call_link: string;
   scheduled_start: string;
