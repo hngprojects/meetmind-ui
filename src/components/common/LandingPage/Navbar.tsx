@@ -75,7 +75,6 @@ export default function Navbar() {
             <Link
               href="/sdk"
               className="flex items-center gap-1 text-[#0F172A] text-sm font-medium cursor-pointer"
-              onClick={() => console.log("SDK menu clicked")}
             >
               <span>SDK</span>
             </Link>
