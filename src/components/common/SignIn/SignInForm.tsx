@@ -59,8 +59,6 @@ const SignInForm = () => {
         name: response.data.name,
       };
 
-      localStorage.setItem("user", JSON.stringify(authUser));
-
       setAuth(authUser, response.data.access_token);
 
       const meRes = await api.get("/api/v1/users/me");

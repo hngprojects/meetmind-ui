@@ -1,4 +1,13 @@
 import { create } from "zustand";
+import { onboardingStore } from "./onboardingStore";
+import { clearAuthCookie, setAuthCookie } from "@/lib/auth-cookie";
+
+const ONBOARDING_STORAGE_KEY = "onboarding-storage";
+
+const clearOnboardingProgress = () => {
+  onboardingStore.getState().reset();
+  localStorage.removeItem(ONBOARDING_STORAGE_KEY);
+};
 
 // User type
 interface AuthUser {
@@ -28,16 +37,37 @@ export const useAuthStore = create<AuthState>((set) => ({
   isHydrated: false,
 
   // Global login function, updates when user logs in
-  setAuth: (user, token) =>
+  setAuth: (user, token) => {
+    const storedUser = localStorage.getItem("user");
+
+    if (storedUser) {
+      try {
+        const previousUser = JSON.parse(storedUser) as AuthUser;
+
+        if (previousUser.id !== user.id) {
+          clearOnboardingProgress();
+        }
+      } catch {
+        clearOnboardingProgress();
+      }
+    }
+
+    localStorage.setItem("token", token);
+    localStorage.setItem("user", JSON.stringify(user));
+    setAuthCookie(token);
+
     set({
       user,
       token,
       isAuthenticated: true,
-    }),
+    });
+  },
 
   logout: () => {
     localStorage.removeItem("token");
     localStorage.removeItem("user");
+    clearAuthCookie();
+    clearOnboardingProgress();
 
     set({
       user: null,
@@ -64,6 +94,8 @@ export const useAuthStore = create<AuthState>((set) => ({
       } catch {
         localStorage.removeItem("token");
         localStorage.removeItem("user");
+        clearAuthCookie();
+        clearOnboardingProgress();
 
         set({
           user: null,
@@ -73,7 +105,13 @@ export const useAuthStore = create<AuthState>((set) => ({
         });
       }
     } else {
+      clearAuthCookie();
+      clearOnboardingProgress();
+
       set({
+        user: null,
+        token: null,
+        isAuthenticated: false,
         isHydrated: true,
       });
     }
