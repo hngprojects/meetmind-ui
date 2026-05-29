@@ -46,19 +46,26 @@ interface UserDetailsState {
   resetUserDetails: () => void;
 }
 
+// ── Initial State ─────────────────────────────────────────────────────────────
+
+const initialUserDetailsState = {
+  candidate: {},
+  interviewDetails: {},
+  aiConfig: {},
+} satisfies Pick<
+  UserDetailsState,
+  "candidate" | "interviewDetails" | "aiConfig"
+>;
+
 // ── Store ─────────────────────────────────────────────────────────────────────
 
 export const useUserDetailsStore = create<UserDetailsState>()(
   persist(
     (set, get) => ({
-      candidate: {},
-      interviewDetails: {},
-      aiConfig: {},
+      ...initialUserDetailsState,
 
       setCandidate: (data) =>
-        set((state) => ({
-          candidate: { ...state.candidate, ...data },
-        })),
+        set((state) => ({ candidate: { ...state.candidate, ...data } })),
 
       setInterviewDetails: (data) =>
         set((state) => ({
@@ -66,9 +73,7 @@ export const useUserDetailsStore = create<UserDetailsState>()(
         })),
 
       setAIConfig: (data) =>
-        set((state) => ({
-          aiConfig: { ...state.aiConfig, ...data },
-        })),
+        set((state) => ({ aiConfig: { ...state.aiConfig, ...data } })),
 
       buildPayload: (candidateId: string) => {
         const { candidate, interviewDetails, aiConfig } = get();
@@ -97,8 +102,10 @@ export const useUserDetailsStore = create<UserDetailsState>()(
         };
       },
 
-      resetUserDetails: () =>
-        set({ candidate: {}, interviewDetails: {}, aiConfig: {} }),
+      resetUserDetails: () => {
+        set(initialUserDetailsState);
+        localStorage.removeItem("user-details-store");
+      },
     }),
     { name: "user-details-store" },
   ),

@@ -2,6 +2,7 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import { AddContextFormData } from "@/schemas/addContextSchema";
+import { useUserDetailsStore } from "./userDetail";
 
 // ── Types ─────────────────────────────────────────────────────────────────────
 
@@ -124,11 +125,15 @@ export const useAddContextStore = create<AddContextState>()(
 // ── Reset All Stores ──────────────────────────────────────────────────────────
 
 export const resetAllStores = () => {
+  // UI step stores
   useCreateStore.getState().reset();
   useCreateStep1.getState().reset();
   useCreateStep2.getState().reset();
   useUpload.getState().reset();
   useCreateStep3.getState().reset();
   useCreateStep4.getState().reset();
+
+  // Persisted stores — clears state + localStorage
   useAddContextStore.getState().resetContext();
+  useUserDetailsStore.getState().resetUserDetails(); // ← added
 };
