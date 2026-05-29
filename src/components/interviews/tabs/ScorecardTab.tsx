@@ -19,7 +19,11 @@ const MOCK_SCORECARD: ScorecardCategory[] = [
     questions: [
       "Walk me through a complex technical challenge you've faced. How did you break down the problem?",
     ],
-    signals: ["Structured thinking", "Root cause analysis", "Clear articulation"],
+    signals: [
+      "Structured thinking",
+      "Root cause analysis",
+      "Clear articulation",
+    ],
   },
   {
     id: "communication",
@@ -63,7 +67,10 @@ export default function ScorecardTab({ interview }: Props) {
   };
 
   return (
-    <div className="flex h-full min-h-[32.5rem] flex-col overflow-y-auto p-6">
+    <div
+      className="flex h-full min-h-[32.5rem] flex-col overflow-y-auto p-6"
+      aria-label={`${interview.roleTitle} scorecard`}
+    >
       <div className="space-y-4">
         {MOCK_SCORECARD.map((category) => {
           const isExpanded = !!expanded[category.id];
@@ -83,7 +90,7 @@ export default function ScorecardTab({ interview }: Props) {
                   <HiOutlineChevronRight
                     className={cn(
                       "h-4 w-4 text-[var(--color-text-secondary)] transition-transform duration-200",
-                      isExpanded ? "rotate-90" : ""
+                      isExpanded ? "rotate-90" : "",
                     )}
                   />
                   <div className="flex-1 text-left">
@@ -95,7 +102,7 @@ export default function ScorecardTab({ interview }: Props) {
                       <div
                         className={cn(
                           "absolute top-0 left-0 h-full rounded-full transition-all duration-500",
-                          getColorClass(category.color)
+                          getColorClass(category.color),
                         )}
                         style={{ width: `${category.score}%` }}
                       />

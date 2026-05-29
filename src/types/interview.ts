@@ -20,17 +20,48 @@ export type InterviewPlatform = string; //zoom, google_meet, discord etc
 
 export type ParticipationMode = "passive" | "standard" | "proactive";
 
+// ── Live session polling contract ──────────────────────────────────────────────
+
+export const INTERVIEW_SESSION_STATUSES = [
+  "connecting",
+  "listening",
+  "thinking",
+  "speaking",
+  "connection_lost",
+  "reconnecting",
+  "processing",
+] as const;
+
+export type InterviewSessionStatus =
+  (typeof INTERVIEW_SESSION_STATUSES)[number];
+
+export type InterviewMeetingStatus = "Live" | "Scheduled";
+
+export type InterviewSession = {
+  interview_id: string;
+  session_status: InterviewSessionStatus;
+  meeting_status: InterviewMeetingStatus;
+  agent_status_display: string;
+  elapsed_display: string;
+  participants_count: number;
+  platform?: InterviewPlatform | null;
+  dropped_at_display?: string | null;
+  partial_data_saved?: boolean;
+  message?: string | null;
+};
+
+export type InterviewSessionRejoinResponse = {
+  success: boolean;
+  message: string;
+  session_status: InterviewSessionStatus;
+  interview_id: string;
+};
+
 // ── Session phase ──────────────────────────────────────────────────────────────
-// UI-only — driven by WebSocket events from the backend (not stored in API)
-// Represents what the AI agent is currently doing during a live interview
+// Backend-driven statuses plus legacy transcript-only local states.
 
 export type SessionPhase =
-  | "connecting" // AI joining the call
-  | "listening" // AI hearing the conversation
-  | "thinking" // AI generating a follow-up question
-  | "speaking" // AI talking in the call
-  | "reconnecting" // AI lost connection, retrying
-  | "connection_lost" // AI dropped, cannot rejoin
+  | InterviewSessionStatus
   | "live_transcript" // AI transcribing normally
   | "transcript_error"; // Transcript stream interrupted
 

@@ -2,6 +2,8 @@ import type {
   ChatMessage,
   InterviewDetail,
   InterviewListItem,
+  InterviewSession,
+  InterviewSessionStatus,
   ScorecardCategory,
   TranscriptMessage,
 } from "@/types/interview";
@@ -87,9 +89,53 @@ export const MOCK_INTERVIEW_DETAIL: InterviewDetail = {
     "Limited experience working with large cross-functional teams (10+ people)",
     "Vague on metrics and success measurements frameworks",
   ],
-  elapsed: "05:47",
+  elapsed: "00:05:47",
   participants: 2,
 };
+
+const createMockSession = (
+  session_status: InterviewSessionStatus,
+  overrides: Partial<InterviewSession> = {},
+): InterviewSession => ({
+  interview_id: "1",
+  session_status,
+  meeting_status: "Live",
+  agent_status_display: {
+    connecting: "Connecting...",
+    listening: "Listening",
+    thinking: "Thinking...",
+    speaking: "Speaking",
+    connection_lost: "Connection lost",
+    reconnecting: "Reconnecting...",
+    processing: "Processing",
+  }[session_status],
+  elapsed_display: "00:05:47",
+  participants_count: 2,
+  platform: "Zoom",
+  partial_data_saved: false,
+  ...overrides,
+});
+
+export const MOCK_INTERVIEW_SESSION_STATES: Record<
+  InterviewSessionStatus,
+  InterviewSession
+> = {
+  connecting: createMockSession("connecting", {
+    elapsed_display: "00:00:00",
+  }),
+  listening: createMockSession("listening"),
+  thinking: createMockSession("thinking"),
+  speaking: createMockSession("speaking"),
+  connection_lost: createMockSession("connection_lost", {
+    dropped_at_display: "00:31:14",
+    partial_data_saved: true,
+    message: "The agent was dropped from the meeting at 00:31:14.",
+  }),
+  reconnecting: createMockSession("reconnecting"),
+  processing: createMockSession("processing"),
+};
+
+export const MOCK_INTERVIEW_SESSION = MOCK_INTERVIEW_SESSION_STATES.listening;
 
 export const MOCK_TRANSCRIPT: TranscriptMessage[] = [
   {

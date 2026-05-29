@@ -1,6 +1,4 @@
 "use client";
-
-import { cn } from "@/lib/utils";
 import type { InterviewDetail } from "@/types/interview";
 import { HiOutlineSparkles, HiOutlineFlag } from "react-icons/hi2";
 
@@ -15,9 +13,11 @@ export default function SummaryTab({ interview }: Props) {
     return (
       <div className="flex h-full min-h-[32.5rem] items-center justify-center flex-col gap-2 p-6">
         <div className="flex items-center justify-center h-12 w-12 rounded-full bg-[var(--color-bg-secondary)]">
-           <div className="h-4 w-4 bg-[var(--color-brand-accent)] rounded-full animate-pulse" />
+          <div className="h-4 w-4 bg-[var(--color-brand-accent)] rounded-full animate-pulse" />
         </div>
-        <p className="font-medium text-[var(--color-text-color-primary)] mt-4">Meeting is Live</p>
+        <p className="font-medium text-[var(--color-text-color-primary)] mt-4">
+          Meeting is Live
+        </p>
         <p className="text-sm text-[var(--color-text-secondary)] text-center max-w-sm">
           A summary will be provided as soon as the meeting ends.
         </p>

@@ -1,8 +1,12 @@
 "use client";
 
-import { cn } from "@/lib/utils";
 import type { InterviewDetail } from "@/types/interview";
-import { HiOutlineMail, HiOutlinePhone, HiOutlineDocumentText, HiOutlineGlobeAlt } from "react-icons/hi2";
+import {
+  HiOutlineDocumentText,
+  HiOutlineEnvelope,
+  HiOutlineGlobeAlt,
+  HiOutlinePhone,
+} from "react-icons/hi2";
 
 type Props = {
   interview: InterviewDetail;
@@ -33,14 +37,18 @@ export default function ProfileTab({ interview }: Props) {
         </h4>
         <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
           <div>
-            <p className="text-xs text-[var(--color-text-secondary)] mb-1">Email</p>
+            <p className="text-xs text-[var(--color-text-secondary)] mb-1">
+              Email
+            </p>
             <div className="flex items-center gap-2 text-sm text-[var(--color-text-color-primary)]">
-              <HiOutlineMail className="h-4 w-4 text-[var(--color-text-secondary)]" />
+              <HiOutlineEnvelope className="h-4 w-4 text-[var(--color-text-secondary)]" />
               {interview.candidateEmail}
             </div>
           </div>
           <div>
-            <p className="text-xs text-[var(--color-text-secondary)] mb-1">Phone number</p>
+            <p className="text-xs text-[var(--color-text-secondary)] mb-1">
+              Phone number
+            </p>
             <div className="flex items-center gap-2 text-sm text-[var(--color-text-color-primary)]">
               <HiOutlinePhone className="h-4 w-4 text-[var(--color-text-secondary)]" />
               {interview.phone || "Not provided"}

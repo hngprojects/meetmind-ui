@@ -3,14 +3,39 @@
 import {
   getChatHistory,
   getInterview,
+  getInterviewSession,
   getTranscript,
   listInterviews,
+  rejoinInterviewSession,
 } from "@/lib/services/interviews.service";
-import type { InterviewStatus } from "@/types/interview";
-import { useQuery } from "@tanstack/react-query";
+import type {
+  InterviewSession,
+  InterviewSessionStatus,
+  InterviewStatus,
+} from "@/types/interview";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 // Statuses that mean the interview is actively running
 const LIVE_STATUSES: InterviewStatus[] = ["in_progress"];
+const ACTIVE_SESSION_STATUSES: InterviewSessionStatus[] = [
+  "connecting",
+  "listening",
+  "thinking",
+  "speaking",
+  "connection_lost",
+  "reconnecting",
+  "processing",
+];
+
+const SESSION_STATUS_LABELS: Record<InterviewSessionStatus, string> = {
+  connecting: "Connecting...",
+  listening: "Listening",
+  thinking: "Thinking...",
+  speaking: "Speaking",
+  connection_lost: "Connection lost",
+  reconnecting: "Reconnecting...",
+  processing: "Processing",
+};
 
 export function useInterviewsList(page = 1, pageSize = 20) {
   return useQuery({
@@ -50,4 +75,90 @@ export function useTranscript(id: string | null, status?: InterviewStatus) {
     refetchInterval: isLive ? 3000 : false,
     refetchOnWindowFocus: isLive,
   });
+}
+
+export function useInterviewSession(
+  id: string | null,
+  status?: InterviewStatus,
+) {
+  const isLive = status ? LIVE_STATUSES.includes(status) : false;
+
+  return useQuery({
+    queryKey: ["interviews", id, "session"],
+    queryFn: () => getInterviewSession(id!),
+    enabled: !!id,
+    placeholderData: (previousData) => previousData,
+    refetchInterval: (query) => {
+      const session = query.state.data as InterviewSession | undefined;
+      return isLive || isActiveSessionStatus(session?.session_status)
+        ? 3000
+        : false;
+    },
+    refetchOnWindowFocus: isLive,
+  });
+}
+
+export function useRejoinInterviewSession(id: string | null) {
+  const queryClient = useQueryClient();
+  const sessionQueryKey = ["interviews", id, "session"] as const;
+
+  return useMutation({
+    mutationFn: () => {
+      if (!id) throw new Error("Interview id is required to rejoin a session.");
+      return rejoinInterviewSession(id);
+    },
+    onMutate: async () => {
+      if (!id) return { previous: undefined };
+
+      await queryClient.cancelQueries({ queryKey: sessionQueryKey });
+      const previous =
+        queryClient.getQueryData<InterviewSession>(sessionQueryKey);
+
+      queryClient.setQueryData<InterviewSession>(sessionQueryKey, {
+        interview_id: id,
+        session_status: "reconnecting",
+        meeting_status: previous?.meeting_status ?? "Live",
+        agent_status_display: SESSION_STATUS_LABELS.reconnecting,
+        elapsed_display: previous?.elapsed_display ?? "00:00:00",
+        participants_count: previous?.participants_count ?? 0,
+        platform: previous?.platform ?? null,
+        dropped_at_display: previous?.dropped_at_display,
+        partial_data_saved: previous?.partial_data_saved,
+        message: "Attempting to rejoin the meeting. Do not close this window.",
+      });
+
+      return { previous };
+    },
+    onError: (_error, _variables, context) => {
+      if (context?.previous) {
+        queryClient.setQueryData(sessionQueryKey, context.previous);
+      }
+    },
+    onSuccess: (response) => {
+      queryClient.setQueryData<InterviewSession>(
+        sessionQueryKey,
+        (current) => ({
+          interview_id: response.interview_id,
+          session_status: response.session_status,
+          meeting_status: current?.meeting_status ?? "Live",
+          agent_status_display: SESSION_STATUS_LABELS[response.session_status],
+          elapsed_display: current?.elapsed_display ?? "00:00:00",
+          participants_count: current?.participants_count ?? 0,
+          platform: current?.platform ?? null,
+          dropped_at_display: current?.dropped_at_display,
+          partial_data_saved: current?.partial_data_saved,
+          message: response.message,
+        }),
+      );
+    },
+    onSettled: () => {
+      if (id) {
+        return queryClient.invalidateQueries({ queryKey: sessionQueryKey });
+      }
+    },
+  });
+}
+
+function isActiveSessionStatus(status?: InterviewSessionStatus): boolean {
+  return status ? ACTIVE_SESSION_STATUSES.includes(status) : false;
 }
