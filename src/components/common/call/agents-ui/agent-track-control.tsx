@@ -237,7 +237,12 @@ export function AgentTrackControl({
         pending={pending}
         disabled={disabled}
         onPressedChange={onPressedChange}
-        className="peer/track group/track focus:z-10 has-[.audiovisualizer]:w-auto has-[.audiovisualizer]:px-3 has-[~_button]:rounded-r-none has-[~_button]:border-r-0 has-[~_button]:pr-2 has-[~_button
+        className={cn(
+          "peer/track group/track focus:z-10 has-[.audiovisualizer]:w-auto",
+          "has-[.audiovisualizer]:px-3 has-[~_button]:rounded-r-none",
+          "has-[~_button]:border-r-0 has-[~_button]:pr-2",
+          "has-[~_button]:pl-3",
+        )}
       >
         {audioTrack && (
           <AgentAudioVisualizerBar
@@ -269,7 +274,8 @@ export function AgentTrackControl({
           onActiveDeviceChange={onActiveDeviceChange}
           className={cn(
             "relative",
-            'before:bg-border before:absolute before:inset-y-0 before:left-0 before:my-2.5 before:w-px has-[~_button]:before:content-[""]',
+            "before:bg-border before:absolute before:inset-y-0",
+            ' before:left-0 before:my-2.5 before:w-px has-[~_button]:before:content-[""]',
             !pressed && "before:bg-destructive/20",
           )}
         />
