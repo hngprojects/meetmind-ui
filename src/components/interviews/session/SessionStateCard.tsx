@@ -159,7 +159,12 @@ export default function SessionStateCard({
             type="button"
             onClick={onRejoin}
             disabled={isRejoining}
-            className="rounded-lg bg-[var(--color-brand-primary)] py-3 text-sm font-medium text-[var(--color-text-white-primary)] transition-opacity hover:opacity-80 disabled:cursor-not-allowed disabl
+            className={cn(
+              "rounded-lg bg-[var(--color-brand-primary)] py-3",
+              "text-sm font-medium text-[var(--color-text-white-primary)]",
+              "transition-opacity hover:opacity-80",
+              "disabled:cursor-not-allowed disabled:opacity-50",
+            )}
           >
             {isRejoining ? "Rejoining..." : "Rejoin Meeting"}
           </button>
@@ -167,7 +172,11 @@ export default function SessionStateCard({
             <button
               type="button"
               onClick={onViewPartial}
-              className="rounded-lg border border-[var(--color-brand-primary)] py-3 text-sm font-medium text-[var(--color-brand-primary)] transition-opacity hover:bg-[var(--color-bg-secondary)]"
+              className={cn(
+                "rounded-lg border border-[var(--color-brand-primary)] py-3",
+                "text-sm font-medium text-[var(--color-brand-primary)]",
+                "transition-opacity hover:bg-[var(--color-bg-secondary)]",
+              )}
             >
               View Partial Result
             </button>

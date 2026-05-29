@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { LuClock, LuBell, LuArrowLeft } from "react-icons/lu";
 import type { Notification, NotificationCategory } from "@/types/notification";
+import { cn } from "@/lib/utils";
 import {
   getUnreadNotificationsCount,
   useNotificationsStore,
@@ -183,7 +184,12 @@ export default function NotificationsPage() {
             type="button"
             onClick={handleMarkAllAsRead}
             disabled={unreadCount === 0}
-            className="px-4 py-2 text-[13px] font-semibold rounded-xl bg-[#02505E] text-white hover:bg-[#02505E]/90 transition-colors cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed"
+            className={cn(
+              "px-4 py-2 text-[13px] font-semibold rounded-xl",
+              "bg-[#02505E] text-white hover:bg-[#02505E]/90",
+              "transition-colors cursor-pointer",
+              "disabled:opacity-40 disabled:cursor-not-allowed",
+            )}
           >
             Mark all as Read
           </button>
@@ -191,7 +197,12 @@ export default function NotificationsPage() {
             type="button"
             onClick={handleClearAll}
             disabled={totalCount === 0}
-            className="px-4 py-2 text-[13px] font-semibold rounded-xl border border-[#E5E7EB] text-[#374151] hover:bg-gray-50 transition-colors cursor-pointer disabled:opacity-40 disabled:cursor-not-a
+            className={cn(
+              "px-4 py-2 text-[13px] font-semibold rounded-xl",
+              "border border-[#E5E7EB] text-[#374151]",
+              "hover:bg-gray-50 transition-colors cursor-pointer",
+              "disabled:opacity-40 disabled:cursor-not-allowed",
+            )}
           >
             Clear All
           </button>
@@ -203,22 +214,26 @@ export default function NotificationsPage() {
         <button
           type="button"
           onClick={() => setActiveTab("all")}
-          className={`pb-3 px-1 mr-8 text-[14px] font-medium transition-colors cursor-pointer ${
+          className={cn(
+            "pb-3 px-1 mr-8 text-[14px] font-medium",
+            "transition-colors cursor-pointer",
             activeTab === "all"
               ? "text-[#0F172A] border-b-2 border-[#0F172A] -mb-px"
-              : "text-[#9CA3AF] hover:text-[#374151]"
-          }`}
+              : "text-[#9CA3AF] hover:text-[#374151]",
+          )}
         >
           All&nbsp;({totalCount})
         </button>
         <button
           type="button"
           onClick={() => setActiveTab("unread")}
-          className={`pb-3 px-1 text-[14px] font-medium transition-colors cursor-pointer ${
+          className={cn(
+            "pb-3 px-1 text-[14px] font-medium",
+            "transition-colors cursor-pointer",
             activeTab === "unread"
               ? "text-[#0F172A] border-b-2 border-[#0F172A] -mb-px"
-              : "text-[#9CA3AF] hover:text-[#374151]"
-          }`}
+              : "text-[#9CA3AF] hover:text-[#374151]",
+          )}
         >
           Unread&nbsp;({unreadCount})
         </button>
