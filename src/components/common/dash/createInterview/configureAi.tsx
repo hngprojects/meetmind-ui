@@ -13,6 +13,7 @@ import {
   ConfigureAIFormData,
   configureAISchema,
 } from "@/schemas/ConfigureAiSchema";
+import StepIndicator from "./stepIndicator";
 
 export default function ConfigureAI() {
   const { aiConfig, setAIConfig } = useUserDetailsStore();
@@ -65,6 +66,7 @@ export default function ConfigureAI() {
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-6">
+      <StepIndicator currentStep={3} />
       {/* AI Tone */}
       <div className="flex flex-col gap-3">
         <h3 className="font-semibold text-base">AI Tone</h3>

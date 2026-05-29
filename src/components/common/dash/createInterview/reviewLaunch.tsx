@@ -270,7 +270,9 @@ export default function ReviewLaunch() {
           style=" disabled:hover:cursor-not-allowed"
           disabled={isLoading || !readyToLaunch}
           text={isLoading ? "Launching..." : "Start interview →"}
-          onClick={handleSubmit}
+          onClick={() => {
+            handleSubmit();
+          }}
         />
       </div>
     </div>
