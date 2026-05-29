@@ -127,7 +127,7 @@ export default function Analyzer() {
 
   return (
     <div className="rounded-2xl text-lg px-3 flex flex-col gap-4">
-      <h1 className="font-bold">Processing loading your data...</h1>
+      <h1 className="font-bold">Processing data...</h1>
       <p className="text-text-subtext text-base">
         This may take a few minutes.
       </p>
