@@ -129,7 +129,7 @@ const Step2 = () => {
                 hires: data.hires,
               });
             }}
-            disabled={!isValid || mutation.isPending}
+            disabled={mutation.isPending}
             size="lg"
             className="w-full bg-primary hover:bg-primary/90 text-primary-foreground"
           >

@@ -4,6 +4,7 @@ import React, { useState, useEffect, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useSignupStore } from "@/store/signupStore";
 import { Loader2, CheckCircle2, MailOpen } from "lucide-react";
+import axios from "axios";
 import api from "@/lib/api";
 
 function VerifyEmailContent() {
@@ -15,24 +16,32 @@ function VerifyEmailContent() {
   const [isVerifying, setIsVerifying] = useState(false);
   const [isVerified, setIsVerified] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [isResending, setIsResending] = useState(false);
+  const [resendMessage, setResendMessage] = useState<string | null>(null);
+  const [resendError, setResendError] = useState<string | null>(null);
 
-  const emailToDisplay = formData?.email || "your email";
+  const signupEmail = formData?.email;
+  const emailToDisplay = signupEmail || "your email";
 
   // If there's a token in the URL, verify it automatically
   useEffect(() => {
     if (!token) return;
 
     let isMounted = true;
+    let redirectTimer: ReturnType<typeof setTimeout> | null = null;
 
     const run = async () => {
       if (isMounted) setIsVerifying(true);
       if (isMounted) setError(null);
       try {
-        await api.get(`/api/v1/auth/verify-email?token=${token}`);
+        await api.get(
+          `/api/v1/auth/verify-email?token=${encodeURIComponent(token)}`,
+        );
 
         if (isMounted) {
           setIsVerified(true);
-          setTimeout(() => router.push("/Dashboard"), 2000);
+          if (redirectTimer) clearTimeout(redirectTimer);
+          redirectTimer = setTimeout(() => router.push("/Dashboard"), 2000);
         }
       } catch {
         if (isMounted)
@@ -46,12 +55,44 @@ function VerifyEmailContent() {
 
     return () => {
       isMounted = false;
+      if (redirectTimer) clearTimeout(redirectTimer);
     };
   }, [token, router]);
 
-  const handleResend = () => {
-    // Simulate resend logic
-    alert("Verification link resent to " + emailToDisplay);
+  const handleResend = async () => {
+    setResendMessage(null);
+    setResendError(null);
+
+    if (!signupEmail) {
+      setResendError(
+        "We could not find your email address. Please sign up again.",
+      );
+      return;
+    }
+
+    try {
+      setIsResending(true);
+      await api.post("/api/v1/auth/resend-verification", {
+        email: signupEmail,
+      });
+      setResendMessage(`Verification link resent to ${signupEmail}.`);
+    } catch (error) {
+      console.error("Failed to resend verification email", error);
+
+      if (axios.isAxiosError(error)) {
+        const detail = error.response?.data?.detail;
+        const message =
+          (Array.isArray(detail) ? detail[0]?.msg : undefined) ||
+          (typeof detail === "string" ? detail : undefined) ||
+          error.response?.data?.message ||
+          "Unable to resend verification link. Please try again.";
+        setResendError(message);
+      } else {
+        setResendError("Unable to resend verification link. Please try again.");
+      }
+    } finally {
+      setIsResending(false);
+    }
   };
 
   // State 1: We are verifying the token from the URL
@@ -137,11 +178,22 @@ function VerifyEmailContent() {
           <button
             type="button"
             onClick={handleResend}
-            className="underline font-medium text-[#02505E] hover:text-[#035A69] cursor-pointer"
+            disabled={isResending}
+            className="underline font-medium text-[#02505E] hover:text-[#035A69] cursor-pointer disabled:cursor-not-allowed disabled:opacity-60"
           >
-            Click to resend
+            {isResending ? "Resending..." : "Click to resend"}
           </button>
         </p>
+        {resendMessage && (
+          <p role="status" className="text-center text-sm text-green-600">
+            {resendMessage}
+          </p>
+        )}
+        {resendError && (
+          <p role="alert" className="text-center text-sm text-[#C0392B]">
+            {resendError}
+          </p>
+        )}
       </div>
     </div>
   );

@@ -1,0 +1,68 @@
+import api from "@/lib/api";
+import {
+  Candidate,
+  CandidatesResponse,
+  CandidateQueryParams,
+} from "../types/candidates";
+
+export const getCandidates = async (
+  params: CandidateQueryParams,
+): Promise<CandidatesResponse> => {
+  const response = await api.get("/api/v1/candidates", {
+    params,
+  });
+
+  return response.data;
+};
+
+export const getCandidate = async (id: string): Promise<Candidate> => {
+  const response = await api.get(
+    `/api/v1/candidates/${encodeURIComponent(id)}`,
+  );
+
+  return response.data;
+};
+
+/* export const exportCandidates = async (params: CandidateQueryParams) => {
+  const response = await api.get("/api/v1/candidates/export", {
+    params,
+    responseType: "blob",
+  });
+
+  return response.data;
+};
+ */
+
+export const exportCandidates = async (
+  params: CandidateQueryParams,
+): Promise<Blob> => {
+  const response = await api.get("/api/v1/candidates/export", {
+    params,
+    responseType: "blob",
+  });
+
+  const data = response.data;
+  if (data instanceof Blob) {
+    return data;
+  }
+
+  let text: string;
+  try {
+    text = await data.text();
+  } catch {
+    throw new Error("Export failed: invalid response format");
+  }
+
+  let json: { message?: string } | null = null;
+  try {
+    json = JSON.parse(text);
+  } catch {
+    throw new Error("Export failed: invalid response format");
+  }
+
+  throw new Error(
+    typeof json?.message === "string" && json.message.trim().length > 0
+      ? json.message
+      : "Export not implemented on backend yet",
+  );
+};

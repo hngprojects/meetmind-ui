@@ -11,9 +11,11 @@ import Image from "next/image";
 import { FaRegEyeSlash } from "react-icons/fa";
 import { IoEyeOutline } from "react-icons/io5";
 import Buttons from "@/components/reuseable-component/buttons";
+import { useAuthStore } from "@/store/authStore";
 
 const Signform = () => {
   const router = useRouter();
+  const setAuth = useAuthStore((state) => state.setAuth);
   // show password
   const [showPassword, setShowPassword] = useState<boolean>(false);
 
@@ -62,28 +64,40 @@ const Signform = () => {
       setIsSuccess(false);
       const response = await api.post("/api/v1/auth/signup", data);
 
-      const access_token =
-        response.data?.data?.access_token || response.data?.access_token;
-      const next_step =
-        response.data?.data?.next_step || response.data?.next_step;
-
-      if (access_token) {
-        localStorage.setItem("token", access_token);
-      }
+      const responseData = response.data.data ?? response.data;
+      const { access_token, next_step } = responseData;
 
       setFormData(data);
-      setIsSuccess(true);
-      if (
-        next_step === "verify_email" ||
-        response.status === 201 ||
-        response.status === 200
-      ) {
+
+      if (next_step === "verify_email") {
+        setIsSuccess(true);
         router.push("/verify-email");
         return;
       }
-      // Fallback redirect just in case
-      router.push("/verify-email");
+
+      if (!access_token) {
+        setServerError("Sign up succeeded, but no access token was returned.");
+        return;
+      }
+
+      localStorage.setItem("token", access_token);
+      const meRes = await api.get("/api/v1/users/me");
+      const user = meRes.data.data;
+
+      const authUser = {
+        id: user.id,
+        email: user.email,
+        name: user.name,
+      };
+
+      setAuth(authUser, access_token);
+      setIsSuccess(true);
+
+      router.push("/onboarding");
     } catch (error) {
+      localStorage.removeItem("token");
+      localStorage.removeItem("user");
+
       if (axios.isAxiosError(error)) {
         const responseData = error.response?.data;
         const message =

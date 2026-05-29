@@ -1,9 +1,11 @@
 import { createColumnHelper } from "@tanstack/react-table";
-import { FiChevronRight } from "react-icons/fi";
-import { Candidate } from "../types";
+import { FiChevronRight, FiArrowUp, FiArrowDown } from "react-icons/fi";
+import { Candidate } from "@/lib/types/candidates";
 import ScoreBar from "./ScoreBar";
 import StatusBadge from "./StatusBadge";
 import ActionBadge from "./ActionBadge";
+import { CandidateFilters } from "@/store/candidatesStore";
+import { formatRelativeDate, formatDate } from "../helpers/date";
 import SortableHeader from "./SortableHeader";
 import { Button } from "@/components/ui/button";
 
@@ -20,9 +22,44 @@ export const getInitials = (name: string) => {
 
 const columnHelper = createColumnHelper<Candidate>();
 
-export const candidateColumns = [
+type ColumnsProps = {
+  filters: CandidateFilters;
+  setFilters: (filters: Partial<CandidateFilters>) => void;
+};
+
+const getSortIcon = (active: boolean, direction: "asc" | "desc") => {
+  if (!active) return <FiArrowDown className="opacity-40" />;
+
+  return direction === "asc" ? <FiArrowUp /> : <FiArrowDown />;
+};
+
+const handleSort = (
+  field: "name" | "score" | "date",
+  filters: CandidateFilters,
+  setFilters: (filters: Partial<CandidateFilters>) => void,
+) => {
+  const isSameField = filters.sortBy === field;
+
+  setFilters({
+    sortBy: field,
+    sortDirection:
+      isSameField && filters.sortDirection === "asc" ? "desc" : "asc",
+    page: 1,
+  });
+};
+
+export const getCandidateColumns = ({ filters, setFilters }: ColumnsProps) => [
   columnHelper.accessor("name", {
-    header: ({ column }) => <SortableHeader title="Name" column={column} />,
+    header: () => (
+      <SortableHeader
+        title="Name"
+        onfunction={getSortIcon(
+          filters.sortBy === "name",
+          filters.sortDirection,
+        )}
+        onClick={() => handleSort("name", filters, setFilters)}
+      />
+    ),
     meta: { widthClass: "w-[28%]" },
     cell: ({ row: { original } }) => (
       <div className="flex items-center gap-3">
@@ -54,15 +91,39 @@ export const candidateColumns = [
     meta: { widthClass: "w-[15%]" },
     cell: (info) => <StatusBadge status={info.getValue()} />,
   }),
-  columnHelper.accessor("date", {
-    header: ({ column }) => <SortableHeader title="Date" column={column} />,
-    meta: { widthClass: "w-[15%]" },
-    cell: (info) => (
-      <span className="text-color-text-subtext">{info.getValue()}</span>
+  columnHelper.accessor("createdAt", {
+    header: () => (
+      <SortableHeader
+        title="Date"
+        onfunction={getSortIcon(
+          filters.sortBy === "date",
+          filters.sortDirection,
+        )}
+        onClick={() => handleSort("date", filters, setFilters)}
+      />
     ),
+    meta: { widthClass: "w-[15%]" },
+    cell: (info) => {
+      const date = info.getValue();
+
+      return (
+        <span className="text-color-text-subtext" title={formatDate(date)}>
+          {formatRelativeDate(date)}
+        </span>
+      );
+    },
   }),
   columnHelper.accessor("score", {
-    header: ({ column }) => <SortableHeader title="Scores" column={column} />,
+    header: () => (
+      <SortableHeader
+        title="Scores"
+        onfunction={getSortIcon(
+          filters.sortBy === "score",
+          filters.sortDirection,
+        )}
+        onClick={() => handleSort("score", filters, setFilters)}
+      />
+    ),
     meta: { widthClass: "w-[12%]" },
     cell: (info) => <ScoreBar score={info.getValue()} />,
   }),
