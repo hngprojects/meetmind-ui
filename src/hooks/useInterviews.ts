@@ -13,6 +13,10 @@ import type {
   InterviewSessionStatus,
   InterviewStatus,
 } from "@/types/interview";
+import {
+  REJOIN_SESSION_MESSAGE,
+  SESSION_STATUS_LABELS,
+} from "@/types/interview";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 // Statuses that mean the interview is actively running
@@ -26,16 +30,6 @@ const ACTIVE_SESSION_STATUSES: InterviewSessionStatus[] = [
   "reconnecting",
   "processing",
 ];
-
-const SESSION_STATUS_LABELS: Record<InterviewSessionStatus, string> = {
-  connecting: "Connecting...",
-  listening: "Listening",
-  thinking: "Thinking...",
-  speaking: "Speaking",
-  connection_lost: "Connection lost",
-  reconnecting: "Reconnecting...",
-  processing: "Processing",
-};
 
 export function useInterviewsList(page = 1, pageSize = 20) {
   return useQuery({
@@ -124,7 +118,7 @@ export function useRejoinInterviewSession(id: string | null) {
         platform: previous?.platform ?? null,
         dropped_at_display: previous?.dropped_at_display,
         partial_data_saved: previous?.partial_data_saved,
-        message: "Attempting to rejoin the meeting. Do not close this window.",
+        message: REJOIN_SESSION_MESSAGE,
       });
 
       return { previous };

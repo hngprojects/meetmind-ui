@@ -2,6 +2,8 @@ import api from "@/lib/api";
 import { unwrapData } from "@/lib/api-response";
 import {
   INTERVIEW_SESSION_STATUSES,
+  REJOIN_SESSION_MESSAGE,
+  SESSION_STATUS_LABELS,
   type ChatMessage,
   type InterviewDetail,
   type InterviewListItem,
@@ -30,9 +32,16 @@ type ApiInterview = {
   platform?: string | null;
   scheduled_start?: string | null;
   scheduled_end?: string | null;
+  resume_url?: string | null;
+  portfolio_url?: string | null;
   candidate_name?: string;
   candidate_email?: string | null;
-  candidate?: { name?: string; email?: string };
+  candidate?: {
+    name?: string;
+    email?: string;
+    resume_url?: string | null;
+    portfolio_url?: string | null;
+  };
 };
 
 type ApiListResponse = {
@@ -205,7 +214,7 @@ export async function rejoinInterviewSession(
   if (MOCKS_ENABLED) {
     return {
       success: true,
-      message: "Attempting to rejoin the meeting. Do not close this window.",
+      message: REJOIN_SESSION_MESSAGE,
       session_status: "reconnecting",
       interview_id: id,
     };
@@ -216,9 +225,7 @@ export async function rejoinInterviewSession(
 
   return {
     success: data.success ?? true,
-    message:
-      data.message ??
-      "Attempting to rejoin the meeting. Do not close this window.",
+    message: data.message ?? REJOIN_SESSION_MESSAGE,
     session_status: normalizeSessionStatus(data.session_status),
     interview_id: data.interview_id ?? id,
   };
@@ -391,6 +398,8 @@ function mapApiToDetail(raw: ApiInterview, id: string): InterviewDetail {
     jobDescription: "",
     scoringRubric: "",
     callLink: null,
+    resumeUrl: raw.resume_url ?? raw.candidate?.resume_url ?? null,
+    portfolioUrl: raw.portfolio_url ?? raw.candidate?.portfolio_url ?? null,
     observation: "",
     highlights: [],
     redFlags: [],
@@ -447,16 +456,6 @@ function mapApiToInterviewSession(
     message: raw.message ?? null,
   };
 }
-
-const SESSION_STATUS_LABELS: Record<InterviewSessionStatus, string> = {
-  connecting: "Connecting...",
-  listening: "Listening",
-  thinking: "Thinking...",
-  speaking: "Speaking",
-  connection_lost: "Connection lost",
-  reconnecting: "Reconnecting...",
-  processing: "Processing",
-};
 
 function normalizeSessionStatus(value: unknown): InterviewSessionStatus {
   if (

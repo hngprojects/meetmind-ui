@@ -78,6 +78,8 @@ export const MOCK_INTERVIEW_DETAIL: InterviewDetail = {
   scheduledStart: "2025-05-02T11:00:00.000Z",
   scheduledEnd: "2025-05-02T12:00:00.000Z",
   callLink: null,
+  resumeUrl: "https://drive.google.com/resume/temibalogun.pdf",
+  portfolioUrl: "https://temibalogun.design",
   observation:
     "Temitope demonstrated strong systems thinking and proactively asked about engineering constraints before proposing solutions. Portfolio presentation was outcome-focused.",
   highlights: [

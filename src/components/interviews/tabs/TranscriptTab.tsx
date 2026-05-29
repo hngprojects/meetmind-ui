@@ -96,7 +96,7 @@ export default function TranscriptTab({
     }
   };
 
-  if (showSessionCard) {
+  if (showSessionCard && visibleSession) {
     return (
       <div className="p-6">
         <SessionStateCard

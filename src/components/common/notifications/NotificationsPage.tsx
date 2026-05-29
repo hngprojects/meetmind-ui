@@ -5,7 +5,10 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { LuClock, LuBell, LuArrowLeft } from "react-icons/lu";
 import type { Notification, NotificationCategory } from "@/types/notification";
-import { MOCK_NOTIFICATIONS } from "@/lib/mocks/notifications.mock";
+import {
+  getUnreadNotificationsCount,
+  useNotificationsStore,
+} from "@/store/notificationsStore";
 
 // ─── Category Badge ───────────────────────────────────────────────────────────
 
@@ -128,11 +131,12 @@ type Tab = "all" | "unread";
 
 export default function NotificationsPage() {
   const router = useRouter();
-  const [notifications, setNotifications] =
-    useState<Notification[]>(MOCK_NOTIFICATIONS);
+  const notifications = useNotificationsStore((state) => state.notifications);
+  const markAllAsRead = useNotificationsStore((state) => state.markAllAsRead);
+  const clearAll = useNotificationsStore((state) => state.clearAll);
   const [activeTab, setActiveTab] = useState<Tab>("all");
 
-  const unreadCount = notifications.filter((n) => n.status === "unread").length;
+  const unreadCount = getUnreadNotificationsCount(notifications);
   const totalCount = notifications.length;
 
   const visibleNotifications =
@@ -141,13 +145,11 @@ export default function NotificationsPage() {
       : notifications.filter((n) => n.status === "unread");
 
   const handleMarkAllAsRead = () => {
-    setNotifications((prev) =>
-      prev.map((n) => ({ ...n, status: "read" as const })),
-    );
+    markAllAsRead();
   };
 
   const handleClearAll = () => {
-    setNotifications([]);
+    clearAll();
   };
 
   return (

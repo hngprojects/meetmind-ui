@@ -35,6 +35,19 @@ export const INTERVIEW_SESSION_STATUSES = [
 export type InterviewSessionStatus =
   (typeof INTERVIEW_SESSION_STATUSES)[number];
 
+export const SESSION_STATUS_LABELS: Record<InterviewSessionStatus, string> = {
+  connecting: "Connecting...",
+  listening: "Listening",
+  thinking: "Thinking...",
+  speaking: "Speaking",
+  connection_lost: "Connection lost",
+  reconnecting: "Reconnecting...",
+  processing: "Processing",
+};
+
+export const REJOIN_SESSION_MESSAGE =
+  "Attempting to rejoin the meeting. Do not close this window.";
+
 export type InterviewMeetingStatus = "Live" | "Scheduled";
 
 export type InterviewSession = {
@@ -119,6 +132,8 @@ export type InterviewDetail = {
   scheduledStart: string | null;
   scheduledEnd: string | null;
   callLink: string | null;
+  resumeUrl: string | null;
+  portfolioUrl: string | null;
   observation: string;
   highlights: string[];
   redFlags: string[];

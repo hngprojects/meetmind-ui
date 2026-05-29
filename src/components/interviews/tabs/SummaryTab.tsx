@@ -16,10 +16,10 @@ export default function SummaryTab({ interview }: Props) {
           <div className="h-4 w-4 bg-[var(--color-brand-accent)] rounded-full animate-pulse" />
         </div>
         <p className="font-medium text-[var(--color-text-color-primary)] mt-4">
-          Meeting is Live
+          Meeting Scheduled
         </p>
         <p className="text-sm text-[var(--color-text-secondary)] text-center max-w-sm">
-          A summary will be provided as soon as the meeting ends.
+          A summary will be provided after the meeting ends.
         </p>
       </div>
     );

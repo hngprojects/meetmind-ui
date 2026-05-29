@@ -1,6 +1,7 @@
 "use client";
 
 import type { InterviewDetail } from "@/types/interview";
+import type { ReactNode } from "react";
 import {
   HiOutlineDocumentText,
   HiOutlineEnvelope,
@@ -63,20 +64,12 @@ export default function ProfileTab({ interview }: Props) {
           Links
         </h4>
         <div className="space-y-3">
-          <a
-            href="#"
-            className="flex items-center gap-2 text-sm font-medium text-[var(--color-brand-accent)] hover:underline"
-          >
+          <ProfileLink href={interview.resumeUrl} label="View Resume">
             <HiOutlineDocumentText className="h-4 w-4" />
-            View Resume
-          </a>
-          <a
-            href="#"
-            className="flex items-center gap-2 text-sm font-medium text-[var(--color-brand-accent)] hover:underline"
-          >
+          </ProfileLink>
+          <ProfileLink href={interview.portfolioUrl} label="Portfolio">
             <HiOutlineGlobeAlt className="h-4 w-4" />
-            Portfolio
-          </a>
+          </ProfileLink>
         </div>
       </div>
 
@@ -107,7 +100,7 @@ export default function ProfileTab({ interview }: Props) {
           <div className="flex items-center justify-between text-sm">
             <span className="text-[var(--color-text-secondary)]">Platform</span>
             <span className="font-medium text-[var(--color-text-color-primary)] capitalize">
-              {interview.platform?.replace("_", " ") || "Not set"}
+              {interview.platform?.replace(/_/g, " ") || "Not set"}
             </span>
           </div>
           <div className="flex items-center justify-between text-sm">
@@ -142,5 +135,44 @@ export default function ProfileTab({ interview }: Props) {
         </div>
       </div>
     </div>
+  );
+}
+
+function ProfileLink({
+  href,
+  label,
+  children,
+}: {
+  href: string | null;
+  label: string;
+  children: ReactNode;
+}) {
+  const className =
+    "flex items-center gap-2 text-sm font-medium text-[var(--color-brand-accent)] hover:underline";
+
+  if (!href) {
+    return (
+      <button
+        type="button"
+        disabled
+        aria-disabled="true"
+        className={`${className} cursor-not-allowed opacity-50 hover:no-underline`}
+      >
+        {children}
+        {label}
+      </button>
+    );
+  }
+
+  return (
+    <a
+      href={href}
+      target="_blank"
+      rel="noopener noreferrer"
+      className={className}
+    >
+      {children}
+      {label}
+    </a>
   );
 }

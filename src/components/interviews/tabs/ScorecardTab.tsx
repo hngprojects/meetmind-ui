@@ -74,6 +74,7 @@ export default function ScorecardTab({ interview }: Props) {
       <div className="space-y-4">
         {MOCK_SCORECARD.map((category) => {
           const isExpanded = !!expanded[category.id];
+          const bodyId = `scorecard-body-${category.id}`;
 
           return (
             <div
@@ -84,6 +85,8 @@ export default function ScorecardTab({ interview }: Props) {
               <button
                 type="button"
                 onClick={() => toggleExpand(category.id)}
+                aria-expanded={isExpanded}
+                aria-controls={bodyId}
                 className="flex w-full items-center justify-between p-5 hover:bg-[var(--color-bg-secondary)] transition-colors"
               >
                 <div className="flex items-center gap-3 w-full">
@@ -116,7 +119,10 @@ export default function ScorecardTab({ interview }: Props) {
 
               {/* Accordion Body */}
               {isExpanded && (
-                <div className="border-t border-[var(--color-card-border)] p-5 pl-12 bg-white">
+                <div
+                  id={bodyId}
+                  className="border-t border-[var(--color-card-border)] p-5 pl-12 bg-white"
+                >
                   {category.questions && category.questions.length > 0 ? (
                     <div className="space-y-4">
                       <div>
