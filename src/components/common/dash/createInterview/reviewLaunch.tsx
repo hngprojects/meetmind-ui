@@ -186,8 +186,8 @@ export default function ReviewLaunch() {
               ? "Google Meet"
               : aiConfig.platform === "zoom"
                 ? "Zoom"
-                : aiConfig.platform === "ai_sdk"
-                  ? "AI SDK"
+                : aiConfig.platform === "livekit"
+                  ? "LiveKit"
                   : "—"
           }
         />
@@ -269,7 +269,7 @@ export default function ReviewLaunch() {
           type="button"
           style=" disabled:hover:cursor-not-allowed"
           disabled={isLoading || !readyToLaunch}
-          text={isLoading ? "Launching..." : "Start interview →"}
+          text={isLoading ? "Launching..." : "Schedule interview →"}
           onClick={() => {
             handleSubmit();
           }}

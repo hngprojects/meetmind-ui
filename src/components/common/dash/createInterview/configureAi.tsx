@@ -33,8 +33,8 @@ export default function ConfigureAI() {
     reValidateMode: "onChange",
     defaultValues: {
       ai_tone: aiConfig.ai_tone ?? "friendly",
-      participation_mode: aiConfig.participation_mode ?? "moderate",
-      platform: aiConfig.platform ?? "zoom",
+      participation_mode: aiConfig.participation_mode ?? "standard",
+      platform: aiConfig.platform ?? "livekit",
       call_link: aiConfig.call_link ?? "",
       scheduled_start: aiConfig.scheduled_start ?? "",
       scheduled_end: aiConfig.scheduled_end ?? "",
@@ -54,7 +54,7 @@ export default function ConfigureAI() {
     setAIConfig({
       ai_tone: data.ai_tone,
       participation_mode: data.participation_mode,
-      platform: data.platform ?? "ai_sdk",
+      platform: data.platform ?? "livekit",
       call_link: data.call_link,
       scheduled_start: data.scheduled_start,
       scheduled_end: data.scheduled_end,
@@ -97,7 +97,7 @@ export default function ConfigureAI() {
       <div className="flex flex-col gap-3">
         <h3 className="font-semibold text-base">Response Detailed Level</h3>
         <div className="flex flex-row gap-3">
-          {(["brief", "moderate", "detailed"] as const).map((mode) => (
+          {(["brief", "standard", "detailed"] as const).map((mode) => (
             <button
               key={mode}
               type="button"
@@ -132,7 +132,7 @@ export default function ConfigureAI() {
             [
               { value: "google_meet", label: "Google Meet", disabled: true },
               { value: "zoom", label: "Zoom", disabled: true },
-              { value: "ai_sdk", label: "AI SDK", disabled: false },
+              { value: "livekit", label: "LiveKit", disabled: false },
             ] as const
           ).map(({ value, label, disabled }) => (
             <button

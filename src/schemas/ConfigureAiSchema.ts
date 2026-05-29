@@ -5,11 +5,11 @@ export const configureAISchema = z.object({
     message: "Please select an AI tone",
   }),
 
-  participation_mode: z.enum(["brief", "moderate", "detailed"], {
+  participation_mode: z.enum(["brief", "standard", "detailed"], {
     message: "Please select a response detail level",
   }),
 
-  platform: z.enum(["google_meet", "zoom", "ai_sdk"], {
+  platform: z.enum(["google_meet", "zoom", "livekit"], {
     message: "Please select a platform",
   }),
 

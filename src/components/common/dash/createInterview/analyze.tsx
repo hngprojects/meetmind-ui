@@ -17,7 +17,7 @@ interface Step {
 }
 
 const INITIAL_STEPS: Step[] = [
-  { label: "Reading CSV file", status: "pending" },
+  { label: "Reading file", status: "pending" },
   { label: "Validating data & structure", status: "pending" },
   { label: "Extracting candidate information", status: "pending" },
   { label: "Identifying roles & skills", status: "pending" },

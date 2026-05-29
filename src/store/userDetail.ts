@@ -26,9 +26,8 @@ interface InterviewDetails {
 
 interface AIConfig {
   ai_tone: "professional" | "friendly" | "casual";
-  participation_mode: "brief" | "moderate" | "detailed";
-
-  platform: "zoom" | "google_meet" | "ai_sdk";
+  participation_mode: "brief" | "standard" | "detailed";
+  platform: "zoom" | "google_meet" | "livekit";
   call_link: string;
   scheduled_start: string;
   scheduled_end: string;
@@ -47,19 +46,26 @@ interface UserDetailsState {
   resetUserDetails: () => void;
 }
 
+// ── Initial State ─────────────────────────────────────────────────────────────
+
+const initialUserDetailsState = {
+  candidate: {},
+  interviewDetails: {},
+  aiConfig: {},
+} satisfies Pick<
+  UserDetailsState,
+  "candidate" | "interviewDetails" | "aiConfig"
+>;
+
 // ── Store ─────────────────────────────────────────────────────────────────────
 
 export const useUserDetailsStore = create<UserDetailsState>()(
   persist(
     (set, get) => ({
-      candidate: {},
-      interviewDetails: {},
-      aiConfig: {},
+      ...initialUserDetailsState,
 
       setCandidate: (data) =>
-        set((state) => ({
-          candidate: { ...state.candidate, ...data },
-        })),
+        set((state) => ({ candidate: { ...state.candidate, ...data } })),
 
       setInterviewDetails: (data) =>
         set((state) => ({
@@ -67,9 +73,7 @@ export const useUserDetailsStore = create<UserDetailsState>()(
         })),
 
       setAIConfig: (data) =>
-        set((state) => ({
-          aiConfig: { ...state.aiConfig, ...data },
-        })),
+        set((state) => ({ aiConfig: { ...state.aiConfig, ...data } })),
 
       buildPayload: (candidateId: string) => {
         const { candidate, interviewDetails, aiConfig } = get();
@@ -81,16 +85,19 @@ export const useUserDetailsStore = create<UserDetailsState>()(
             phone: candidate.phone ?? "",
             current_role: candidate.current_role ?? "",
             years_of_experience: candidate.years_of_experience ?? 0,
-            skills: candidate.skills ?? [],
+            skills: (candidate.skills ?? []).slice(0, 10), // ✅ fixed parens
             location: candidate.location ?? "",
             portfolio_url: candidate.portfolio_url ?? "",
           },
           role_title: interviewDetails.role_title ?? "",
           job_description: interviewDetails.job_description ?? "",
           custom_question: interviewDetails.custom_question ?? "",
-          skills_to_assess: interviewDetails.skills_to_assess ?? [],
+          skills_to_assess: (interviewDetails.skills_to_assess ?? []).slice(
+            0,
+            10,
+          ),
           ai_tone: aiConfig.ai_tone ?? "friendly",
-          participation_mode: aiConfig.participation_mode ?? "moderate",
+          participation_mode: aiConfig.participation_mode ?? "standard", // ✅ "moderate" → "standard"
           platform: aiConfig.platform ?? "zoom",
           call_link: aiConfig.call_link ?? "",
           scheduled_start: aiConfig.scheduled_start ?? "",
@@ -98,8 +105,10 @@ export const useUserDetailsStore = create<UserDetailsState>()(
         };
       },
 
-      resetUserDetails: () =>
-        set({ candidate: {}, interviewDetails: {}, aiConfig: {} }),
+      resetUserDetails: () => {
+        set(initialUserDetailsState);
+        localStorage.removeItem("user-details-store");
+      },
     }),
     { name: "user-details-store" },
   ),
