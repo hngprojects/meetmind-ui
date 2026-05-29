@@ -7,6 +7,7 @@ import {
   availableEndTimes,
   availableStartTimes,
 } from "@/lib/calendar/timeOptions";
+import { Button } from "@/components/ui/button";
 
 type AvailabilityFormProps = {
   selectedAppointment: Appointment | null;
@@ -101,14 +102,15 @@ const AvailabilityForm = ({
             <div className="flex items-center gap-3">
               {/* Start Time */}
               <div ref={startDropdownRef} className="relative">
-                <button
+                <Button
+                  variant="outline"
                   type="button"
                   aria-expanded={showStartDropdown}
                   aria-controls="start-time-dropdown"
                   onClick={() => setShowStartDropdown(!showStartDropdown)}
                   className="
                     flex h-12 w-[150px] items-center justify-between
-                    rounded-lg border border-calendar-border
+                    rounded-lg border border-calendar-border bg-white
                     px-4
                   "
                 >
@@ -129,7 +131,7 @@ const AvailabilityForm = ({
                   <span className="text-sm text-text-subtext">
                     {selectedStartTime?.period || "AM"}
                   </span>
-                </button>
+                </Button>
 
                 {showStartDropdown && (
                   <div
@@ -138,7 +140,8 @@ const AvailabilityForm = ({
                       border border-calendar-border bg-white p-2 shadow-md"
                   >
                     {availableStartTimes.map((time, index) => (
-                      <button
+                      <Button
+                        variant="ghost"
                         key={index}
                         type="button"
                         onClick={() => {
@@ -153,7 +156,7 @@ const AvailabilityForm = ({
                         </span>
 
                         <span>{time.period}</span>
-                      </button>
+                      </Button>
                     ))}
                   </div>
                 )}
@@ -164,14 +167,15 @@ const AvailabilityForm = ({
 
               {/* End Time */}
               <div ref={endDropdownRef} className="relative">
-                <button
+                <Button
+                  variant="outline"
                   type="button"
                   aria-expanded={showEndDropdown}
                   aria-controls="end-time-dropdown"
                   onClick={() => setShowEndDropdown(!showEndDropdown)}
                   className="
                     flex h-12 w-[150px] items-center justify-between
-                    rounded-lg border border-calendar-border
+                    rounded-lg border border-calendar-border bg-white
                     px-4
                   "
                 >
@@ -192,7 +196,7 @@ const AvailabilityForm = ({
                   <span className="text-sm text-text-subtext">
                     {selectedEndTime?.period || "PM"}
                   </span>
-                </button>
+                </Button>
 
                 {showEndDropdown && (
                   <div
@@ -201,7 +205,8 @@ const AvailabilityForm = ({
                       border border-calendar-border bg-white p-2 shadow-md"
                   >
                     {availableEndTimes.map((time, index) => (
-                      <button
+                      <Button
+                        variant="ghost"
                         key={index}
                         type="button"
                         onClick={() => {
@@ -216,7 +221,7 @@ const AvailabilityForm = ({
                         </span>
 
                         <span>{time.period}</span>
-                      </button>
+                      </Button>
                     ))}
                   </div>
                 )}
@@ -274,7 +279,7 @@ const AvailabilityForm = ({
             </div>
 
             {/* Button */}
-            <button
+            <Button
               type="button"
               disabled={!isFormComplete}
               onClick={() => setIsSuccessModalOpen(true)}
@@ -289,7 +294,7 @@ const AvailabilityForm = ({
               `}
             >
               Schedule Interview
-            </button>
+            </Button>
           </div>
         </div>
       )}

@@ -1,6 +1,7 @@
 import type { Appointment, TimeOption } from "@/lib/appointmentTypes";
 import { getCandidateInitials } from "@/lib/calendar/appointmentUtils";
 import { FiCalendar, FiX } from "react-icons/fi";
+import { Button } from "@/components/ui/button";
 
 type AppointmentDetailsProps = {
   appointment: Appointment;
@@ -28,7 +29,7 @@ const AppointmentDetails = ({
     : `${appointment.endTime.hour}:${appointment.endTime.minute} ${appointment.endTime.period}`;
 
   return (
-    <section className="rounded-[32px] bg-calendar-appointment p-6">
+    <section className="rounded-[32px] bg-panel-bg p-6">
       {/* Inner Profile Card */}
       <div
         className="rounded-[20px] border border-calendar-border
@@ -63,7 +64,18 @@ const AppointmentDetails = ({
       {/* Action Buttons */}
       <div className="mt-5 flex items-center gap-3">
         {/* Reschedule */}
-        <button
+        <Button
+          type="button"
+          variant="outline"
+          onClick={onReschedule}
+          className="
+            h-12 flex-1 rounded-lg border-accent-teal text-base font-medium
+            text-text-primary hover:bg-soft-white cursor-pointer"
+        >
+          <FiCalendar className="text-lg" />
+          Reschedule
+        </Button>
+        {/* <button
           type="button"
           onClick={onReschedule}
           className="flex px-2 py-2.5 h-12 flex-1 items-center justify-center gap-2 rounded-lg border
@@ -72,19 +84,30 @@ const AppointmentDetails = ({
         >
           <FiCalendar className="text-lg" />
           Reschedule
-        </button>
+        </button> */}
 
         {/* Cancel */}
-        <button
+        <Button
+          type="button"
+          variant="outline"
+          onClick={onCancel}
+          className="
+            h-12 flex-1 rounded-lg border-error text-base font-medium
+            text-error hover:bg-red-50 transition-colors cursor-pointer"
+        >
+          <FiX className="text-lg" />
+          Cancel
+        </Button>
+        {/* <button
           type="button"
           onClick={onCancel}
           className="flex px-2 py-2.5 h-12 flex-1 items-center justify-center gap-2 rounded-lg border
-            border-alert bg-white text-base font-medium text-alert transition-colors 
+            border-error bg-white text-base font-medium text-error transition-colors 
             hover:bg-red-50 cursor-pointer"
         >
           <FiX className="text-lg" />
           Cancel
-        </button>
+        </button> */}
       </div>
     </section>
   );
