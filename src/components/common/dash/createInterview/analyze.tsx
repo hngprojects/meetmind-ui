@@ -122,14 +122,12 @@ export default function Analyzer() {
       delay = completedAt;
     });
 
-    // ✅ cleanup on unmount to avoid setState on an unmounted component
     return () => timeouts.forEach(clearTimeout);
-  }, []); // empty deps — runs once on mount, INITIAL_STEPS is a stable module constant
-
+  }, []);
   return (
     <div className="rounded-2xl text-lg px-3 flex flex-col gap-4">
       <StepIndicator currentStep={2} />
-      <h1 className="font-bold">Processing loading your data...</h1>
+      <h1 className="font-bold">Processing yourdata...</h1>
       <p className="text-text-subtext text-base">
         This may take a few minutes.
       </p>

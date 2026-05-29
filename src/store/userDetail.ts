@@ -98,7 +98,7 @@ export const useUserDetailsStore = create<UserDetailsState>()(
           ),
           ai_tone: aiConfig.ai_tone ?? "friendly",
           participation_mode: aiConfig.participation_mode ?? "standard", // ✅ "moderate" → "standard"
-          platform: aiConfig.platform ?? "zoom",
+          platform: aiConfig.platform ?? "livekit",
           // call_link: aiConfig.call_link ?? "",
           scheduled_start: aiConfig.scheduled_start ?? "",
           scheduled_end: aiConfig.scheduled_end ?? "",
