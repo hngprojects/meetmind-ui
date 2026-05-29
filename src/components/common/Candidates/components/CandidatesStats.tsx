@@ -1,43 +1,61 @@
-import React, { useMemo } from "react";
-import { Candidate } from "../types";
+import React from "react";
+import { CandidateStats as CandidateStatsType } from "@/lib/types/candidates";
 import StatCard from "./StatCard";
 
 type Props = {
-  data: Candidate[];
+  stats?: CandidateStatsType;
+  loading?: boolean;
 };
 
-const CandidatesStats = ({ data }: Props) => {
-  const stats = useMemo(() => {
-    return {
-      total: data.length,
-      completed: data.filter((c) => c.status === "completed").length,
-      ongoing: data.filter((c) => c.status === "ongoing").length,
-      needsAttention: data.filter((c) => c.status === "needs_review").length,
-    };
-  }, [data]);
+const CandidatesStats = ({ stats, loading }: Props) => {
+  const safeStats = stats ?? {
+    total: 0,
+    completed: 0,
+    ongoing: 0,
+    needs_review: 0,
+  };
+
+  if (loading) {
+    const shimmer = "animate-pulse bg-bg-secondary rounded";
+
+    return (
+      <div className="flex bg-bg-secondary rounded-lg w-full divide-x divide-text-white-secondary">
+        {Array.from({ length: 4 }).map((_, i) => (
+          <div
+            key={i}
+            className="p-6 flex-1 flex flex-col gap-3 justify-between"
+          >
+            <div className={`h-4 w-28 ${shimmer}`} />
+            <div className={`h-10 w-16 ${shimmer}`} />
+          </div>
+        ))}
+      </div>
+    );
+  }
+
   return (
     <div className="flex bg-bg-secondary rounded-lg w-full divide-x divide-text-white-secondary">
       <StatCard
         label="Total Candidates"
-        value={stats.total}
+        value={safeStats.total}
         valueClassName="text-text-purple-accent"
       />
 
       <StatCard
         label="Completed"
-        value={stats.completed}
+        value={safeStats.completed}
         valueClassName="text-text-color-secondary"
       />
 
       <StatCard
         label="Ongoing"
-        value={stats.ongoing}
+        value={safeStats.ongoing}
         valueClassName="text-text-color-secondary"
       />
 
       <StatCard
         label="Needs attention"
-        value={stats.needsAttention}
+        value={safeStats.needs_review}
         valueClassName="text-error"
       />
     </div>

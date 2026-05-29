@@ -1,7 +1,7 @@
 import React from "react";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
-import { CandidateStatus } from "../types";
+import { CandidateStatus } from "@/lib/types/candidates";
 import { STATUS_LABELS } from "../helpers/status";
 
 const StatusBadge = ({ status }: { status: CandidateStatus }) => {

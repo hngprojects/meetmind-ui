@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import Dashnavlist from "./dashnavlist";
 import SignOutModal from "./SignOutModal";
+import { useAuthStore } from "@/store/authStore";
 import { MdKeyboardArrowDown } from "react-icons/md";
 import {
   LuUser,
@@ -22,6 +23,7 @@ const Dashboardnavbar = () => {
   const [isSignOutModalOpen, setIsSignOutModalOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const router = useRouter();
+  const logout = useAuthStore((state) => state.logout);
 
   // Unread notification count — wire to real API when backend is ready
   const unreadNotificationCount = 3;
@@ -204,8 +206,8 @@ const Dashboardnavbar = () => {
       <SignOutModal
         isOpen={isSignOutModalOpen}
         onClose={() => setIsSignOutModalOpen(false)}
-        onSignOut={(_signOutAllDevices) => {
-          // If true, implement logic to clear all sessions here
+        onSignOut={() => {
+          logout();
           setIsSignOutModalOpen(false);
           router.push("/sign-in");
         }}
