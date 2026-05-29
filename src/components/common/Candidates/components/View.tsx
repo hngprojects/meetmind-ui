@@ -1,92 +1,147 @@
 "use client";
 
 import React from "react";
-import {
-  getCoreRowModel,
-  getSortedRowModel,
-  useReactTable,
-} from "@tanstack/react-table";
-
+import { getCoreRowModel, useReactTable } from "@tanstack/react-table";
 import { useCandidatesStore } from "@/store/candidatesStore";
+import { useCandidates } from "@/lib/hooks/useCandidates";
 import CandidatesGridView from "./CandidatesGridView";
 import CandidatesTableView from "./CandidatesTableView";
-import { candidateColumns } from "./columns";
-import { mockCandidatesData } from "../mock";
-import { SortingState } from "@tanstack/react-table";
-import { useState, useMemo } from "react";
+import { getCandidateColumns } from "./columns";
 import CandidatesToolbar from "./CandidatesToolbar";
 import CandidatesStats from "./CandidatesStats";
 import ExportModal from "./Export";
+import CandidatesPagination from "./CandidatesPagination";
 
 const View = () => {
-  const [sorting, setSorting] = useState<SortingState>([]);
   const viewMode = useCandidatesStore((s) => s.viewMode);
-  const search = useCandidatesStore((s) => s.search);
   const filters = useCandidatesStore((s) => s.filters);
   const exportOpen = useCandidatesStore((s) => s.exportOpen);
   const setExportOpen = useCandidatesStore((s) => s.setExportOpen);
-  const processedData = useMemo(() => {
-    let data = [...mockCandidatesData];
 
-    data = data.filter((c) => {
-      const q = search.toLowerCase();
+  const queryParams = {
+    q: filters.search,
+    status: filters.status === "all" ? undefined : filters.status,
+    role: filters.role ?? undefined,
+    sortBy: filters.sortBy,
+    sortDirection: filters.sortDirection,
+    page: filters.page,
+    pageSize: filters.pageSize,
+  };
 
-      return (
-        c.name.toLowerCase().includes(q) || c.email.toLowerCase().includes(q)
-      );
-    });
+  const { data, isLoading, isError, error, refetch } =
+    useCandidates(queryParams);
 
-    data = data.filter((c) => {
-      return (
-        filters.status === "all" ||
-        c.status.toLowerCase() === filters.status.toLowerCase()
-      );
-    });
+  const candidates = data?.candidates ?? [];
+  const pagination = data?.pagination;
+  const setFilters = useCandidatesStore((s) => s.setFilters);
 
-    data = data.sort((a, b) => {
-      const key = filters.sortBy;
-      const dir = filters.sortDirection;
+  const typedError = error as {
+    response?: {
+      data?: {
+        message?: string;
+        code?: string;
+      };
+    };
+  };
 
-      const aValue = a[key];
-      const bValue = b[key];
-
-      if (key === "date") {
-        const aDate = new Date(aValue).getTime();
-        const bDate = new Date(bValue).getTime();
-
-        return dir === "asc" ? aDate - bDate : bDate - aDate;
-      }
-
-      if (typeof aValue === "number" && typeof bValue === "number") {
-        return dir === "asc" ? aValue - bValue : bValue - aValue;
-      }
-
-      return dir === "asc"
-        ? String(aValue).localeCompare(String(bValue))
-        : String(bValue).localeCompare(String(aValue));
-    });
-
-    return data;
-  }, [search, filters]);
-
-  const table = useReactTable({
-    data: processedData,
-    columns: candidateColumns,
-    state: {
-      sorting,
-    },
-    onSortingChange: setSorting,
-    getCoreRowModel: getCoreRowModel(),
-    getSortedRowModel: getSortedRowModel(),
+  const columns = getCandidateColumns({
+    filters,
+    setFilters,
   });
+
+  // eslint-disable-next-line react-hooks/incompatible-library
+  const table = useReactTable({
+    data: candidates,
+    columns,
+    getCoreRowModel: getCoreRowModel(),
+  });
+
+  if (isLoading) {
+    const shimmer = "animate-pulse bg-bg-secondary rounded";
+
+    return (
+      <div className="flex flex-col gap-4">
+        <CandidatesStats stats={undefined} loading={isLoading} />
+        <CandidatesToolbar />
+
+        <div className="w-full overflow-hidden rounded-xl border border-card-border bg-card-bg">
+          <div className="h-12 bg-bg-secondary border-b border-card-border animate-pulse" />
+          {Array.from({ length: 6 }).map((_, i) => (
+            <div
+              key={i}
+              className="flex items-center px-6 py-4 gap-6 border-b border-card-border"
+            >
+              <div className="flex items-center gap-3 w-[28%]">
+                <div className="h-10 w-10 rounded-full bg-bg-secondary animate-pulse" />
+
+                <div className="flex flex-col gap-2">
+                  <div className={`h-3 w-32 ${shimmer}`} />
+                  <div className={`h-2 w-24 ${shimmer}`} />
+                </div>
+              </div>
+              <div className="w-[20%]">
+                <div className={`h-3 w-24 ${shimmer}`} />
+              </div>
+
+              <div className="w-[15%]">
+                <div className="h-6 w-20 rounded-full bg-bg-secondary animate-pulse" />
+              </div>
+              <div className="w-[15%]">
+                <div className={`h-3 w-20 ${shimmer}`} />
+              </div>
+
+              <div className="w-[12%]">
+                <div className={`h-3 w-16 ${shimmer}`} />
+              </div>
+
+              <div className="w-[5%] flex justify-end">
+                <div className="h-6 w-6 rounded bg-bg-secondary animate-pulse" />
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    );
+  }
+
+  if (isError) {
+    const message =
+      typedError?.response?.data?.message ||
+      "Something went wrong while loading candidates.";
+
+    const code = typedError?.response?.data?.code;
+
+    return (
+      <div className="w-full flex flex-col items-center justify-center py-16 text-center">
+        <div className="text-red-500 text-lg font-semibold">{message}</div>
+
+        {code && (
+          <div className="text-xs text-color-text-secondary mt-2 text-black">
+            Error code: {code}
+          </div>
+        )}
+
+        <button
+          onClick={() => refetch()}
+          className="mt-4 px-4 py-2 rounded-lg bg-black text-white"
+        >
+          Retry
+        </button>
+      </div>
+    );
+  }
+
   return (
     <div>
       <div className="flex flex-col gap-4">
-        <CandidatesStats data={processedData} />
+        <CandidatesStats stats={data?.stats} loading={isLoading} />
         <CandidatesToolbar />
       </div>
       {viewMode === "list" ? (
-        <CandidatesTableView table={table} />
+        <>
+          <CandidatesTableView table={table} />
+          <CandidatesPagination pagination={pagination} isLoading={isLoading} />
+        </>
       ) : (
         <CandidatesGridView table={table} />
       )}

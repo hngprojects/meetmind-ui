@@ -1,5 +1,9 @@
 import api from "@/lib/api";
-import { RoleType, PreferencesType, IntegrationsType } from "./types";
+import {
+  RoleType,
+  PreferencesType,
+  IntegrationsType,
+} from "../types/onboarding";
 
 const setRole = async (data: RoleType) => {
   const res = await api.post("/api/v1/onboarding/role", data);

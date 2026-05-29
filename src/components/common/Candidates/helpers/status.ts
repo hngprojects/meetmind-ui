@@ -1,4 +1,4 @@
-import type { CandidateStatus } from "../types";
+import type { CandidateStatus } from "@/lib/types/candidates";
 
 export const STATUS_LABELS: Record<"all" | CandidateStatus, string> = {
   all: "All",
