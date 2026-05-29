@@ -1,8 +1,9 @@
-// store/interviewStore.ts
+// store/createInterviewStore.ts
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import { AddContextFormData } from "@/schemas/addContextSchema";
 import { useUserDetailsStore } from "./userDetail";
+import { useResumeStore } from "./ResumeStore";
 
 // ── Types ─────────────────────────────────────────────────────────────────────
 
@@ -13,17 +14,17 @@ type ModalStore = {
   reset: () => void;
 };
 
-type Step2Store = {
-  step2: boolean;
-  toggle2: () => void;
-  setStep2: (value: boolean) => void;
-  reset: () => void;
-};
-
 type Step1Store = {
   step1: boolean;
   toggle1: () => void;
   setStep1: (value: boolean) => void;
+  reset: () => void;
+};
+
+type Step2Store = {
+  step2: boolean;
+  toggle2: () => void;
+  setStep2: (value: boolean) => void;
   reset: () => void;
 };
 
@@ -34,17 +35,31 @@ type UploadStore = {
   reset: () => void;
 };
 
-type step3Store = {
+type Step3Store = {
   step3: boolean;
   toggle3: () => void;
   setStep3: (value: boolean) => void;
   reset: () => void;
 };
 
-type step4Store = {
+type Step4Store = {
   step4: boolean;
   toggle4: () => void;
   setStep4: (value: boolean) => void;
+  reset: () => void;
+};
+
+type Step5Store = {
+  step5: boolean;
+  toggle5: () => void;
+  setStep5: (value: boolean) => void;
+  reset: () => void;
+};
+
+type Step6Store = {
+  step6: boolean;
+  toggle6: () => void;
+  setStep6: (value: boolean) => void;
   reset: () => void;
 };
 
@@ -64,6 +79,8 @@ const initialStep2State = { step2: false };
 const initialUploadState = { UploadOpen: true };
 const initialStep3State = { step3: false };
 const initialStep4State = { step4: false };
+const initialStep5State = { step5: false };
+const initialStep6State = { step6: false };
 
 // ── Stores ────────────────────────────────────────────────────────────────────
 
@@ -95,18 +112,32 @@ export const useUpload = create<UploadStore>((set) => ({
   reset: () => set(initialUploadState),
 }));
 
-export const useCreateStep3 = create<step3Store>((set) => ({
+export const useCreateStep3 = create<Step3Store>((set) => ({
   ...initialStep3State,
   toggle3: () => set((state) => ({ step3: !state.step3 })),
   setStep3: (value) => set({ step3: value }),
   reset: () => set(initialStep3State),
 }));
 
-export const useCreateStep4 = create<step4Store>((set) => ({
+export const useCreateStep4 = create<Step4Store>((set) => ({
   ...initialStep4State,
   toggle4: () => set((state) => ({ step4: !state.step4 })),
   setStep4: (value) => set({ step4: value }),
   reset: () => set(initialStep4State),
+}));
+
+export const useCreateStep5 = create<Step5Store>((set) => ({
+  ...initialStep5State,
+  toggle5: () => set((state) => ({ step5: !state.step5 })),
+  setStep5: (value) => set({ step5: value }),
+  reset: () => set(initialStep5State),
+}));
+
+export const useCreateStep6 = create<Step6Store>((set) => ({
+  ...initialStep6State,
+  toggle6: () => set((state) => ({ step6: !state.step6 })),
+  setStep6: (value) => set({ step6: value }),
+  reset: () => set(initialStep6State),
 }));
 
 export const useAddContextStore = create<AddContextState>()(
@@ -116,7 +147,10 @@ export const useAddContextStore = create<AddContextState>()(
       interviewId: null,
       setContextData: (data) => set({ contextData: data }),
       setInterviewId: (id) => set({ interviewId: id }),
-      resetContext: () => set({ contextData: null, interviewId: null }),
+      resetContext: () => {
+        set({ contextData: null, interviewId: null });
+        localStorage.removeItem("add-context-store");
+      },
     }),
     { name: "add-context-store" },
   ),
@@ -132,8 +166,11 @@ export const resetAllStores = () => {
   useUpload.getState().reset();
   useCreateStep3.getState().reset();
   useCreateStep4.getState().reset();
+  useCreateStep5.getState().reset();
+  useCreateStep6.getState().reset();
 
   // Persisted stores — clears state + localStorage
   useAddContextStore.getState().resetContext();
-  useUserDetailsStore.getState().resetUserDetails(); // ← added
+  useUserDetailsStore.getState().resetUserDetails();
+  useResumeStore.getState().resetResume();
 };

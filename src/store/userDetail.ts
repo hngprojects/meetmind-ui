@@ -85,14 +85,17 @@ export const useUserDetailsStore = create<UserDetailsState>()(
             phone: candidate.phone ?? "",
             current_role: candidate.current_role ?? "",
             years_of_experience: candidate.years_of_experience ?? 0,
-            skills: candidate.skills ?? [],
+            skills: (candidate.skills ?? []).slice(0, 10),
             location: candidate.location ?? "",
             portfolio_url: candidate.portfolio_url ?? "",
           },
           role_title: interviewDetails.role_title ?? "",
           job_description: interviewDetails.job_description ?? "",
           custom_question: interviewDetails.custom_question ?? "",
-          skills_to_assess: interviewDetails.skills_to_assess ?? [],
+          skills_to_assess: (interviewDetails.skills_to_assess ?? []).slice(
+            0,
+            10,
+          ),
           ai_tone: aiConfig.ai_tone ?? "friendly",
           participation_mode: aiConfig.participation_mode ?? "moderate",
           platform: aiConfig.platform ?? "zoom",
@@ -107,6 +110,13 @@ export const useUserDetailsStore = create<UserDetailsState>()(
         localStorage.removeItem("user-details-store");
       },
     }),
-    { name: "user-details-store" },
+    {
+      name: "user-details-store",
+      // ── Only persist non-PII fields ──────────────────────────────────────
+      partialize: (state) => ({
+        interviewDetails: state.interviewDetails,
+        aiConfig: state.aiConfig,
+      }),
+    },
   ),
 );
