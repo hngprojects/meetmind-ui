@@ -128,23 +128,6 @@ export function useRejoinInterviewSession(id: string | null) {
         queryClient.setQueryData(sessionQueryKey, context.previous);
       }
     },
-    onSuccess: (response) => {
-      queryClient.setQueryData<InterviewSession>(
-        sessionQueryKey,
-        (current) => ({
-          interview_id: response.interview_id,
-          session_status: response.session_status,
-          meeting_status: current?.meeting_status ?? "Live",
-          agent_status_display: SESSION_STATUS_LABELS[response.session_status],
-          elapsed_display: current?.elapsed_display ?? "00:00:00",
-          participants_count: current?.participants_count ?? 0,
-          platform: current?.platform ?? null,
-          dropped_at_display: current?.dropped_at_display,
-          partial_data_saved: current?.partial_data_saved,
-          message: response.message,
-        }),
-      );
-    },
     onSettled: () => {
       if (id) {
         return queryClient.invalidateQueries({ queryKey: sessionQueryKey });

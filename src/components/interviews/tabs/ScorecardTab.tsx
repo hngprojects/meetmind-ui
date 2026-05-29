@@ -57,12 +57,12 @@ export default function ScorecardTab({ interview }: Props) {
   const getColorClass = (color: "green" | "orange" | "gray") => {
     switch (color) {
       case "green":
-        return "bg-green-500";
+        return "bg-[var(--color-text-success)]";
       case "orange":
-        return "bg-orange-500";
+        return "bg-[var(--color-badge-upcoming-text)]";
       case "gray":
       default:
-        return "bg-gray-200";
+        return "bg-[var(--color-bg-divider)]";
     }
   };
 
@@ -121,7 +121,7 @@ export default function ScorecardTab({ interview }: Props) {
               {isExpanded && (
                 <div
                   id={bodyId}
-                  className="border-t border-[var(--color-card-border)] p-5 pl-12 bg-white"
+                  className="border-t border-[var(--color-card-border)] p-5 pl-12 bg-[var(--color-bg-primary)]"
                 >
                   {category.questions && category.questions.length > 0 ? (
                     <div className="space-y-4">

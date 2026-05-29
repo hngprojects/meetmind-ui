@@ -32,8 +32,12 @@ type ApiInterview = {
   platform?: string | null;
   scheduled_start?: string | null;
   scheduled_end?: string | null;
+  elapsed_display?: string;
+  elapsed_seconds?: number;
+  participants_count?: number;
   resume_url?: string | null;
   portfolio_url?: string | null;
+  session?: ApiInterviewSession | null;
   candidate_name?: string;
   candidate_email?: string | null;
   candidate?: {
@@ -364,6 +368,14 @@ function mapApiToDetail(raw: ApiInterview, id: string): InterviewDetail {
       .map((part) => part[0]?.toUpperCase() ?? "")
       .join("") || "??";
 
+  const elapsed =
+    raw.status === "in_progress"
+      ? normalizeElapsedDisplay(
+          raw.session?.elapsed_display ?? raw.elapsed_display,
+          raw.session?.elapsed_seconds ?? raw.elapsed_seconds,
+        )
+      : "";
+
   return {
     id,
     roleTitle: raw.role_title ?? raw.title ?? "",
@@ -404,8 +416,10 @@ function mapApiToDetail(raw: ApiInterview, id: string): InterviewDetail {
     highlights: [],
     redFlags: [],
     // sessionPhase: "live_transcript",
-    elapsed: "",
-    participants: 0,
+    elapsed,
+    participants: normalizeParticipantsCount(
+      raw.session?.participants_count ?? raw.participants_count,
+    ),
   };
 }
 
@@ -464,6 +478,12 @@ function normalizeSessionStatus(value: unknown): InterviewSessionStatus {
   ) {
     return value as InterviewSessionStatus;
   }
+
+  console.warn("Unknown session_status received from API.", {
+    value,
+    valueType: value === null ? "null" : typeof value,
+    fallback: "connecting",
+  });
 
   return "connecting";
 }

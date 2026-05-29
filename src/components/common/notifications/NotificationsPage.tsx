@@ -153,6 +153,15 @@ export default function NotificationsPage() {
     clearAll();
   };
 
+  const handleBack = () => {
+    if (window.history.length > 1) {
+      router.back();
+      return;
+    }
+
+    router.push("/");
+  };
+
   return (
     <div className="max-w-[860px] mx-auto px-4 sm:px-6 py-8">
       {/* ── Header ── */}
@@ -160,7 +169,7 @@ export default function NotificationsPage() {
         <div className="flex items-center gap-3">
           <button
             type="button"
-            onClick={() => router.back()}
+            onClick={handleBack}
             className="p-1.5 rounded-lg hover:bg-gray-100 transition-colors text-[#374151] cursor-pointer"
             aria-label="Go back"
           >

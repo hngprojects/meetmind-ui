@@ -95,11 +95,11 @@ export default function SummaryTab({ interview }: Props) {
 
       {/* Highlights */}
       <div>
-        <h4 className="flex items-center gap-2 text-sm font-semibold text-[#8B5CF6] mb-3">
+        <h4 className="flex items-center gap-2 text-sm font-semibold text-[var(--color-brand-accent)] mb-3">
           <HiOutlineSparkles className="h-4 w-4" />
           Highlights
         </h4>
-        <div className="rounded-xl border border-[#8B5CF6] p-5">
+        <div className="rounded-xl border border-[var(--color-brand-accent)] p-5">
           {interview.highlights && interview.highlights.length > 0 ? (
             <ul className="space-y-3">
               {interview.highlights.map((highlight, idx) => (

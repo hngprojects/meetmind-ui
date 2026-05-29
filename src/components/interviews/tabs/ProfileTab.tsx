@@ -119,7 +119,7 @@ export default function ProfileTab({ interview }: Props) {
             <span className="text-[var(--color-text-secondary)]">Status</span>
             <div className="flex items-center gap-2">
               {interview.status === "in_progress" && (
-                <span className="h-2 w-2 rounded-full bg-[var(--color-error)] animate-pulse" />
+                <span className="h-2 w-2 rounded-full bg-[var(--color-text-success)] animate-pulse" />
               )}
               <span className="font-medium text-[var(--color-text-color-primary)] uppercase">
                 {interview.status === "in_progress" ? "Live" : interview.status}
