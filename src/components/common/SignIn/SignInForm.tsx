@@ -59,7 +59,14 @@ const SignInForm = () => {
         name: response.data.name,
       };
 
-      setAuth(authUser, response.data.access_token);
+      localStorage.setItem("user", JSON.stringify(authUser));
+      const { access_token, refresh_token, access_token_expires_at } =
+        response.data;
+      if (!access_token || !refresh_token || !access_token_expires_at) {
+        setServerError("Invalid authentication response. Please try again.");
+        return;
+      }
+      setAuth(authUser, access_token, refresh_token, access_token_expires_at);
 
       const meRes = await api.get("/api/v1/users/me");
 

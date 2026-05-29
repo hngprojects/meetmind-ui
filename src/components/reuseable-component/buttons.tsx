@@ -8,6 +8,7 @@ interface Props {
   onClick?: (() => void | undefined) | undefined;
   disabled?: boolean;
   icon?: ReactNode;
+  icon2?: ReactNode;
   type: "reset" | "submit" | "button";
 }
 
@@ -19,6 +20,7 @@ const Buttons = ({
   disabled,
   type,
   icon,
+  icon2,
 }: Props) => {
   return (
     <div className={` ${style2}`}>
@@ -32,6 +34,7 @@ const Buttons = ({
       >
         {icon}
         {text}
+        {icon2}
       </Button>
     </div>
   );
