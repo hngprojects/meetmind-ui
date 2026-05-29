@@ -5,40 +5,74 @@ import { Track } from "livekit-client";
 import { Loader, MessageSquareTextIcon, SendHorizontal } from "lucide-react";
 import { type MotionProps, motion } from "motion/react";
 import { useChat } from "@livekit/components-react";
+
 import { AgentDisconnectButton } from "@/components/common/call/agents-ui/agent-disconnect-button";
 import { AgentTrackControl } from "@/components/common/call/agents-ui/agent-track-control";
 import {
   AgentTrackToggle,
   agentTrackToggleVariants,
 } from "@/components/common/call/agents-ui/agent-track-toggle";
+
 import { Button } from "@/components/ui/button";
 import { Toggle } from "@/components/ui/toggle";
+
 import {
   type UseInputControlsProps,
   useInputControls,
   usePublishPermissions,
 } from "@/hooks/call/agents-ui/use-agent-control-bar";
+
 import { cn } from "@/lib/utils";
 
 const LK_TOGGLE_VARIANT_1 = [
-  "data-[state=off]:bg-accent data-[state=off]:hover:bg-foreground/10",
-  "data-[state=off]:[&_~_button]:bg-accent data-[state=off]:[&_~_button]:hover:bg-foreground/10",
-  "data-[state=off]:border-border data-[state=off]:hover:border-foreground/12",
-  "data-[state=off]:[&_~_button]:border-border data-[state=off]:[&_~_button]:hover:border-foreground/12",
-  "data-[state=off]:text-destructive data-[state=off]:hover:text-destructive data-[state=off]:focus:text-destructive",
-  "data-[state=off]:focus-visible:ring-foreground/12 data-[state=off]:focus-visible:border-ring",
-  "dark:data-[state=off]:[&_~_button]:bg-accent dark:data-[state=off]:[&_~_button]:hover:bg-foreground/10",
+  "data-[state=off]:bg-accent",
+  "data-[state=off]:hover:bg-foreground/10",
+
+  "data-[state=off]:[&_~_button]:bg-accent",
+  "data-[state=off]:[&_~_button]:hover:bg-foreground/10",
+
+  "data-[state=off]:border-border",
+  "data-[state=off]:hover:border-foreground/12",
+
+  "data-[state=off]:[&_~_button]:border-border",
+  "data-[state=off]:[&_~_button]:hover:border-foreground/12",
+
+  "data-[state=off]:text-destructive",
+  "data-[state=off]:hover:text-destructive",
+  "data-[state=off]:focus:text-destructive",
+
+  "data-[state=off]:focus-visible:ring-foreground/12",
+  "data-[state=off]:focus-visible:border-ring",
+
+  "dark:data-[state=off]:[&_~_button]:bg-accent",
+  "dark:data-[state=off]:[&_~_button]:hover:bg-foreground/10",
 ];
 
 const LK_TOGGLE_VARIANT_2 = [
-  "data-[state=off]:bg-accent data-[state=off]:hover:bg-foreground/10",
-  "data-[state=off]:border-border data-[state=off]:hover:border-foreground/12",
-  "data-[state=off]:focus-visible:border-ring data-[state=off]:focus-visible:ring-foreground/12",
-  "data-[state=off]:text-foreground data-[state=off]:hover:text-foreground data-[state=off]:focus:text-foreground",
-  "data-[state=on]:bg-blue-500/20 data-[state=on]:hover:bg-blue-500/30",
-  "data-[state=on]:border-blue-700/10 data-[state=on]:text-blue-700 data-[state=on]:ring-blue-700/30",
+  "data-[state=off]:bg-accent",
+  "data-[state=off]:hover:bg-foreground/10",
+
+  "data-[state=off]:border-border",
+  "data-[state=off]:hover:border-foreground/12",
+
+  "data-[state=off]:focus-visible:border-ring",
+  "data-[state=off]:focus-visible:ring-foreground/12",
+
+  "data-[state=off]:text-foreground",
+  "data-[state=off]:hover:text-foreground",
+  "data-[state=off]:focus:text-foreground",
+
+  "data-[state=on]:bg-blue-500/20",
+  "data-[state=on]:hover:bg-blue-500/30",
+
+  "data-[state=on]:border-blue-700/10",
+  "data-[state=on]:text-blue-700",
+  "data-[state=on]:ring-blue-700/30",
+
   "data-[state=on]:focus-visible:border-blue-700/50",
-  "dark:data-[state=on]:bg-blue-500/20 dark:data-[state=on]:text-blue-300",
+
+  "dark:data-[state=on]:bg-blue-500/20",
+  "dark:data-[state=on]:text-blue-300",
 ];
 
 const MOTION_PROPS: MotionProps = {
@@ -74,13 +108,12 @@ function AgentChatInput({
 }: AgentChatInputProps) {
   const inputRef = useRef<HTMLTextAreaElement>(null);
   const [isSending, setIsSending] = useState(false);
-  const [message, setMessage] = useState<string>("");
+  const [message, setMessage] = useState("");
+
   const isDisabled = isSending || message.trim().length === 0;
 
   const handleSend = async () => {
-    if (isDisabled) {
-      return;
-    }
+    if (isDisabled) return;
 
     try {
       setIsSending(true);
@@ -107,7 +140,6 @@ function AgentChatInput({
 
   useEffect(() => {
     if (chatOpen) return;
-    // when not disabled refocus on input
     inputRef.current?.focus();
   }, [chatOpen]);
 
@@ -128,6 +160,7 @@ function AgentChatInput({
         onChange={(e) => setMessage(e.target.value)}
         className="field-sizing-content max-h-16 min-h-8 flex-1 resize-none py-2 [scrollbar-width:thin] focus:outline-none disabled:cursor-not-allowed disabled:opacity-50"
       />
+
       <Button
         size="icon"
         type="button"
@@ -262,8 +295,10 @@ export function AgentControlBar({
 }: AgentControlBarProps & ComponentProps<"div">) {
   const { send } = useChat();
   const publishPermissions = usePublishPermissions();
+
   const [isChatOpenUncontrolled, setIsChatOpenUncontrolled] =
     useState(isChatOpen);
+
   const {
     microphoneTrack,
     cameraToggle,
@@ -287,7 +322,7 @@ export function AgentControlBar({
     chat: controls?.chat ?? publishPermissions.data,
   };
 
-  const isEmpty = Object.values(visibleControls).every((value) => !value);
+  const isEmpty = Object.values(visibleControls).every((v) => !v);
 
   if (isEmpty) {
     console.warn(
@@ -411,8 +446,21 @@ export function AgentControlBar({
             onClick={onDisconnect}
             disabled={!isConnected}
             className={cn(
-              variant === "livekit" &&
-                "bg-destructive/10 dark:bg-destructive/10 text-destructive hover:bg-destructive/20 dark:hover:bg-destructive/20 focus:bg-destructive/20 focus-visible:ring-destructive/20 dark:focus-vis
+              variant === "livekit" && [
+                "bg-destructive/10",
+                "dark:bg-destructive/10",
+                "text-destructive",
+                "hover:bg-destructive/20",
+                "dark:hover:bg-destructive/20",
+                "focus:bg-destructive/20",
+                "focus-visible:ring-destructive/20",
+                "dark:focus-visible:ring-destructive/4",
+                "rounded-full",
+                "font-mono",
+                "text-xs",
+                "font-bold",
+                "tracking-wider",
+              ],
             )}
           >
             <span className="hidden md:inline">END CALL</span>

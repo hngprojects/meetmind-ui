@@ -8,7 +8,7 @@ export default function NewSessionPage() {
     <main className="bg-background text-foreground min-h-svh">
       <div className="mx-auto max-w-3xl px-6 py-10">
         <Button asChild variant="ghost" size="sm" className="mb-2 -ml-2">
-          <Link href="/">
+          <Link href="/call">
             <ArrowLeft /> All interviews
           </Link>
         </Button>

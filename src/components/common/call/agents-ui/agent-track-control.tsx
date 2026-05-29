@@ -8,8 +8,10 @@ import {
   useMaybeRoomContext,
   useMediaDeviceSelect,
 } from "@livekit/components-react";
+
 import { AgentAudioVisualizerBar } from "@/components/common/call/agents-ui/agent-audio-visualizer-bar";
 import { AgentTrackToggle } from "@/components/common/call/agents-ui/agent-track-toggle";
+
 import {
   Select,
   SelectContent,
@@ -17,16 +19,19 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+
 import { toggleVariants } from "@/components/ui/toggle";
 import { cn } from "@/lib/utils";
 
 const selectVariants = cva(
   [
-    "rounded-l-none shadow-none pl-2 ",
+    "rounded-l-none shadow-none pl-2",
     "text-foreground hover:text-muted-foreground",
-    "peer-data-[state=on]/track:bg-muted peer-data-[state=on]/track:hover:bg-foreground/10",
+    "peer-data-[state=on]/track:bg-muted",
+    "peer-data-[state=on]/track:hover:bg-foreground/10",
     "peer-data-[state=off]/track:text-destructive",
-    "peer-data-[state=off]/track:focus-visible:border-destructive peer-data-[state=off]/track:focus-visible:ring-destructive/30",
+    "peer-data-[state=off]/track:focus-visible:border-destructive",
+    "peer-data-[state=off]/track:focus-visible:ring-destructive/30",
     "[&_svg]:opacity-100",
   ],
   {
@@ -68,7 +73,6 @@ const selectVariants = cva(
     },
   },
 );
-
 /**
  * Props for the TrackDeviceSelect component. */
 type TrackDeviceSelectProps = React.ComponentProps<typeof SelectTrigger> &
@@ -140,6 +144,7 @@ function TrackDeviceSelect({
   const [open, setOpen] = useState(false);
   const [requestPermissionsState, setRequestPermissionsState] =
     useState(requestPermissions);
+
   const { devices, activeDeviceId, setActiveMediaDevice } =
     useMediaDeviceSelect({
       room,
@@ -155,9 +160,7 @@ function TrackDeviceSelect({
 
   const handleOpenChange = (open: boolean) => {
     setOpen(open);
-    if (open) {
-      setRequestPermissionsState(true);
-    }
+    if (open) setRequestPermissionsState(true);
   };
 
   const handleActiveDeviceChange = (deviceId: string) => {
@@ -170,9 +173,7 @@ function TrackDeviceSelect({
     [devices],
   );
 
-  if (filteredDevices.length < 2) {
-    return null;
-  }
+  if (filteredDevices.length < 2) return null;
 
   return (
     <Select
@@ -192,6 +193,7 @@ function TrackDeviceSelect({
           />
         )}
       </SelectTrigger>
+
       <SelectContent position="popper">
         {filteredDevices.map((device) => (
           <SelectItem
@@ -306,18 +308,22 @@ export function AgentTrackControl({
             barCount={3}
             state={pressed ? "speaking" : "disconnected"}
             audioTrack={pressed ? audioTrack : undefined}
-            className="audiovisualizer flex h-6 w-auto items-center justify-center gap-0.5"
+            className={cn(
+              "audiovisualizer flex h-6 w-auto items-center justify-center gap-0.5",
+            )}
           >
             <span
-              className={cn([
+              className={cn(
                 "h-full min-h-0.5 w-0.5 origin-center",
-                "group-data-[state=on]/track:bg-foreground group-data-[state=off]/track:bg-destructive",
+                "group-data-[state=on]/track:bg-foreground",
+                "group-data-[state=off]/track:bg-destructive",
                 "data-lk-muted:bg-muted",
-              ])}
+              )}
             />
           </AgentAudioVisualizerBar>
         )}
       </AgentTrackToggle>
+
       {kind && (
         <TrackDeviceSelect
           size="sm"
@@ -326,11 +332,11 @@ export function AgentTrackControl({
           requestPermissions={false}
           onMediaDeviceError={onMediaDeviceError}
           onActiveDeviceChange={onActiveDeviceChange}
-          className={cn([
+          className={cn(
             "relative",
             'before:bg-border before:absolute before:inset-y-0 before:left-0 before:my-2.5 before:w-px has-[~_button]:before:content-[""]',
             !pressed && "before:bg-destructive/20",
-          ])}
+          )}
         />
       )}
     </div>

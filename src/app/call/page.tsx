@@ -40,7 +40,7 @@ export default async function Dashboard() {
         <header className="mb-8 flex items-center justify-between">
           <h1 className="text-2xl font-semibold tracking-tight">Interviews</h1>
           <Button asChild>
-            <Link href="/sessions/new">
+            <Link href="/call/sessions/new">
               <Plus /> New interview
             </Link>
           </Button>
@@ -56,7 +56,11 @@ export default async function Dashboard() {
         ) : (
           <div className="space-y-2">
             {sessions.map((s) => (
-              <Link key={s.id} href={`/sessions/${s.id}`} className="block">
+              <Link
+                key={s.id}
+                href={`/call/sessions/${s.id}`}
+                className="block"
+              >
                 <Card className="hover:border-foreground/30 flex-row items-center justify-between gap-4 px-5 py-4 transition-colors">
                   <div>
                     <p className="font-medium">{s.role}</p>

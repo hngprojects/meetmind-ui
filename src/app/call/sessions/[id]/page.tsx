@@ -69,7 +69,7 @@ export default async function SessionDetail({
     <main className="bg-background text-foreground min-h-svh">
       <div className="mx-auto max-w-3xl space-y-6 px-6 py-10">
         <Button asChild variant="ghost" size="sm" className="-ml-2">
-          <Link href="/">
+          <Link href="/call">
             <ArrowLeft /> All interviews
           </Link>
         </Button>
@@ -90,7 +90,7 @@ export default async function SessionDetail({
             </Badge>
             {sess.status === "created" && (
               <Button asChild variant="outline" size="sm">
-                <Link href={`/sessions/${sess.id}/edit`}>Edit</Link>
+                <Link href={`/call/sessions/${sess.id}/edit`}>Edit</Link>
               </Button>
             )}
           </div>

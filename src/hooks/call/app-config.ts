@@ -33,19 +33,19 @@ export interface AppConfig {
 }
 
 export const APP_CONFIG_DEFAULTS: AppConfig = {
-  companyName: "LiveKit",
-  pageTitle: "LiveKit Voice Agent",
-  pageDescription: "A voice agent built with LiveKit",
+  companyName: "MeetMind",
+  pageTitle: "MeetMind",
+  pageDescription: "MeetMind — Interview better with Meetmind.",
 
   supportsChatInput: true,
   supportsVideoInput: true,
   supportsScreenShare: true,
   isPreConnectBufferEnabled: true,
 
-  logo: "/lk-logo.svg",
-  accent: "#002cf2",
-  logoDark: "/lk-logo-dark.svg",
-  accentDark: "#1fd5f9",
+  logo: "/MeetmindLogo.svg",
+  accent: "#2F6B7A",
+  logoDark: "/MeetmindLogo.svg",
+  accentDark: "#3B8FA3",
   startButtonText: "Start call",
 
   // optional: audio visualization configuration
