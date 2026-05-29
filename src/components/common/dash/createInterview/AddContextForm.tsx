@@ -102,12 +102,12 @@ export default function AddContextForm() {
 
       {/* Key skills to assess  */}
       <div className="flex flex-col gap-1">
-        <label htmlFor="skills" className="text-base text-text-subtext">
+        <label htmlFor="keySkills" className="text-base text-text-subtext">
           Key skills to assess
         </label>
         <input
           type="text"
-          id="skills"
+          id="keySkills"
           className="bg-white pt-2 placeholder:text-[#0F172A]"
           {...register("keySkills")}
           placeholder="Communication, technical depth…"

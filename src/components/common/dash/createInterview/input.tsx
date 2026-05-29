@@ -34,8 +34,8 @@ const Input = () => {
       phone: candidate.phone || extractedDetails?.phone || "",
       roleTitle: candidate.current_role || extractedDetails?.current_role || "",
       yearsofExperience:
-        candidate.years_of_experience ||
-        extractedDetails?.years_of_experience ||
+        candidate.years_of_experience ??
+        extractedDetails?.years_of_experience ??
         undefined,
       keySkills:
         candidate.skills?.join(", ") ||
