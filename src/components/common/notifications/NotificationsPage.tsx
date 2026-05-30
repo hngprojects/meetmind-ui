@@ -8,7 +8,11 @@ import type {
   AppNotification,
   NotificationCategory,
 } from "@/types/notification";
-import { MOCK_NOTIFICATIONS } from "@/lib/mocks/notifications.mock";
+import { cn } from "@/lib/utils";
+import {
+  getUnreadNotificationsCount,
+  useNotificationsStore,
+} from "@/store/notificationsStore";
 
 // ─── Category Badge ───────────────────────────────────────────────────────────
 
@@ -131,11 +135,12 @@ type Tab = "all" | "unread";
 
 export default function NotificationsPage() {
   const router = useRouter();
-  const [notifications, setNotifications] =
-    useState<AppNotification[]>(MOCK_NOTIFICATIONS);
+  const notifications = useNotificationsStore((state) => state.notifications);
+  const markAllAsRead = useNotificationsStore((state) => state.markAllAsRead);
+  const clearAll = useNotificationsStore((state) => state.clearAll);
   const [activeTab, setActiveTab] = useState<Tab>("all");
 
-  const unreadCount = notifications.filter((n) => n.status === "unread").length;
+  const unreadCount = getUnreadNotificationsCount(notifications);
   const totalCount = notifications.length;
 
   const visibleNotifications =
@@ -144,13 +149,20 @@ export default function NotificationsPage() {
       : notifications.filter((n) => n.status === "unread");
 
   const handleMarkAllAsRead = () => {
-    setNotifications((prev) =>
-      prev.map((n) => ({ ...n, status: "read" as const })),
-    );
+    markAllAsRead();
   };
 
   const handleClearAll = () => {
-    setNotifications([]);
+    clearAll();
+  };
+
+  const handleBack = () => {
+    if (window.history.length > 1) {
+      router.back();
+      return;
+    }
+
+    router.push("/");
   };
 
   return (
@@ -160,7 +172,7 @@ export default function NotificationsPage() {
         <div className="flex items-center gap-3">
           <button
             type="button"
-            onClick={() => router.back()}
+            onClick={handleBack}
             className="p-1.5 rounded-lg hover:bg-gray-100 transition-colors text-[#374151] cursor-pointer"
             aria-label="Go back"
           >
@@ -184,7 +196,12 @@ export default function NotificationsPage() {
             type="button"
             onClick={handleMarkAllAsRead}
             disabled={unreadCount === 0}
-            className="px-4 py-2 text-[13px] font-semibold rounded-xl bg-[#02505E] text-white hover:bg-[#02505E]/90 transition-colors cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed"
+            className={cn(
+              "px-4 py-2 text-[13px] font-semibold rounded-xl",
+              "bg-[#02505E] text-white hover:bg-[#02505E]/90",
+              "transition-colors cursor-pointer",
+              "disabled:opacity-40 disabled:cursor-not-allowed",
+            )}
           >
             Mark all as Read
           </button>
@@ -192,12 +209,12 @@ export default function NotificationsPage() {
             type="button"
             onClick={handleClearAll}
             disabled={totalCount === 0}
-            className={
-              "px-4 py-2 text-[13px] font-semibold rounded-xl border " +
-              "border-[#E5E7EB] text-[#374151] hover:bg-gray-50 " +
-              "transition-colors cursor-pointer disabled:opacity-40 " +
-              "disabled:cursor-not-allowed"
-            }
+            className={cn(
+              "px-4 py-2 text-[13px] font-semibold rounded-xl",
+              "border border-[#E5E7EB] text-[#374151]",
+              "hover:bg-gray-50 transition-colors cursor-pointer",
+              "disabled:opacity-40 disabled:cursor-not-allowed",
+            )}
           >
             Clear All
           </button>
@@ -209,22 +226,26 @@ export default function NotificationsPage() {
         <button
           type="button"
           onClick={() => setActiveTab("all")}
-          className={`pb-3 px-1 mr-8 text-[14px] font-medium transition-colors cursor-pointer ${
+          className={cn(
+            "pb-3 px-1 mr-8 text-[14px] font-medium",
+            "transition-colors cursor-pointer",
             activeTab === "all"
               ? "text-[#0F172A] border-b-2 border-[#0F172A] -mb-px"
-              : "text-[#9CA3AF] hover:text-[#374151]"
-          }`}
+              : "text-[#9CA3AF] hover:text-[#374151]",
+          )}
         >
           All&nbsp;({totalCount})
         </button>
         <button
           type="button"
           onClick={() => setActiveTab("unread")}
-          className={`pb-3 px-1 text-[14px] font-medium transition-colors cursor-pointer ${
+          className={cn(
+            "pb-3 px-1 text-[14px] font-medium",
+            "transition-colors cursor-pointer",
             activeTab === "unread"
               ? "text-[#0F172A] border-b-2 border-[#0F172A] -mb-px"
-              : "text-[#9CA3AF] hover:text-[#374151]"
-          }`}
+              : "text-[#9CA3AF] hover:text-[#374151]",
+          )}
         >
           Unread&nbsp;({unreadCount})
         </button>
