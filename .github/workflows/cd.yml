@@ -44,10 +44,11 @@ jobs:
             NEXT_PUBLIC_APP_URL=https://staging.meetmind.hng14.com \
             NEXT_PUBLIC_APP_NAME="MeetMind" \
             API_BASE_URL=http://127.0.0.1:8001 \
+            NODE_OPTIONS="--max-old-space-size=1536" \
             pnpm build
 
             echo "→ Restarting PM2 process..."
-            pm2 restart meetmind-fe-staging || pm2 start pnpm --name "meetmind-fe-staging" -- start -- -p 3001
+            pm2 restart meetmind-fe-staging || pm2 start pnpm --name "meetmind-fe-staging" -- start -p 3001
             pm2 save
 
             echo "✅ Staging deployed successfully"
@@ -91,10 +92,11 @@ jobs:
             NEXT_PUBLIC_APP_URL=https://meetmind.hng14.com \
             NEXT_PUBLIC_APP_NAME="MeetMind" \
             API_BASE_URL=http://127.0.0.1:8000 \
+            NODE_OPTIONS="--max-old-space-size=1536" \
             pnpm build
 
             echo "→ Restarting PM2 process..."
-            pm2 restart meetmind-fe-prod || pm2 start pnpm --name "meetmind-fe-prod" -- start -- -p 3000
+            pm2 restart meetmind-fe-prod || pm2 start pnpm --name "meetmind-fe-prod" -- start -p 3000
             pm2 save
 
             echo "✅ Production deployed successfully"

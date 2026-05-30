@@ -4,14 +4,19 @@ import InterviewListSidebar from "@/components/interviews/InterviewListSidebar";
 import InterviewTabs from "@/components/interviews/InterviewTabs";
 import ChatTab from "@/components/interviews/tabs/ChatTab";
 import TranscriptTab from "@/components/interviews/tabs/TranscriptTab";
+import SummaryTab from "@/components/interviews/tabs/SummaryTab";
+import ScorecardTab from "@/components/interviews/tabs/ScorecardTab";
+import ProfileTab from "@/components/interviews/tabs/ProfileTab";
 import {
   useChatHistory,
   useInterview,
+  useInterviewSession,
   useInterviewsList,
+  useRejoinInterviewSession,
   useTranscript,
 } from "@/hooks/useInterviews";
-import type { InterviewTab, SessionPhase } from "@/types/interview";
-import { useEffect, useState } from "react";
+import type { InterviewTab } from "@/types/interview";
+import { useState } from "react";
 import { HiOutlineArrowLeft, HiOutlineBars3 } from "react-icons/hi2";
 
 // ==================== 🧩Main Component ====================
@@ -19,9 +24,6 @@ export default function InterviewsWorkspace() {
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState<InterviewTab>("transcript");
   const [sidebarOpen, setSidebarOpen] = useState(false);
-  // const [sessionPhase, setSessionPhase] =
-  //   useState<SessionPhase>("live_transcript");
-  const [sessionPhase, setSessionPhase] = useState<SessionPhase>("connecting");
 
   const {
     data: list = [],
@@ -30,14 +32,6 @@ export default function InterviewsWorkspace() {
   } = useInterviewsList();
 
   const currentSelectedId = selectedId ?? list[0]?.id ?? null;
-
-  useEffect(() => {
-    function run() {
-      setSessionPhase("live_transcript");
-    }
-
-    run();
-  }, [currentSelectedId]);
 
   const {
     data: interview,
@@ -54,6 +48,15 @@ export default function InterviewsWorkspace() {
     currentSelectedId,
     interview?.status,
   );
+  const { data: session } = useInterviewSession(
+    currentSelectedId,
+    interview?.status,
+  );
+  const rejoinSession = useRejoinInterviewSession(currentSelectedId);
+
+  const handleRejoinSession = async () => {
+    await rejoinSession.mutateAsync();
+  };
 
   const handleSelect = (id: string) => {
     setSelectedId(id);
@@ -135,8 +138,9 @@ export default function InterviewsWorkspace() {
     renderEmptyState,
     chat,
     transcript,
-    sessionPhase,
-    setSessionPhase,
+    session,
+    onRejoinSession: handleRejoinSession,
+    isRejoiningSession: rejoinSession.isPending,
   };
 
   return (
@@ -217,8 +221,9 @@ type DetailsPanelProps = {
   renderEmptyState: () => React.ReactNode;
   chat: ReturnType<typeof useChatHistory>["data"];
   transcript: ReturnType<typeof useTranscript>["data"];
-  sessionPhase: SessionPhase;
-  setSessionPhase: (phase: SessionPhase) => void;
+  session: ReturnType<typeof useInterviewSession>["data"];
+  onRejoinSession: () => Promise<void>;
+  isRejoiningSession: boolean;
 };
 
 function DetailsPanel({
@@ -229,8 +234,9 @@ function DetailsPanel({
   renderEmptyState,
   chat,
   transcript,
-  sessionPhase,
-  setSessionPhase,
+  session,
+  onRejoinSession,
+  isRejoiningSession,
 }: DetailsPanelProps) {
   return (
     <section className="flex min-h-[40rem] flex-1 flex-col overflow-hidden rounded-2xl border border-[var(--color-card-border)] bg-[var(--color-card-bg)] shadow-sm">
@@ -245,10 +251,16 @@ function DetailsPanel({
               <TranscriptTab
                 interview={interview}
                 messages={transcript ?? []}
-                sessionPhase={sessionPhase}
-                onPhaseChange={setSessionPhase}
+                session={session}
+                onRejoin={onRejoinSession}
+                isRejoining={isRejoiningSession}
               />
             )}
+            {activeTab === "summary" && <SummaryTab interview={interview} />}
+            {activeTab === "scorecard" && (
+              <ScorecardTab interview={interview} />
+            )}
+            {activeTab === "profile" && <ProfileTab interview={interview} />}
           </>
         )}
       </div>
