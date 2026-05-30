@@ -2,53 +2,53 @@ import TestimonialCard from "./TestimonialCard";
 
 const mobileTestimonials = [
   {
-    name: "Theresa Webb",
-    role: "Product Manager",
+    name: "Amara Nwosu",
+    role: "Talent Acquisition Lead",
     company: "Circle",
     quote:
-      "We use Polio on a daily basis for several internal processes, and I cannot rave enough about them. Incredible flexibility and features combined with super intuitive UI.",
+      "Every candidate received a more structured and consistent interview experience. The quality of our evaluations improved immediately.",
     image: "/images/theresa-webb.png",
   },
   {
-    name: "Darlene Robertson",
-    role: "Product Manager",
+    name: "James Okafor",
+    role: "Engineering Team Lead",
     company: "Circle",
     quote:
-      "We use Polio on a daily basis for several internal processes, and I cannot rave enough about them. Incredible flexibility and features combined with super intuitive UI.",
+      "MeetMind didn't just record the conversation. It understood the discussion, tracked decisions, and helped us stay accountable.",
     image: "/images/darlene-robertson.png",
   },
   {
-    name: "Kathryn Murphy",
-    role: "Product Manager",
+    name: "David Osei",
+    role: "Senior Software Engineer",
     company: "Circle",
     quote:
-      "We use Polio on a daily basis for several internal processes, and I cannot rave enough about them. Incredible flexibility and features combined with super intuitive UI.",
+      "We skipped months of infrastructure work and focused directly on building the experience our users needed.",
     image: "/images/kathryn-murphy.png",
     quoteIcon: "/icons/quote.svg",
     isWide: true,
   },
   {
-    name: "Darrell Steward",
-    role: "Product Manager",
+    name: "Grace Nwosu",
+    role: "Recruitment Operations Lead",
     company: "Circle",
     quote:
-      "We use Polio on a daily basis for several internal processes, and I cannot rave enough about them.",
+      "Before MeetMind, aligning interviewers was a constant challenge. Now we all work from the same structure, and decisions are easier to justify.",
     image: "/images/darrell-steward.png",
   },
   {
-    name: "Kristin Watson",
+    name: "Aisha Bello",
     role: "Product Manager",
     company: "Circle",
     quote:
-      "We use Polio on a daily basis for several internal processes, and I cannot rave enough about them.",
+      "What stood out was how quickly we could revisit key moments from a meeting without digging through notes or recordings.",
     image: "/images/kristin-watson.png",
   },
   {
-    name: "Bessie Cooper",
-    role: "Product Manager",
+    name: "Tobi Adeyemi",
+    role: "Backend Engineer",
     company: "Circle",
     quote:
-      "We use Polio on a daily basis for several internal processes, and I cannot rave enough about them. Incredible flexibility and features combined with super intuitive UI.",
+      "The real value wasn't just transcription. It was how MeetMind turned messy discussions into clear, trackable outcomes we could act on.",
     image: "/images/bessie-cooper.png",
     quoteIcon: "/icons/quote.svg",
     isWide: true,
