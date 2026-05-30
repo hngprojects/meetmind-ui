@@ -14,7 +14,9 @@ type SubscribeFormData = z.infer<typeof subscribeSchema>;
 
 export default function SubscribeCTA() {
   // UPDATED: Added "loading" to the status type definition
-  const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
+  const [status, setStatus] = useState<
+    "idle" | "loading" | "success" | "error"
+  >("idle");
 
   const {
     register,
@@ -42,7 +44,7 @@ export default function SubscribeCTA() {
       setStatus("error");
     }
   };
-  
+
   return (
     <section
       id="subscribe-email"
@@ -88,7 +90,7 @@ export default function SubscribeCTA() {
                     focus-visible:ring-offset-2 focus-visible:ring-offset-[#036475] disabled:opacity-60"
                   />
                   <button
-                    type="submit" 
+                    type="submit"
                     disabled={isSubmitting}
                     className="w-full md:w-auto inline-block px-6 py-3
                      bg-[#D9E8EA] text-[#035A69] hover:bg-[#F7F9F8] hover:text-[#02505E] 
@@ -97,7 +99,9 @@ export default function SubscribeCTA() {
                      focus-visible:ring-[#D9E8EA] focus-visible:ring-offset-2 
                      focus-visible:ring-offset-[#036475] disabled:opacity-60"
                   >
-                    {isSubmitting || status === "loading" ? "Subscribing..." : "Subscribe"}
+                    {isSubmitting || status === "loading"
+                      ? "Subscribing..."
+                      : "Subscribe"}
                   </button>
                 </div>
                 {errors.email && (
