@@ -4,7 +4,10 @@ import React, { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { LuClock, LuBell, LuArrowLeft } from "react-icons/lu";
-import type { Notification, NotificationCategory } from "@/types/notification";
+import type {
+  AppNotification,
+  NotificationCategory,
+} from "@/types/notification";
 import { cn } from "@/lib/utils";
 import {
   getUnreadNotificationsCount,

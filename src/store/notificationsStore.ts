@@ -1,9 +1,9 @@
 import { MOCK_NOTIFICATIONS } from "@/lib/mocks/notifications.mock";
-import type { Notification } from "@/types/notification";
+import type { AppNotification } from "@/types/notification";
 import { create } from "zustand";
 
 type NotificationsState = {
-  notifications: Notification[];
+  notifications: AppNotification[];
   markAllAsRead: () => void;
   clearAll: () => void;
 };
@@ -21,7 +21,7 @@ export const useNotificationsStore = create<NotificationsState>((set) => ({
 }));
 
 export const getUnreadNotificationsCount = (
-  notifications: Notification[],
+  notifications: AppNotification[],
 ): number =>
   notifications.filter((notification) => notification.status === "unread")
     .length;
