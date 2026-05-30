@@ -10,7 +10,7 @@ const NeedAttention = () => {
     >
       <div className="bg-white">
         <h1 className="text-xl font-bold"> Need Attention</h1>
-        <div className="flex flex-row gap-2">
+        <div className="flex flex-col md:flex-row gap-2">
           <AiTwotoneExclamationCircle />
           <p> AI failed to join </p>
           <p>- Temi Balogun </p>

@@ -21,12 +21,14 @@ const InterviewOverview = () => {
   if (!overview) return null;
 
   return (
-    <div className="px-2 md:px-10 lg:px-20 py-10 flex flex-col gap-4">
+    <div className="px-2 md:px-10 lg:px-20  flex flex-col gap-4">
       <h1 className=" text-2xl lg:text-3xl text-text-color-primary font-bold">
-        Good morning, {candidate.full_name || "John Doe"}
+        {!candidate.full_name
+          ? "Good morning"
+          : `Good morning, ${candidate.full_name}`}
       </h1>
 
-      <div className="bg-[#e1e3e462] p-7 flex flex-col gap-8 rounded-2xl">
+      <div className="bg-white p-7 flex flex-col gap-8 rounded-2xl">
         <div className="flex flex-col gap-3">
           <div className="flex flex-col gap-4 md:flex-row justify-between">
             <div className=" flex flex-col gap-2">

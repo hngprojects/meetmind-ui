@@ -13,11 +13,14 @@ const Interview = () => {
     <div className="flex flex-col gap-6">
       <InterviewOverview />
       <LiveSession />
-      <div className="flex flex-col gap-6 md:flex-row">
-        <div className="w-1/3">
+      <div
+        className="flex flex-col gap-6 md:flex-row  px-2
+     md:px-10 lg:px-20"
+      >
+        <div className="w-fullmd:w-1/3 ">
           <Schedule />
         </div>
-        <div className="w-2/3">
+        <div className="md:w-2/3 flex flex-col gap-4">
           <NeedAttention />
           <Completed />
         </div>

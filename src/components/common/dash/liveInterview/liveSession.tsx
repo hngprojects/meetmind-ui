@@ -13,12 +13,15 @@ const LiveSession = () => {
   if (sessionsLoading) return <div>Loading...</div>;
 
   return (
-    <div className="px-2 md:px-10 lg:px-20  flex flex-col gap-4 bg-white ">
-      <div className="flex flex-row justify-between">
+    <div
+      className="mx-2 md:px-10 lg:mx-20 pt-7
+     rounded-2xl  flex flex-col gap-4 bg-white "
+    >
+      <div className="flex flex-row justify-between px-2">
         <h1 className="text-2xl  text-text-color-primary font-bold">
           Live Now
         </h1>
-        <p className="flex flex-row justify-between w-[7%]">
+        <p className="flex flex-row justify-between md:w-[7%]">
           See all <MdKeyboardArrowRight className="text-2xl" />
         </p>
       </div>

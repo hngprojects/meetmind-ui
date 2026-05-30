@@ -34,14 +34,12 @@ function VerifyEmailContent() {
       if (isMounted) setIsVerifying(true);
       if (isMounted) setError(null);
       try {
-        await api.get(
-          `/api/v1/auth/verify-email?token=${encodeURIComponent(token)}`,
-        );
+        await api.get(`/api/v1/auth/verify-email`);
 
         if (isMounted) {
           setIsVerified(true);
           if (redirectTimer) clearTimeout(redirectTimer);
-          redirectTimer = setTimeout(() => router.push("/Dashboard"), 2000);
+          redirectTimer = setTimeout(() => router.push("/dashboard"), 2000);
         }
       } catch {
         if (isMounted)
