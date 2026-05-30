@@ -14,5 +14,5 @@ export type PreferencesType = {
 };
 
 export type IntegrationsType = {
-  integrations: "google" | "zoom" | null;
+  integrations: "google" | "zoom" | "livekit" | null;
 };

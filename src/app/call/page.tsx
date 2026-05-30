@@ -21,7 +21,7 @@ export default async function Dashboard() {
   let sessions: SessionDTO[] = [];
   try {
     const res = await fetch(
-      "https://api.staging.meetmind.hng14.com/api/v1/sessions/",
+      "https://api.staging.meetmind.hng14.com/api/v1/interviews/",
       {
         cache: "no-store",
       },

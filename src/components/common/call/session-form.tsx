@@ -8,6 +8,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import api from "@/lib/api";
 import type {
   Question,
   RubricCriterion,
@@ -91,28 +92,42 @@ export function SessionForm({ initial }: { initial?: SessionDTO }) {
       rubric: rubric.filter((c) => c.name.trim()),
     };
 
-    const API_BASE_URL =
-      process.env.NEXT_PUBLIC_API_BASE_URL ||
-      "https://api.staging.meetmind.hng14.com";
+    try {
+      const response = editing
+        ? await api.patch(`/api/v1/interviews/${initial!.id}`, payload)
+        : await api.post(`/api/v1/interviews`, payload);
 
-    const res = await fetch(
-      editing
-        ? `${API_BASE_URL}/api/v1/sessions/${initial!.id}`
-        : `${API_BASE_URL}/api/v1/sessions`,
-      {
-        method: editing ? "PATCH" : "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload),
-      },
-    );
-    setSaving(false);
-    if (!res.ok) {
-      setError((await res.json().catch(() => ({})))?.error ?? "Save failed");
-      return;
+      const session = response.data as SessionDTO;
+      router.push(`/call/sessions/${session.id}`);
+      router.refresh();
+    } catch (error) {
+      const axiosError = error as { response?: { data?: unknown } };
+      const errorData = axiosError.response?.data;
+
+      const extractString = (value: unknown): string | undefined =>
+        typeof value === "string" ? value : undefined;
+
+      const dataObject =
+        typeof errorData === "object" && errorData !== null
+          ? (errorData as Record<string, unknown>)
+          : {};
+
+      const errorPayload =
+        typeof dataObject.error === "object" && dataObject.error !== null
+          ? (dataObject.error as Record<string, unknown>)
+          : {};
+
+      const message =
+        extractString(dataObject.error) ||
+        extractString(errorPayload.details) ||
+        extractString(errorPayload.message) ||
+        extractString(dataObject.message) ||
+        "Save failed";
+
+      setError(message);
+    } finally {
+      setSaving(false);
     }
-    const session = (await res.json()) as SessionDTO;
-    router.push(`/call/sessions/${session.id}`);
-    router.refresh();
   }
 
   return (

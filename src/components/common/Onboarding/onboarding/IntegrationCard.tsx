@@ -6,6 +6,7 @@ interface IntegrationCardProps {
   logo: ReactNode;
   isConnected: boolean;
   onConnect: () => void;
+  disabled?: boolean;
 }
 
 export function IntegrationCard({
@@ -13,6 +14,7 @@ export function IntegrationCard({
   logo,
   isConnected,
   onConnect,
+  disabled,
 }: IntegrationCardProps) {
   return (
     <div className="flex items-center justify-between p-4 bg-white border border-slate-100 rounded-xl">
@@ -29,10 +31,19 @@ export function IntegrationCard({
       ) : (
         <button
           type="button"
-          onClick={onConnect}
-          className="px-4 py-1.5 bg-[#005a64] text-white text-xs font-bold rounded-full hover:bg-[#004a52] transition-colors"
+          disabled={disabled}
+          onClick={() => {
+            if (disabled) return;
+            onConnect();
+          }}
+          className={`px-4 py-1.5 text-xs font-bold rounded-full transition-colors
+      ${
+        disabled
+          ? "bg-gray-200 text-gray-500 cursor-not-allowed"
+          : "bg-[#005a64] text-white hover:bg-[#004a52]"
+      }`}
         >
-          Connect
+          {disabled ? "Coming soon" : "Connect"}
         </button>
       )}
     </div>

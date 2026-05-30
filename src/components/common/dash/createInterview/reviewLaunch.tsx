@@ -1,8 +1,8 @@
 "use client";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import axios from "axios";
 import api from "@/lib/api";
+import { getErrorMessage } from "@/lib/api-response";
 import Buttons from "@/components/reuseable-component/buttons";
 import { useResumeStore } from "@/store/ResumeStore";
 import {
@@ -66,20 +66,19 @@ export default function ReviewLaunch() {
       setServerError(null);
 
       const payload = buildPayload(candidateId);
-      await api.post("/api/v1/interviews", payload);
+      const res = await api.post("/api/v1/interviews", payload);
+
+      const sessionId = res.data?.data?.id ?? res.data?.id;
+
+      if (!sessionId) {
+        throw new Error("Session ID not returned from server");
+      }
 
       resetAll();
-      router.push("/dashboard");
+
+      router.push(`/call/sessions/${sessionId}`);
     } catch (error) {
-      if (axios.isAxiosError(error)) {
-        const message =
-          error.response?.data?.message ||
-          error.response?.data?.error?.details?.[0]?.msg ||
-          "Something went wrong. Please try again.";
-        setServerError(message);
-      } else {
-        setServerError("Unexpected error. Please try again.");
-      }
+      setServerError(getErrorMessage(error));
     } finally {
       setIsLoading(false);
     }

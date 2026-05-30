@@ -41,7 +41,7 @@ export default async function SessionDetail({
   let s = null;
   try {
     const res = await fetch(
-      `https://api.staging.meetmind.hng14.com/api/v1/sessions/${id}`,
+      `https://api.staging.meetmind.hng14.com/api/v1/interviews/${id}`,
       {
         cache: "no-store",
       },

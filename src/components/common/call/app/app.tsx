@@ -35,16 +35,22 @@ export function App({ appConfig, sessionId }: AppProps) {
       // the agent loads that session's config.
       return TokenSource.custom(async () => {
         const res = await fetch(
-          `${"https://api.staging.meetmind.hng14.com"}/api/v1/token`,
+          `https://api.staging.meetmind.hng14.com/api/v1/livekit/${sessionId}/token`,
           {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ sessionId }),
+            body: JSON.stringify({
+              participant_name: appConfig.agentName ?? "Candidate",
+            }),
           },
         );
+
         if (!res.ok) {
-          throw new Error("Failed to fetch connection details");
+          const err = await res.text();
+          console.error("Token error:", err);
+          throw new Error(err);
         }
+
         return res.json();
       });
     }

@@ -4,7 +4,6 @@ export type ViewMode = "list" | "grid";
 
 export interface CandidateFilters {
   status: "all" | "ongoing" | "completed" | "needs_review";
-  role: string | null;
   search: string;
   sortBy: "date" | "score" | "name";
   sortDirection: "asc" | "desc";
@@ -26,7 +25,6 @@ interface CandidatesState {
 
 const initialFilters: CandidateFilters = {
   status: "all",
-  role: null,
   search: "",
   sortBy: "date",
   sortDirection: "desc",
