@@ -4,6 +4,8 @@ import React from "react";
 import { getCoreRowModel, useReactTable } from "@tanstack/react-table";
 import { useCandidatesStore } from "@/store/candidatesStore";
 import { useCandidates } from "@/lib/hooks/useCandidates";
+import type { UseCandidatesData } from "@/lib/hooks/useCandidates";
+import type { UseQueryResult } from "@tanstack/react-query";
 import CandidatesGridView from "./CandidatesGridView";
 import CandidatesTableView from "./CandidatesTableView";
 import { getCandidateColumns } from "./columns";
@@ -11,6 +13,7 @@ import CandidatesToolbar from "./CandidatesToolbar";
 import CandidatesStats from "./CandidatesStats";
 import ExportModal from "./Export";
 import CandidatesPagination from "./CandidatesPagination";
+import type { CandidateStats, Pagination } from "@/lib/types/candidates";
 
 const View = () => {
   const viewMode = useCandidatesStore((s) => s.viewMode);
@@ -21,15 +24,15 @@ const View = () => {
   const queryParams = {
     q: filters.search,
     status: filters.status === "all" ? undefined : filters.status,
-    role: filters.role ?? undefined,
     sortBy: filters.sortBy,
     sortDirection: filters.sortDirection,
     page: filters.page,
     pageSize: filters.pageSize,
   };
 
-  const { data, isLoading, isError, error, refetch } =
-    useCandidates(queryParams);
+  const { data, isLoading, isError, error, refetch } = useCandidates(
+    queryParams,
+  ) as UseQueryResult<UseCandidatesData, unknown>;
 
   const candidates = data?.candidates ?? [];
   const pagination = data?.pagination;
@@ -132,13 +135,19 @@ const View = () => {
   return (
     <div>
       <div className="flex flex-col gap-4">
-        <CandidatesStats stats={data?.stats} loading={isLoading} />
+        <CandidatesStats
+          stats={data?.stats as CandidateStats | undefined}
+          loading={isLoading}
+        />
         <CandidatesToolbar />
       </div>
       {viewMode === "list" ? (
         <>
           <CandidatesTableView table={table} />
-          <CandidatesPagination pagination={pagination} isLoading={isLoading} />
+          <CandidatesPagination
+            pagination={pagination as Pagination | undefined}
+            isLoading={isLoading}
+          />
         </>
       ) : (
         <CandidatesGridView table={table} />

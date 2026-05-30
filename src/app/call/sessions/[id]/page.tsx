@@ -1,12 +1,17 @@
+"use client";
+
 import Link from "next/link";
-import { notFound } from "next/navigation";
+import { useEffect, useState } from "react";
 import { ArrowLeft } from "lucide-react";
 import { CopyField } from "@/components/common/call/copy-field";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import api from "@/lib/api";
+import { unwrapData } from "@/lib/api-response";
 import type {
   Report,
+  SessionDTO,
   SessionStatus,
   TranscriptTurn,
 } from "@/lib/call/interview-types";
@@ -31,39 +36,79 @@ const overallVariant: Record<string, "default" | "destructive"> = {
   strong_no: "destructive",
 };
 
-export default async function SessionDetail({
-  params,
-}: {
-  params: Promise<{ id: string }>;
-}) {
-  const { id } = await params;
+export default function SessionDetail({ params }: { params: { id: string } }) {
+  const { id } = params;
+  const [session, setSession] = useState<SessionDTO | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
-  let s = null;
-  try {
-    const res = await fetch(
-      `https://api.staging.meetmind.hng14.com/api/v1/sessions/${id}`,
-      {
-        cache: "no-store",
-      },
+  useEffect(() => {
+    let canceled = false;
+
+    const fetchSession = async () => {
+      setIsLoading(true);
+      setError(null);
+
+      try {
+        const res = await api.get(`/api/v1/interviews/${id}`);
+        const sessionData = unwrapData<SessionDTO>(res.data);
+        if (!canceled) {
+          setSession(sessionData);
+        }
+      } catch (err) {
+        console.error("Failed to fetch session detail from backend:", err);
+        if (!canceled) {
+          setError(
+            "Unable to load this interview. Please refresh the page or sign in again.",
+          );
+        }
+      } finally {
+        if (!canceled) {
+          setIsLoading(false);
+        }
+      }
+    };
+
+    fetchSession();
+
+    return () => {
+      canceled = true;
+    };
+  }, [id]);
+
+  if (isLoading) {
+    return (
+      <main className="bg-background text-foreground min-h-svh">
+        <div className="mx-auto max-w-3xl px-6 py-10">
+          <p className="text-sm text-muted-foreground">
+            Loading interview details…
+          </p>
+        </div>
+      </main>
     );
-    if (res.ok) {
-      s = await res.json();
-    }
-  } catch (error) {
-    console.error("Failed to fetch session detail from backend:", error);
   }
 
-  if (!s) notFound();
+  if (error || !session) {
+    return (
+      <main className="bg-background text-foreground min-h-svh">
+        <div className="mx-auto max-w-3xl px-6 py-10">
+          <div className="rounded-2xl border border-red-200 bg-red-50 p-6">
+            <h1 className="text-xl font-semibold text-red-800">
+              Interview not found
+            </h1>
+            <p className="mt-2 text-sm text-red-700">
+              {error ?? "This interview could not be loaded."}
+            </p>
+            <Button asChild variant="secondary" className="mt-4">
+              <Link href="/call">Return to all interviews</Link>
+            </Button>
+          </div>
+        </div>
+      </main>
+    );
+  }
 
-  const sess = s as {
-    status: SessionStatus;
-    id: string;
-    role: string;
-    candidateName?: string | null;
-    durationMinutes: number;
-    report?: Report | null;
-    transcript?: TranscriptTurn[] | null;
-  };
+  const sess = session;
 
   return (
     <main className="bg-background text-foreground min-h-svh">

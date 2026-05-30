@@ -27,10 +27,22 @@ const STATUS_OPTIONS: { label: string; value: StatusValue }[] = [
   { label: "Completed", value: "completed" },
 ];
 
+const SORT_FIELDS: CandidateFilters["sortBy"][] = ["date", "name", "score"];
+
 const CandidatesToolbar = () => {
   const filters = useCandidatesStore((s) => s.filters);
   const setFilters = useCandidatesStore((s) => s.setFilters);
   const setExportOpen = useCandidatesStore((s) => s.setExportOpen);
+
+  const handleToolbarSortClick = () => {
+    const currentIndex = SORT_FIELDS.indexOf(filters.sortBy);
+    const nextSortBy = SORT_FIELDS[(currentIndex + 1) % SORT_FIELDS.length];
+
+    setFilters({
+      sortBy: nextSortBy,
+      page: 1,
+    });
+  };
 
   const activeStatusLabel =
     STATUS_OPTIONS.find((opt) => opt.value === filters?.status)?.label || "All";
@@ -43,12 +55,12 @@ const CandidatesToolbar = () => {
           placeholder="Search candidates by name, role, or email"
           className="pl-10 pr-4 h-10 border-button-outline-border text-color-text-color-primary focus-visible:ring-1 focus-visible:ring-input-border-focus rounded-lg"
           value={filters.search}
-          onChange={(e) =>
+          onChange={(e) => {
             setFilters({
               search: e.target.value,
               page: 1,
-            })
-          }
+            });
+          }}
         />
       </div>
 
@@ -98,22 +110,7 @@ const CandidatesToolbar = () => {
         <Button
           variant="ghost"
           className="h-10 px-4 gap-2 border-button-outline-border text-color-text-subtext font-medium rounded-lg"
-          onClick={() =>
-            setFilters(
-              (() => {
-                const nextSortBy = filters.sortBy === "date" ? "name" : "date";
-                const sameField = nextSortBy === filters.sortBy;
-                return {
-                  sortBy: nextSortBy,
-                  sortDirection:
-                    sameField && filters.sortDirection === "asc"
-                      ? "desc"
-                      : "asc",
-                  page: 1,
-                };
-              })(),
-            )
-          }
+          onClick={handleToolbarSortClick}
         >
           <span>Sort by {filters.sortBy}</span>
           <LuArrowDownAZ className="h-4 w-4 text-color-text-secondary" />
