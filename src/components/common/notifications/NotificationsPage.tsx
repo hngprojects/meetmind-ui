@@ -52,7 +52,7 @@ function CategoryBadge({ category }: { category: NotificationCategory }) {
 
 // ─── Notification Card ────────────────────────────────────────────────────────
 
-function NotificationCard({ notification }: { notification: Notification }) {
+function NotificationCard({ notification }: { notification: AppNotification }) {
   const isUnread = notification.status === "unread";
 
   return (

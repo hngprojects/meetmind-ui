@@ -1,45 +1,60 @@
 import Image from "next/image";
+import TranscriptionCard from "./TranscriptionCard";
 
 export default function DashboardPreview() {
   return (
     <section className="bg-[#F7F9FB]">
       <div className="flex justify-center max-w-360 mx-auto px-6 md:px-20 lg:px-20">
         {/* Desktop */}
-        <div className="hidden md:block md:bg-[#FDFDFE] rounded-[30px] md:p-12 md:max-w-200 lg:max-w-226.5 md:max-h-[428.8px]">
-          <div className="mb-10 flex justify-between items-center">
-            <div className="w-56.25 h-9 flex font-medium justify-between items-center px-4 py-2 text-[14px] text-[#3F4555] bg-[#E6F0F1] rounded-full">
-              <div className="rounded-full bg-[#035A69] w-3.75 h-3.75"></div>
-              <p>Live interview • Senior PM</p>
+        <div
+          className="hidden md:flex md:justify-between md:bg-[#FDFDFE] rounded-[30px] md:p-12 md:max-w-[906px] 
+                lg:max-w-[962px] gap-10 items-center"
+        >
+          <div className="max-w-[552px]">
+            <div className="mb-10 flex justify-between items-center">
+              <div
+                className="w-56.25 h-9 flex font-medium justify-between items-center px-4 py-2 
+                    text-[14px] text-[#3F4555] bg-[#E6F0F1] rounded-full"
+              >
+                <div className="rounded-full bg-[#035A69] w-3.75 h-3.75"></div>
+                <p>Live interview • Senior PM</p>
+              </div>
+              <div className="w-14 h-10 bg-[#E6F0F1] rounded-lg flex items-center justify-center">
+                <p className="text-[14px] font-medium rounded-2 text-[#3F4555]">
+                  14:32
+                </p>
+              </div>
             </div>
-            <div className="w-14 h-10 bg-[#E6F0F1] rounded-lg flex items-center justify-center">
-              <p className="text-[14px] font-medium rounded-2 text-[#3F4555]">
-                14:32
-              </p>
+            <Image
+              src="/icons/dashboard-desktop.svg"
+              alt="MeetMind dashboard preview showing frequency bars"
+              width={88}
+              height={88}
+              className="md:w-202.5 md:h-37.5"
+            />
+            <div className="mt-10 max-w-202.5 max-h-11 flex justify-between items-center">
+              <div className="w-67.5 h-full flex flex-col font-medium justify-between items-center border-r border-[#E1E3E4]">
+                <h2 className="text-[36px] font-bold text-[#111827]">12,847</h2>
+                <p className="text-[14px] text-[#6B7280]">
+                  Interviews analyzed
+                </p>
+              </div>
+              <div className="w-67.5 h-full flex flex-col font-medium justify-between items-center border-r border-[#E1E3E4]">
+                <h2 className="text-[36px] font-bold text-[#111827]">94%</h2>
+                <p className="text-[14px] text-[#6B7280]">
+                  Avg. scorecard coverage
+                </p>
+              </div>
+              <div className="w-67.5 h-full flex flex-col font-medium justify-between items-center">
+                <h2 className="text-[36px] font-bold text-[#111827]">
+                  6.2 hrs
+                </h2>
+                <p className="text-[14px] text-[#6B7280]">Saved per hire</p>
+              </div>
             </div>
           </div>
-          <Image
-            src="/icons/dashboard-desktop.svg"
-            alt="MeetMind dashboard preview showing frequency bars"
-            width={88}
-            height={88}
-            className="md:w-202.5 md:h-37.5"
-          />
-          <div className="mt-10 max-w-202.5 max-h-11 flex justify-between items-center">
-            <div className="w-67.5 h-full flex flex-col font-medium justify-between items-center border-r border-[#E1E3E4]">
-              <h2 className="text-[36px] font-bold text-[#111827]">12,847</h2>
-              <p className="text-[14px] text-[#6B7280]">Interviews analyzed</p>
-            </div>
-            <div className="w-67.5 h-full flex flex-col font-medium justify-between items-center border-r border-[#E1E3E4]">
-              <h2 className="text-[36px] font-bold text-[#111827]">94%</h2>
-              <p className="text-[14px] text-[#6B7280]">
-                Avg. scorecard coverage
-              </p>
-            </div>
-            <div className="w-67.5 h-full flex flex-col font-medium justify-between items-center">
-              <h2 className="text-[36px] font-bold text-[#111827]">6.2 hrs</h2>
-              <p className="text-[14px] text-[#6B7280]">Saved per hire</p>
-            </div>
-          </div>
+          {/* Right Section */}
+          <TranscriptionCard />
         </div>
         {/* Mobile */}
         <div className="bg-[#FDFDFE] w-full max-w-sm rounded-2xl p-6 md:hidden">
@@ -63,7 +78,7 @@ export default function DashboardPreview() {
             />
           </div>
 
-          <div className="mt-8 flex flex-col gap-6">
+          <div className="mt-8 mb-6 flex flex-col gap-6">
             <div className="flex flex-col items-center border-r border-[#E1E3E4] pb-4">
               <h2 className="text-[36px] font-bold text-[#111827]">12,847</h2>
               <p className="text-[14px] text-[#6B7280]">Interviews analyzed</p>
@@ -81,6 +96,8 @@ export default function DashboardPreview() {
               <p className="text-[14px] text-[#6B7280]">Saved per hire</p>
             </div>
           </div>
+
+          <TranscriptionCard />
         </div>
       </div>
     </section>

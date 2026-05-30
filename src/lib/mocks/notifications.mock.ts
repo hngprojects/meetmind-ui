@@ -1,6 +1,6 @@
-import type { Notification } from "@/types/notification";
+import type { AppNotification } from "@/types/notification";
 
-export const MOCK_NOTIFICATIONS: Notification[] = [
+export const MOCK_NOTIFICATIONS: AppNotification[] = [
   {
     id: "1",
     category: "Report",
