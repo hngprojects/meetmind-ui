@@ -10,7 +10,7 @@ export const MOCK_NOTIFICATIONS: AppNotification[] = [
     timestamp: "2 min ago",
     status: "unread",
     actionLabel: "View Report",
-    actionHref: "/interviews/1",
+    actionHref: "/Interviews",
   },
   {
     id: "2",
@@ -21,7 +21,7 @@ export const MOCK_NOTIFICATIONS: AppNotification[] = [
     timestamp: "15 min ago",
     status: "unread",
     actionLabel: "Join Meeting",
-    actionHref: "/interviews/2",
+    actionHref: "/Interviews",
   },
   {
     id: "3",
@@ -43,7 +43,7 @@ export const MOCK_NOTIFICATIONS: AppNotification[] = [
     timestamp: "45 min ago",
     status: "unread",
     actionLabel: "View Details",
-    actionHref: "/interviews/4",
+    actionHref: "/Interviews",
   },
   {
     id: "5",

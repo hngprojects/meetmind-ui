@@ -138,9 +138,7 @@ function mapNotificationCategory(type: string): NotificationCategory {
 
 function normalizeActionHref(actionUrl?: string | null): string | undefined {
   if (!actionUrl) return undefined;
-  if (actionUrl.startsWith("/interviews")) {
-    return "/Interviews";
-  }
+  if (actionUrl.startsWith("/interviews")) return "/Interviews";
   return actionUrl;
 }
 

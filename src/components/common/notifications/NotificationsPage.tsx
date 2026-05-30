@@ -1,5 +1,6 @@
 "use client";
 
+import { Button } from "@/components/ui/button";
 import { getErrorMessage } from "@/lib/api-response";
 import { cn } from "@/lib/utils";
 import {
@@ -13,7 +14,6 @@ import type {
   NotificationCategory,
   NotificationFilter,
 } from "@/types/notification";
-import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { LuArrowLeft, LuBell, LuClock } from "react-icons/lu";
@@ -25,24 +25,24 @@ const CATEGORY_STYLES: Record<
   { bg: string; text: string; border: string }
 > = {
   Report: {
-    bg: "bg-[#FFF1F2]",
-    text: "text-[#E11D48]",
-    border: "border-[#FECDD3]",
+    bg: "bg-[var(--color-error-bg)]",
+    text: "text-[var(--color-error)]",
+    border: "border-[var(--color-error-bg)]",
   },
   Meeting: {
-    bg: "bg-[#FFF7ED]",
-    text: "text-[#C2410C]",
-    border: "border-[#FED7AA]",
+    bg: "bg-[var(--color-warning-bg)]",
+    text: "text-[var(--color-badge-upcoming-text)]",
+    border: "border-[var(--color-warning-bg)]",
   },
   Integration: {
-    bg: "bg-[#F0FDF4]",
-    text: "text-[#15803D]",
-    border: "border-[#BBF7D0]",
+    bg: "bg-[var(--color-bg-success)]",
+    text: "text-[var(--color-session-green-text)]",
+    border: "border-[var(--color-bg-success)]",
   },
   System: {
-    bg: "bg-[#F5F3FF]",
-    text: "text-[#7C3AED]",
-    border: "border-[#DDD6FE]",
+    bg: "bg-[var(--color-badge-live-bg)]",
+    text: "text-[var(--color-badge-live-text)]",
+    border: "border-[var(--color-session-purple-border)]",
   },
 };
 
@@ -66,29 +66,25 @@ function CategoryBadge({ category }: { category: NotificationCategory }) {
 
 type NotificationCardProps = {
   notification: AppNotification;
-  onMarkRead: (notificationId: string) => void;
   isMarkingRead: boolean;
+  onOpenAction: (notification: AppNotification) => void;
 };
 
 function NotificationCard({
   notification,
-  onMarkRead,
   isMarkingRead,
+  onOpenAction,
 }: NotificationCardProps) {
   const isUnread = notification.status === "unread";
-
-  const handleActionClick = () => {
-    if (isUnread && !isMarkingRead) {
-      onMarkRead(notification.id);
-    }
-  };
 
   return (
     <div
       className={cn(
-        "w-full rounded-2xl border border-[#E5E7EB] p-5",
+        "w-full rounded-2xl border border-[var(--color-card-border)] p-5",
         "transition-shadow hover:shadow-sm",
-        isUnread ? "bg-[#F8FAFC]" : "bg-white",
+        isUnread
+          ? "bg-[var(--color-bg-secondary)]"
+          : "bg-[var(--color-card-bg)]",
       )}
     >
       <div className="mb-2 flex items-start justify-between gap-4">
@@ -96,7 +92,7 @@ function NotificationCard({
         <div
           className={cn(
             "mt-0.5 flex shrink-0 items-center gap-1",
-            "text-[12px] text-[#9CA3AF]",
+            "text-[12px] text-[var(--color-card-text)]",
           )}
         >
           <LuClock className="text-[13px]" />
@@ -106,12 +102,14 @@ function NotificationCard({
 
       <div className="mb-1 flex items-center gap-2">
         {isUnread && (
-          <span className="h-2 w-2 shrink-0 rounded-full bg-[#3B82F6]" />
+          <span className="h-2 w-2 shrink-0 rounded-full bg-[var(--color-info)]" />
         )}
         <h3
           className={cn(
             "text-[15px] font-semibold leading-snug",
-            isUnread ? "text-[#0F172A]" : "text-[#374151]",
+            isUnread
+              ? "text-[var(--color-text-color-primary)]"
+              : "text-[var(--color-text-subtext)]",
           )}
         >
           {notification.title}
@@ -121,7 +119,7 @@ function NotificationCard({
       {notification.description && (
         <p
           className={cn(
-            "mb-4 text-[13px] leading-relaxed text-[#5E6470]",
+            "mb-4 text-[13px] leading-relaxed text-[var(--color-text-body)]",
             isUnread ? "ml-4" : "",
           )}
         >
@@ -130,17 +128,20 @@ function NotificationCard({
       )}
 
       {notification.actionLabel && notification.actionHref && (
-        <Link
-          href={notification.actionHref}
-          onClick={handleActionClick}
+        <Button
+          type="button"
+          variant="outline"
+          size="sm"
+          disabled={isMarkingRead}
+          onClick={() => onOpenAction(notification)}
           className={cn(
-            "inline-flex items-center rounded-lg border border-[#02505E]",
-            "px-4 py-1.5 text-[13px] font-medium text-[#02505E]",
-            "transition-colors hover:bg-[#02505E]/5",
+            "rounded-lg border-[var(--color-brand-primary)]",
+            "text-[13px] font-medium text-[var(--color-brand-primary)]",
+            "hover:bg-[var(--color-bg-secondary)]",
           )}
         >
           {notification.actionLabel}
-        </Link>
+        </Button>
       )}
     </div>
   );
@@ -149,14 +150,14 @@ function NotificationCard({
 function EmptyState() {
   return (
     <div className="flex flex-col items-center justify-center gap-4 py-24">
-      <div className="text-[#9CA3AF]">
+      <div className="text-[var(--color-card-text)]">
         <LuBell className="text-[52px] stroke-[1]" />
       </div>
       <div className="text-center">
-        <p className="mb-1 text-[16px] font-semibold text-[#374151]">
+        <p className="mb-1 text-[16px] font-semibold text-[var(--color-text-subtext)]">
           No notification yet
         </p>
-        <p className="max-w-[220px] text-[13px] leading-relaxed text-[#9CA3AF]">
+        <p className="max-w-[220px] text-[13px] leading-relaxed text-[var(--color-card-text)]">
           Your meeting updates and activity notifications will show up here
         </p>
       </div>
@@ -170,7 +171,7 @@ function LoadingState() {
       {Array.from({ length: 4 }).map((_, index) => (
         <div
           key={index}
-          className="h-32 animate-pulse rounded-2xl bg-[#F3F4F6]"
+          className="h-32 animate-pulse rounded-2xl bg-[var(--color-bg-secondary)]"
         />
       ))}
     </div>
@@ -192,6 +193,7 @@ export default function NotificationsPage() {
 
   const notifications = data?.notifications ?? [];
   const unreadCount = data?.unread_count ?? 0;
+  const totalCount = notifications.length;
   const isMutating = markAllMutation.isPending || clearMutation.isPending;
   const hasVisibleNotifications = notifications.length > 0;
   const disableClearAll =
@@ -207,34 +209,38 @@ export default function NotificationsPage() {
     router.push("/");
   };
 
-  const handleMarkAllAsRead = () => {
-    markAllMutation.mutate();
-  };
+  const handleOpenAction = (notification: AppNotification) => {
+    const navigate = () => {
+      if (notification.actionHref) router.push(notification.actionHref);
+    };
 
-  const handleClearAll = () => {
-    clearMutation.mutate();
+    if (notification.status === "unread") {
+      markReadMutation.mutate(notification.id, { onSettled: navigate });
+      return;
+    }
+
+    navigate();
   };
 
   return (
     <div className="mx-auto max-w-[860px] px-4 py-8 sm:px-6">
       <div className="mb-6 flex items-start justify-between gap-4">
         <div className="flex items-center gap-3">
-          <button
+          <Button
             type="button"
+            variant="ghost"
+            size="icon-sm"
             onClick={handleBack}
-            className={cn(
-              "cursor-pointer rounded-lg p-1.5 text-[#374151]",
-              "transition-colors hover:bg-gray-100",
-            )}
+            className="rounded-lg text-[var(--color-text-subtext)]"
             aria-label="Go back"
           >
             <LuArrowLeft className="text-[20px]" />
-          </button>
+          </Button>
           <div>
-            <h1 className="text-[26px] font-bold leading-tight text-[#0F172A]">
+            <h1 className="text-[26px] font-bold leading-tight text-[var(--color-text-color-primary)]">
               Notifications
             </h1>
-            <p className="mt-0.5 text-[13px] text-[#5E6470]">
+            <p className="mt-0.5 text-[13px] text-[var(--color-text-body)]">
               {unreadCount > 0
                 ? `You have ${unreadCount} unread notification${
                     unreadCount > 1 ? "s" : ""
@@ -245,74 +251,69 @@ export default function NotificationsPage() {
         </div>
 
         <div className="mt-1 flex shrink-0 items-center gap-3">
-          <button
+          <Button
             type="button"
-            onClick={handleMarkAllAsRead}
+            onClick={() => markAllMutation.mutate()}
             disabled={unreadCount === 0 || markAllMutation.isPending}
-            className={cn(
-              "cursor-pointer rounded-xl bg-[#02505E] px-4 py-2",
-              "text-[13px] font-semibold text-white transition-colors",
-              "hover:bg-[#02505E]/90 disabled:cursor-not-allowed",
-              "disabled:opacity-40",
-            )}
+            className="rounded-xl bg-[var(--color-brand-primary)] text-[var(--color-text-white-primary)]"
           >
             {markAllMutation.isPending ? "Marking..." : "Mark all as Read"}
-          </button>
-          <button
+          </Button>
+          <Button
             type="button"
-            onClick={handleClearAll}
+            variant="outline"
+            onClick={() => clearMutation.mutate()}
             disabled={disableClearAll}
             className={cn(
-              "cursor-pointer rounded-xl border border-[#E5E7EB]",
-              "px-4 py-2 text-[13px] font-semibold text-[#374151]",
-              "transition-colors hover:bg-gray-50",
-              "disabled:cursor-not-allowed disabled:opacity-40",
+              "rounded-xl border-[var(--color-card-border)]",
+              "text-[var(--color-text-subtext)]",
+              "hover:bg-[var(--color-bg-secondary)]",
             )}
           >
             {clearMutation.isPending ? "Clearing..." : "Clear All"}
-          </button>
+          </Button>
         </div>
       </div>
 
       <div
         role="tablist"
         aria-label="Notification filters"
-        className="mb-6 flex items-center border-b border-[#E5E7EB]"
+        className="mb-6 flex items-center border-b border-[var(--color-card-border)]"
       >
-        <button
+        <Button
           id="tab-all"
           role="tab"
           aria-selected={activeTab === "all"}
           aria-controls="tabpanel-notifications"
           type="button"
+          variant="ghost"
           onClick={() => setActiveTab("all")}
           className={cn(
-            "mr-8 cursor-pointer px-1 pb-3 text-[14px] font-medium",
-            "transition-colors",
+            "mr-8 rounded-none px-1 pb-3 text-[14px] font-medium",
             activeTab === "all"
-              ? "text-[#0F172A] border-b-2 border-[#0F172A] -mb-px"
-              : "text-[#9CA3AF] hover:text-[#374151]",
+              ? "text-[var(--color-text-color-primary)] border-b-2 border-[var(--color-text-color-primary)] -mb-px"
+              : "text-[var(--color-card-text)] hover:text-[var(--color-text-subtext)]",
           )}
         >
-          All{activeTab === "all" ? ` (${notifications.length})` : ""}
-        </button>
-        <button
+          All&nbsp;({totalCount})
+        </Button>
+        <Button
           id="tab-unread"
           role="tab"
           aria-selected={activeTab === "unread"}
           aria-controls="tabpanel-notifications"
           type="button"
+          variant="ghost"
           onClick={() => setActiveTab("unread")}
           className={cn(
-            "cursor-pointer px-1 pb-3 text-[14px] font-medium",
-            "transition-colors",
+            "rounded-none px-1 pb-3 text-[14px] font-medium",
             activeTab === "unread"
-              ? "text-[#0F172A] border-b-2 border-[#0F172A] -mb-px"
-              : "text-[#9CA3AF] hover:text-[#374151]",
+              ? "text-[var(--color-text-color-primary)] border-b-2 border-[var(--color-text-color-primary)] -mb-px"
+              : "text-[var(--color-card-text)] hover:text-[var(--color-text-subtext)]",
           )}
         >
           Unread&nbsp;({unreadCount})
-        </button>
+        </Button>
       </div>
 
       <div
@@ -325,23 +326,20 @@ export default function NotificationsPage() {
           <LoadingState />
         ) : isError ? (
           <div className="flex flex-col items-center justify-center gap-3 py-24">
-            <p className="text-[15px] font-semibold text-[#374151]">
+            <p className="text-[15px] font-semibold text-[var(--color-text-subtext)]">
               Notifications failed to load
             </p>
-            <p className="max-w-sm text-center text-[13px] text-[#9CA3AF]">
+            <p className="max-w-sm text-center text-[13px] text-[var(--color-card-text)]">
               {getErrorMessage(error)}
             </p>
-            <button
+            <Button
               type="button"
+              variant="outline"
               onClick={() => refetch()}
-              className={cn(
-                "rounded-lg border border-[#02505E] px-4 py-1.5",
-                "text-[13px] font-medium text-[#02505E]",
-                "transition-colors hover:bg-[#02505E]/5",
-              )}
+              className="rounded-lg border-[var(--color-brand-primary)] text-[var(--color-brand-primary)]"
             >
               Try again
-            </button>
+            </Button>
           </div>
         ) : !hasVisibleNotifications ? (
           <EmptyState />
@@ -351,7 +349,7 @@ export default function NotificationsPage() {
               <NotificationCard
                 key={notification.id}
                 notification={notification}
-                onMarkRead={markReadMutation.mutate}
+                onOpenAction={handleOpenAction}
                 isMarkingRead={markReadMutation.isPending}
               />
             ))}

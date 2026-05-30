@@ -5,7 +5,6 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import Dashnavlist from "./dashnavlist";
 import SignOutModal from "./SignOutModal";
-import { useAuthStore } from "@/store/authStore";
 import { useUnreadNotificationsCount } from "@/hooks/useNotifications";
 import { MdKeyboardArrowDown } from "react-icons/md";
 import {
@@ -21,7 +20,6 @@ const Dashboardnavbar = () => {
   const [isSignOutModalOpen, setIsSignOutModalOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const router = useRouter();
-  const logout = useAuthStore((state) => state.logout);
   const { data: unreadNotificationCount = 0 } = useUnreadNotificationsCount();
 
   // Close dropdown when clicking outside
@@ -67,7 +65,6 @@ const Dashboardnavbar = () => {
           <div className="flex flex-row items-center justify-end gap-6 w-[40%]">
             <button
               type="button"
-              aria-label="Search"
               className="p-1 hover:bg-gray-50 rounded-full transition-colors cursor-pointer"
             >
               <Image
@@ -91,7 +88,13 @@ const Dashboardnavbar = () => {
                 height={20}
               />
               {unreadNotificationCount > 0 && (
-                <span className="absolute -top-0.5 -right-0.5 w-4 h-4 rounded-full bg-[#EF4444] text-white text-[9px] font-bold flex items-center justify-center leading-none">
+                <span
+                  className={
+                    "absolute -top-0.5 -right-0.5 w-4 h-4 rounded-full " +
+                    "bg-[var(--color-error)] text-[var(--color-text-white-primary)] " +
+                    "text-[9px] font-bold flex items-center justify-center"
+                  }
+                >
                   {unreadNotificationCount > 9 ? "9+" : unreadNotificationCount}
                 </span>
               )}
@@ -192,7 +195,6 @@ const Dashboardnavbar = () => {
           if (signOutAllDevices) {
             // Future logic for clearing all sessions
           }
-          logout();
           setIsSignOutModalOpen(false);
           router.push("/sign-in");
         }}

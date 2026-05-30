@@ -7,6 +7,7 @@ import {
   markNotificationRead,
 } from "@/lib/services/notifications.service";
 import type { NotificationFilter } from "@/types/notification";
+import type { QueryClient } from "@tanstack/react-query";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 type NotificationsQueryParams = {
@@ -75,8 +76,6 @@ export function useClearNotifications() {
   });
 }
 
-function invalidateNotifications(
-  queryClient: ReturnType<typeof useQueryClient>,
-) {
+function invalidateNotifications(queryClient: QueryClient) {
   return queryClient.invalidateQueries({ queryKey: notificationsKeys.all });
 }
