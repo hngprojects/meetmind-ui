@@ -136,9 +136,27 @@ function mapNotificationCategory(type: string): NotificationCategory {
   }
 }
 
+/**
+ * Maps incoming backend route prefixes to their expected Next.js App Router casing.
+ * Required to avoid 404s due to case-mismatch, as the backend may return lowercase URLs
+ * for routes that actually have capitalized folder names (e.g., /Interviews).
+ */
+const ROUTE_CASE_MAP: Record<string, string> = {
+  "/interviews": "/Interviews",
+};
+
 function normalizeActionHref(actionUrl?: string | null): string | undefined {
   if (!actionUrl) return undefined;
-  if (actionUrl.startsWith("/interviews")) return "/Interviews";
+
+  for (const [lowercasePrefix, correctPrefix] of Object.entries(
+    ROUTE_CASE_MAP,
+  )) {
+    if (actionUrl.startsWith(lowercasePrefix)) {
+      // Replace the matched prefix while preserving any remaining path/query
+      return correctPrefix + actionUrl.slice(lowercasePrefix.length);
+    }
+  }
+
   return actionUrl;
 }
 

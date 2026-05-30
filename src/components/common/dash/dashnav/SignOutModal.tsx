@@ -8,19 +8,24 @@ interface SignOutModalProps {
   isOpen: boolean;
   onClose: () => void;
   onSignOut: (signOutAllDevices: boolean) => void;
+  isSigningOut?: boolean;
 }
 
 const SignOutModal: React.FC<SignOutModalProps> = ({
   isOpen,
   onClose,
   onSignOut,
+  isSigningOut = false,
 }) => {
   const [signOutAllDevices, setSignOutAllDevices] = React.useState(false);
 
   if (!isOpen) return null;
 
   return (
-    <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
+    <Dialog
+      open={isOpen}
+      onOpenChange={(open) => !open && !isSigningOut && onClose()}
+    >
       <DialogContent className="bg-white rounded-[24px] max-w-[400px] w-full p-8 text-center shadow-xl gap-0 outline-none [&&_button[absolute]]:hidden">
         <div className="mx-auto w-12 h-12 flex items-center justify-center mb-4">
           <LuLogOut className="text-[#EF4444] text-[32px] stroke-[1.5]" />
@@ -45,7 +50,8 @@ const SignOutModal: React.FC<SignOutModalProps> = ({
             id="sign-out-all"
             checked={signOutAllDevices}
             onChange={(e) => setSignOutAllDevices(e.target.checked)}
-            className="w-4 h-4 rounded border-gray-300 text-[#02505E] focus:ring-[#02505E] cursor-pointer"
+            disabled={isSigningOut}
+            className="w-4 h-4 rounded border-gray-300 text-[#02505E] focus:ring-[#02505E] cursor-pointer disabled:opacity-50"
           />
           <label
             htmlFor="sign-out-all"
@@ -59,7 +65,8 @@ const SignOutModal: React.FC<SignOutModalProps> = ({
           <button
             type="button"
             onClick={onClose}
-            className="flex-1 py-3 rounded-xl border border-[#02505E] text-[#02505E] font-semibold text-[14px] hover:bg-gray-50 transition-colors cursor-pointer"
+            disabled={isSigningOut}
+            className="flex-1 py-3 rounded-xl border border-[#02505E] text-[#02505E] font-semibold text-[14px] hover:bg-gray-50 transition-colors cursor-pointer disabled:opacity-50 disabled:cursor-not
           >
             Cancel
           </button>
@@ -67,9 +74,10 @@ const SignOutModal: React.FC<SignOutModalProps> = ({
           <button
             type="button"
             onClick={() => onSignOut(signOutAllDevices)}
-            className="flex-1 py-3 rounded-xl border border-[#EF4444] text-[#EF4444] font-semibold text-[14px] hover:bg-red-50 transition-colors cursor-pointer"
+            disabled={isSigningOut}
+            className="flex-1 py-3 rounded-xl border border-[#EF4444] text-[#EF4444] font-semibold text-[14px] hover:bg-red-50 transition-colors cursor-pointer disabled:opacity-50 disabled:cursor-not-
           >
-            Sign out
+            {isSigningOut ? "Signing out..." : "Sign out"}
           </button>
         </div>
       </DialogContent>

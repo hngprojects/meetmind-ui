@@ -6,6 +6,8 @@ import { useRouter } from "next/navigation";
 import Dashnavlist from "./dashnavlist";
 import SignOutModal from "./SignOutModal";
 import { useUnreadNotificationsCount } from "@/hooks/useNotifications";
+import { useAuthStore } from "@/store/authStore";
+import { revokeAllSessions } from "@/lib/auth";
 import { MdKeyboardArrowDown } from "react-icons/md";
 import {
   LuUser,
@@ -18,9 +20,11 @@ import {
 const Dashboardnavbar = () => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [isSignOutModalOpen, setIsSignOutModalOpen] = useState(false);
+  const [isSigningOut, setIsSigningOut] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const router = useRouter();
   const { data: unreadNotificationCount = 0 } = useUnreadNotificationsCount();
+  const logout = useAuthStore((state) => state.logout);
 
   // Close dropdown when clicking outside
   useEffect(() => {
@@ -189,12 +193,20 @@ const Dashboardnavbar = () => {
 
       <SignOutModal
         isOpen={isSignOutModalOpen}
+        isSigningOut={isSigningOut}
         onClose={() => setIsSignOutModalOpen(false)}
-        onSignOut={(signOutAllDevices) => {
-          // If true, implement logic to clear all sessions here
+        onSignOut={async (signOutAllDevices) => {
           if (signOutAllDevices) {
-            // Future logic for clearing all sessions
+            setIsSigningOut(true);
+            try {
+              await revokeAllSessions();
+            } catch (error) {
+              console.error("Failed to revoke all sessions:", error);
+            } finally {
+              setIsSigningOut(false);
+            }
           }
+          logout();
           setIsSignOutModalOpen(false);
           router.push("/sign-in");
         }}

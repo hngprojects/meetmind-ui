@@ -10,3 +10,8 @@ export const loginUser = async (payload: LoginPayload) => {
 
   return response.data;
 };
+
+export const revokeAllSessions = async () => {
+  const response = await api.post("/api/v1/auth/signout/all");
+  return response.data;
+};

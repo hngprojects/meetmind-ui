@@ -187,13 +187,18 @@ export default function NotificationsPage() {
       pageSize: PAGE_SIZE,
       filter: activeTab,
     });
+  const { data: allData } = useNotifications({
+    page: 1,
+    pageSize: PAGE_SIZE,
+    filter: "all",
+  });
   const markReadMutation = useMarkNotificationRead();
   const markAllMutation = useMarkAllNotificationsRead();
   const clearMutation = useClearNotifications();
 
   const notifications = data?.notifications ?? [];
   const unreadCount = data?.unread_count ?? 0;
-  const totalCount = notifications.length;
+  const totalCount = allData?.notifications.length ?? notifications.length;
   const isMutating = markAllMutation.isPending || clearMutation.isPending;
   const hasVisibleNotifications = notifications.length > 0;
   const disableClearAll =
@@ -215,7 +220,7 @@ export default function NotificationsPage() {
     };
 
     if (notification.status === "unread") {
-      markReadMutation.mutate(notification.id, { onSettled: navigate });
+      markReadMutation.mutate(notification.id, { onSuccess: navigate });
       return;
     }
 
