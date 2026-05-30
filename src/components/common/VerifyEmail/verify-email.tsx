@@ -33,19 +33,38 @@ function VerifyEmailContent() {
     const run = async () => {
       if (isMounted) setIsVerifying(true);
       if (isMounted) setError(null);
+
       try {
-        await api.get(
-          `/api/v1/auth/verify-email?token=${encodeURIComponent(token)}`,
-        );
+        //POST with token in body
+        await api.post(`/api/v1/auth/verify-email`, { token });
 
         if (isMounted) {
           setIsVerified(true);
-          if (redirectTimer) clearTimeout(redirectTimer);
-          redirectTimer = setTimeout(() => router.push("/Dashboard"), 2000);
+          redirectTimer = setTimeout(() => router.push("/sign-in"), 2000);
         }
-      } catch {
-        if (isMounted)
-          setError("Verification failed. The link may be invalid or expired.");
+      } catch (err) {
+        if (isMounted) {
+          if (axios.isAxiosError(err)) {
+            const code = err.response?.data?.error?.code;
+            const message = err.response?.data?.message;
+
+            // Handle specific error codes
+            if (code === "token_already_used") {
+              setError(
+                "This verification link has already been used. Please sign in.",
+              );
+            } else {
+              setError(
+                message ??
+                  "Verification failed. The link may be invalid or expired.",
+              );
+            }
+          } else {
+            setError(
+              "Verification failed. The link may be invalid or expired.",
+            );
+          }
+        }
       } finally {
         if (isMounted) setIsVerifying(false);
       }
