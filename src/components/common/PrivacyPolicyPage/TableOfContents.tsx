@@ -18,20 +18,20 @@ const items: ToCItem[] = [
 
 export default function TableOfContents() {
   const [activeId, setActiveId] = useState<string>(items[0].id);
-  
+
   const isClickScrolling = useRef<boolean>(false);
-  
+
   const clickTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const handleClick = (e: MouseEvent<HTMLAnchorElement>, id: string) => {
     e.preventDefault();
     const element = document.getElementById(id);
-    
+
     if (element) {
       isClickScrolling.current = true;
       setActiveId(id);
       window.history.pushState(null, "", `#${id}`);
-      
+
       element.scrollIntoView({ behavior: "smooth" });
 
       if (clickTimeoutRef.current) clearTimeout(clickTimeoutRef.current);
@@ -45,7 +45,7 @@ export default function TableOfContents() {
   useEffect(() => {
     const observerOptions = {
       root: null,
-      rootMargin: "-15% 0px -60% 0px", 
+      rootMargin: "-15% 0px -60% 0px",
       threshold: 0,
     };
 
@@ -59,7 +59,10 @@ export default function TableOfContents() {
       });
     };
 
-    const observer = new IntersectionObserver(observerCallback, observerOptions);
+    const observer = new IntersectionObserver(
+      observerCallback,
+      observerOptions,
+    );
 
     items.forEach((item) => {
       const element = document.getElementById(item.id);
@@ -77,7 +80,7 @@ export default function TableOfContents() {
     if (hash) {
       const id = hash.replace("#", "");
       const element = document.getElementById(id);
-      if (element) { 
+      if (element) {
         const timer = setTimeout(() => {
           element.scrollIntoView({ behavior: "smooth" });
           setActiveId(id);

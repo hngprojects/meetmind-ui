@@ -13,6 +13,7 @@ import GoogleAuthButton from "./GoogleAuthButton";
 import AuthFooter from "@/components/common/SignIn/AuthFooter";
 import { useRouter } from "next/navigation";
 import { useAuthStore } from "@/store/authStore";
+import api from "@/lib/api";
 
 const SignInForm = () => {
   const [serverError, setServerError] = useState("");
@@ -59,10 +60,23 @@ const SignInForm = () => {
       };
 
       localStorage.setItem("user", JSON.stringify(authUser));
+      const { access_token, refresh_token, access_token_expires_at } =
+        response.data;
+      if (!access_token || !refresh_token || !access_token_expires_at) {
+        setServerError("Invalid authentication response. Please try again.");
+        return;
+      }
+      setAuth(authUser, access_token, refresh_token, access_token_expires_at);
 
-      setAuth(authUser, response.data.access_token);
+      const meRes = await api.get("/api/v1/users/me");
 
-      router.push("/onboarding");
+      const user = meRes.data.data;
+
+      if (!user.onboarding_completed) {
+        router.push("/onboarding");
+      } else {
+        router.push("/dashboard");
+      }
     } catch (error) {
       if (axios.isAxiosError(error)) {
         const detail = error.response?.data?.detail;

@@ -5,10 +5,9 @@ const footerColumns = [
   {
     title: "Product",
     links: [
-      { label: "Features", href: "/coming-soon" },
       { label: "Use Cases", href: "/coming-soon" },
       { label: "Pricing", href: "/pricing" },
-      { label: "ChangeLog", href: "/coming-soon" },
+      { label: "ChangeLog", href: "/change-logs" },
     ],
   },
   {
@@ -17,7 +16,7 @@ const footerColumns = [
       { label: "SDK", href: "/sdk" },
       { label: "Documentation", href: "/coming-soon" },
       { label: "API Reference", href: "/coming-soon" },
-      { label: "GitHub", href: "/coming-soon" },
+      { label: "GitHub", href: "https://github.com/meetmind" },
     ],
   },
   {
@@ -25,8 +24,6 @@ const footerColumns = [
     links: [
       { label: "Blog", href: "/blogpost" },
       { label: "Help Center", href: "/help" },
-      { label: "Case Studies", href: "/coming-soon" },
-      { label: "Tutorials", href: "/coming-soon" },
     ],
   },
   {
@@ -44,18 +41,17 @@ const socialLinks = [
   {
     name: "LinkedIn",
     icon: "/icons/linkedin-outline.svg",
-    href: "/coming-soon",
+    href: "https://www.linkedin.com/company/122284193/admin/dashboard/",
   },
   {
-    name: "Facebook",
-    icon: "/icons/facebook-outline.svg",
-    href: "/coming-soon",
+    name: "x",
+    icon: "/icons/x-twitter.svg",
+    href: "https://x.com/ThinkTalk_mm",
   },
-  { name: "GitHub", icon: "/icons/github-outline.svg", href: "/coming-soon" },
   {
     name: "Instagram",
     icon: "/icons/instagram-outline.svg",
-    href: "/coming-soon",
+    href: "https://www.instagram.com/thinktalk_mm",
   },
 ];
 
@@ -116,10 +112,10 @@ export default function Footer() {
           </div>
 
           {/* Link columns */}
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-8 md:gap-20 lg:gap-20">
+          <div className="w-full grid grid-cols-2 md:grid-cols-4 gap-8 md:gap-20 lg:gap-20">
             {footerColumns.map((column) => (
               <div key={column.title}>
-                <h4 className="text-[#0F172A] text-sm font-semibold mb-4">
+                <h4 className="text-[#0F172A] text-base font-semibold mb-4">
                   {column.title}
                 </h4>
                 <ul className="space-y-3">
