@@ -68,15 +68,17 @@ export default function ReviewLaunch() {
       const payload = buildPayload(candidateId);
       const res = await api.post("/api/v1/interviews", payload);
 
-      const sessionId = res.data?.data?.id ?? res.data?.id;
+      const sessionId =
+        res.data?.id ?? res.data?.data?.id ?? res.data?.data?.data?.id;
 
       if (!sessionId) {
-        throw new Error("Session ID not returned from server");
+        console.error("Unexpected interview creation response:", res.data);
+        throw new Error("Interview created but no session ID was returned.");
       }
 
       resetAll();
 
-      router.push(`/call/sessions/${sessionId}`);
+      router.push(`/call/sessions/${encodeURIComponent(sessionId)}`);
     } catch (error) {
       setServerError(getErrorMessage(error));
     } finally {
