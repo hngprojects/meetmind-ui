@@ -196,7 +196,6 @@ export function AgentSessionView_01({
   };
 
   const [permissionDenied, setPermissionDenied] = useState(false);
-  const [permissionCheckComplete, setPermissionCheckComplete] = useState(false);
 
   // Enhanced permission state checking on mount
   useEffect(() => {
@@ -239,21 +238,21 @@ export function AgentSessionView_01({
         }
       } catch (err) {
         console.error("Unexpected error during permission check:", err);
-      } finally {
-        setPermissionCheckComplete(true);
       }
     }
 
     checkPermissions();
   }, []);
 
-  const handleDeviceError = (deviceError: { source: Track.Source; error: Error }) => {
-    const errorName = (deviceError.error as any).name || "UnknownError";
-    
+  const handleDeviceError = (deviceError: { source: Track.Source; error: unknown }) => {
+    const domErr = deviceError.error as { name?: string; message?: string } | undefined;
+    const errorName = domErr?.name ?? "UnknownError";
+    const errorMessage = domErr?.message ?? String(deviceError.error);
+
     console.error("Device error occurred:", {
       source: deviceError.source,
       errorName,
-      errorMessage: deviceError.error.message,
+      errorMessage,
     });
 
     if (errorName === "NotAllowedError") {
@@ -270,7 +269,7 @@ export function AgentSessionView_01({
     } else {
       // Other device errors
       console.warn("Unexpected device error:", deviceError.error);
-      toast.error(`Device error: ${deviceError.error.message}`);
+      toast.error(`Device error: ${errorMessage}`);
     }
   };
 
@@ -287,18 +286,17 @@ export function AgentSessionView_01({
       console.log("Permission request succeeded");
       toast.success("Permissions granted! You can now unmute your microphone.");
     } catch (err) {
-      const error = err as Error;
-      console.error("Permission retry failed:", {
-        errorName: (err as any).name,
-        errorMessage: error.message,
-      });
-      
-      if ((err as any).name === "NotAllowedError") {
+      const domErr = err as { name?: string; message?: string } | undefined;
+      const errorName = domErr?.name ?? "UnknownError";
+      const errorMessage = domErr?.message ?? String(err);
+      console.error("Permission retry failed:", { errorName, errorMessage });
+
+      if (errorName === "NotAllowedError") {
         toast.error(
           "Permission still denied. Click the lock 🔒 icon in your browser address bar → set Microphone & Camera to 'Allow' → then reload the page.",
         );
       } else {
-        toast.error(`Permission request failed: ${error.message}`);
+        toast.error(`Permission request failed: ${errorMessage}`);
       }
     }
   };
