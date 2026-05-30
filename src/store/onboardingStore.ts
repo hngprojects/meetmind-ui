@@ -19,7 +19,7 @@ export interface OnboardingData {
     autoRecord: boolean;
     announce: boolean;
   };
-  integrations: "google" | "zoom" | null;
+  integrations: "google" | "zoom" | "livekit" | null;
 }
 
 interface OnboardingState {
@@ -50,7 +50,7 @@ const initialData: OnboardingData = {
     autoRecord: true,
     announce: false,
   },
-  integrations: null,
+  integrations: "livekit",
 };
 
 export const onboardingStore = create<OnboardingState>()(

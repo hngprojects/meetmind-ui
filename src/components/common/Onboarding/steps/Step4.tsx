@@ -63,11 +63,8 @@ const Step4 = () => {
               />
             }
             isConnected={data.integrations === "google"}
-            onConnect={() =>
-              updateData({
-                integrations: "google",
-              })
-            }
+            disabled={true}
+            onConnect={() => updateData({ integrations: "google" })}
           />
           <IntegrationCard
             name="Zoom"
@@ -80,11 +77,22 @@ const Step4 = () => {
               />
             }
             isConnected={data.integrations === "zoom"}
-            onConnect={() =>
-              updateData({
-                integrations: "zoom",
-              })
+            disabled={true}
+            onConnect={() => updateData({ integrations: "zoom" })}
+          />
+          <IntegrationCard
+            name="Livekit"
+            logo={
+              <Image
+                src="/onboarding/Zoom.svg"
+                width={24}
+                height={24}
+                alt="Livekit"
+              />
             }
+            isConnected={data.integrations === "livekit"}
+            disabled={true}
+            onConnect={() => updateData({ integrations: "livekit" })}
           />
         </div>
         <div className="flex flex-col gap-2 items-center">

@@ -9,9 +9,11 @@ import { formatRelativeDate, formatDate } from "../helpers/date";
 import SortableHeader from "./SortableHeader";
 import { Button } from "@/components/ui/button";
 
-export const getInitials = (name: string) => {
-  return name
-    .trim()
+export const getInitials = (name?: string | null) => {
+  const n = typeof name === "string" ? name.trim() : "";
+  if (!n) return "";
+
+  return n
     .split(" ")
     .filter(Boolean)
     .map((part) => part[0])
