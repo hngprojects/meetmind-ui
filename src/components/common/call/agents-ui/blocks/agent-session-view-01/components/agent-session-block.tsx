@@ -7,6 +7,8 @@ import {
   useSessionContext,
   useSessionMessages,
 } from "@livekit/components-react";
+import { Track } from "livekit-client";
+import { toast } from "sonner";
 import { AgentChatTranscript } from "@/components/common/call/agents-ui/agent-chat-transcript";
 import {
   AgentControlBar,
@@ -193,6 +195,114 @@ export function AgentSessionView_01({
     screenShare: supportsScreenShare,
   };
 
+  const [permissionDenied, setPermissionDenied] = useState(false);
+  const [permissionCheckComplete, setPermissionCheckComplete] = useState(false);
+
+  // Enhanced permission state checking on mount
+  useEffect(() => {
+    async function checkPermissions() {
+      if (typeof window === "undefined") return;
+
+      try {
+        // Check microphone permission status
+        if (navigator.permissions?.query) {
+          try {
+            const micStatus = await navigator.permissions.query({
+              name: "microphone" as PermissionName,
+            });
+            
+            if (micStatus.state === "denied") {
+              console.warn("Microphone permission is explicitly denied");
+              setPermissionDenied(true);
+            } else if (micStatus.state === "prompt") {
+              console.log("Microphone permission is in prompt state - will request on first use");
+              setPermissionDenied(false);
+            } else if (micStatus.state === "granted") {
+              console.log("Microphone permission is granted");
+              setPermissionDenied(false);
+            }
+
+            // Listen for permission state changes
+            const handlePermissionChange = () => {
+              setPermissionDenied(micStatus.state === "denied");
+              console.log("Microphone permission changed to:", micStatus.state);
+            };
+            
+            micStatus.addEventListener("change", handlePermissionChange);
+            return () => micStatus.removeEventListener("change", handlePermissionChange);
+          } catch (permErr) {
+            // Permissions API might not support 'microphone' in some browsers
+            console.debug("Permissions API query failed (this is normal in some browsers):", (permErr as Error).message);
+          }
+        } else {
+          console.debug("Permissions API not available - relying on device error handling");
+        }
+      } catch (err) {
+        console.error("Unexpected error during permission check:", err);
+      } finally {
+        setPermissionCheckComplete(true);
+      }
+    }
+
+    checkPermissions();
+  }, []);
+
+  const handleDeviceError = (deviceError: { source: Track.Source; error: Error }) => {
+    const errorName = (deviceError.error as any).name || "UnknownError";
+    
+    console.error("Device error occurred:", {
+      source: deviceError.source,
+      errorName,
+      errorMessage: deviceError.error.message,
+    });
+
+    if (errorName === "NotAllowedError") {
+      // Permission explicitly denied by user
+      console.warn("User denied microphone/camera permissions");
+      setPermissionDenied(true);
+      toast.error(
+        "Microphone/Camera access denied. Please grant permissions in your browser settings.",
+      );
+    } else if (errorName === "NotFoundError") {
+      // Device not found
+      console.warn("Media device not found");
+      toast.error("No microphone or camera found on your device.");
+    } else {
+      // Other device errors
+      console.warn("Unexpected device error:", deviceError.error);
+      toast.error(`Device error: ${deviceError.error.message}`);
+    }
+  };
+
+  const handleRetryPermissions = async () => {
+    try {
+      console.log("Attempting to request permissions...");
+      const stream = await navigator.mediaDevices.getUserMedia({
+        audio: true,
+        video: supportsVideoInput,
+      });
+      // Permission granted — stop tracks and clear the banner
+      stream.getTracks().forEach((t) => t.stop());
+      setPermissionDenied(false);
+      console.log("Permission request succeeded");
+      toast.success("Permissions granted! You can now unmute your microphone.");
+    } catch (err) {
+      const error = err as Error;
+      console.error("Permission retry failed:", {
+        errorName: (err as any).name,
+        errorMessage: error.message,
+      });
+      
+      if ((err as any).name === "NotAllowedError") {
+        toast.error(
+          "Permission still denied. Click the lock 🔒 icon in your browser address bar → set Microphone & Camera to 'Allow' → then reload the page.",
+        );
+      } else {
+        toast.error(`Permission request failed: ${error.message}`);
+      }
+    }
+  };
+
   useEffect(() => {
     const lastMessage = messages.at(-1);
     const lastMessageIsLocal = lastMessage?.from?.isLocal === true;
@@ -212,6 +322,37 @@ export function AgentSessionView_01({
       {...props}
     >
       <Fade top className="absolute inset-x-4 top-0 z-10 h-40" />
+
+      {/* Permission denied banner */}
+      {permissionDenied && (
+        <div className="absolute inset-x-0 top-0 z-50 flex items-center justify-center gap-3 bg-destructive/90 px-4 py-3 text-sm text-white backdrop-blur-sm">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 20 20"
+            fill="currentColor"
+            className="size-5 shrink-0"
+          >
+            <path
+              fillRule="evenodd"
+              d="M8.485 2.495c.673-1.167 2.357-1.167 3.03 0l6.28 10.875c.673 1.167-.17 2.625-1.516 2.625H3.72c-1.347 0-2.189-1.458-1.515-2.625L8.485 2.495zM10 5a.75.75 0 01.75.75v3.5a.75.75 0 01-1.5 0v-3.5A.75.75 0 0110 5zm0 9a1 1 0 100-2 1 1 0 000 2z"
+              clipRule="evenodd"
+            />
+          </svg>
+          <span>
+            <strong>Microphone/Camera blocked.</strong>{" "}
+            Click the lock or tune icon (🔒/⚙️) in your browser address bar → set Microphone &amp; Camera to{" "}
+            <strong>&quot;Allow&quot;</strong> → then reload the page.
+          </span>
+          <button
+            type="button"
+            onClick={handleRetryPermissions}
+            className="shrink-0 rounded-md bg-white/20 px-3 py-1 text-xs font-semibold text-white hover:bg-white/30 transition-colors"
+          >
+            Retry
+          </button>
+        </div>
+      )}
+
       {/* transcript */}
 
       <div className="absolute top-0 bottom-[135px] flex w-full flex-col md:bottom-[170px]">
@@ -276,6 +417,7 @@ export function AgentSessionView_01({
             isConnected={session.isConnected}
             onDisconnect={session.end}
             onIsChatOpenChange={setChatOpen}
+            onDeviceError={handleDeviceError}
           />
         </div>
       </motion.div>

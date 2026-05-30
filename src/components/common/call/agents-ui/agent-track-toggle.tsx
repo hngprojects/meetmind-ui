@@ -44,7 +44,7 @@ export const agentTrackToggleVariants = cva(["size-9"], {
 });
 
 function getSourceIcon(
-  source: Track.Source,
+  source: Track.Source | "microphone" | "camera" | "screen_share",
   enabled: boolean,
   pending = false,
 ) {
@@ -52,15 +52,20 @@ function getSourceIcon(
     return LoaderIcon;
   }
 
-  switch (source) {
-    case Track.Source.Microphone:
+  const sourceStr = typeof source === "string" ? source : String(source);
+
+  switch (sourceStr) {
+    case "microphone":
+    case Track.Source?.Microphone:
       return enabled ? MicIcon : MicOffIcon;
-    case Track.Source.Camera:
+    case "camera":
+    case Track.Source?.Camera:
       return enabled ? VideoIcon : VideoOffIcon;
-    case Track.Source.ScreenShare:
+    case "screen_share":
+    case Track.Source?.ScreenShare:
       return enabled ? MonitorUpIcon : MonitorOffIcon;
     default:
-      return Fragment;
+      return () => null;
   }
 }
 
@@ -169,8 +174,7 @@ export function AgentTrackToggle({
       )}
       {...props}
     >
-      {/* Call directly as a function reference to bypass the JSX-in-render lint rule */}
-      {IconComponent({ className: cn(pending && "animate-spin") })}
+      <IconComponent className={cn(pending && "animate-spin")} />
       {props.children}
     </Toggle>
   );
