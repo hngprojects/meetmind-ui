@@ -1,8 +1,11 @@
 "use client";
 
 import { cn } from "@/lib/utils";
-import type { SessionPhase } from "@/types/interview";
-import { FiLoader, FiRadio, FiRefreshCw, FiZap } from "react-icons/fi";
+import type {
+  InterviewSession,
+  InterviewSessionStatus,
+} from "@/types/interview";
+import { FiLoader, FiRadio, FiRefreshCw } from "react-icons/fi";
 import { HiSparkles } from "react-icons/hi2";
 import { FaEarListen } from "react-icons/fa6";
 import { TbActivityHeartbeat } from "react-icons/tb";
@@ -10,27 +13,32 @@ import { PiPlugsFill } from "react-icons/pi";
 
 type SessionStateCardProps = {
   roleTitle: string;
-  phase: SessionPhase;
-  elapsed?: string;
-  participants?: number;
+  session: InterviewSession;
   platform?: string;
   progress?: number;
-  onRejoin?: () => void;
+  onRejoin?: () => void | Promise<void>;
   onViewPartial?: () => void;
+  isRejoining?: boolean;
 };
 
 // ==================== 🧩Main Component ====================
 export default function SessionStateCard({
   roleTitle,
-  phase,
-  elapsed = "00:00:00",
-  participants = 2,
-  platform = "Zoom",
+  session,
+  platform,
   progress = 40,
   onRejoin,
   onViewPartial,
+  isRejoining = false,
 }: SessionStateCardProps) {
+  const phase = session.session_status;
   const config = getPhaseConfig(phase);
+  const elapsed = session.elapsed_display || "00:00:00";
+  const participants = session.participants_count;
+  const platformLabel = platform ?? session.platform ?? "";
+  const statusLabel = session.agent_status_display || config.statusLabel;
+  const badgeLabel = getBadgeLabel(session, config);
+  const description = getSessionDescription(session, config);
 
   return (
     <div className="rounded-2xl border border-[var(--color-card-border)] bg-[var(--color-card-bg)] p-6">
@@ -45,7 +53,7 @@ export default function SessionStateCard({
             config.badgeClass,
           )}
         >
-          {config.badge}
+          {badgeLabel}
         </span>
       </div>
 
@@ -58,7 +66,7 @@ export default function SessionStateCard({
           )}
         >
           <span className={cn("h-2 w-2 rounded-full", config.dotClass)} />
-          {config.statusLabel}
+          {statusLabel}
         </div>
         <span className="font-mono text-sm text-[var(--color-text-secondary)]">
           {elapsed || "00:00:00"}
@@ -81,8 +89,14 @@ export default function SessionStateCard({
               {config.title}
             </p>
             <p className="mt-1 text-sm text-[var(--color-text-body)]">
-              {config.description}
+              {description}
             </p>
+
+            {phase === "connection_lost" && session.partial_data_saved && (
+              <p className="mt-3 rounded-lg bg-white/60 px-3 py-2 text-xs font-medium text-[var(--color-error-dark)]">
+                Partial interview data is saved and remains safe.
+              </p>
+            )}
 
             {/* Progress bar — connecting / reconnecting */}
             {config.showProgress && (
@@ -135,21 +149,38 @@ export default function SessionStateCard({
 
       {/* Rejoin actions — connection_lost only */}
       {phase === "connection_lost" && (
-        <div className="mt-4 grid grid-cols-2 gap-3">
+        <div
+          className={cn(
+            "mt-4 grid gap-3",
+            onViewPartial ? "grid-cols-2" : "grid-cols-1",
+          )}
+        >
           <button
             type="button"
             onClick={onRejoin}
-            className="rounded-lg bg-[var(--color-brand-primary)] py-3 text-sm font-medium text-[var(--color-text-white-primary)] transition-opacity hover:opacity-80"
+            disabled={isRejoining}
+            className={cn(
+              "rounded-lg bg-[var(--color-brand-primary)] py-3",
+              "text-sm font-medium text-[var(--color-text-white-primary)]",
+              "transition-opacity hover:opacity-80",
+              "disabled:cursor-not-allowed disabled:opacity-50",
+            )}
           >
-            Rejoin Meeting
+            {isRejoining ? "Rejoining..." : "Rejoin Meeting"}
           </button>
-          <button
-            type="button"
-            onClick={onViewPartial}
-            className="rounded-lg border border-[var(--color-brand-primary)] py-3 text-sm font-medium text-[var(--color-brand-primary)] transition-opacity hover:bg-[var(--color-bg-secondary)]"
-          >
-            View Partial Result
-          </button>
+          {onViewPartial && (
+            <button
+              type="button"
+              onClick={onViewPartial}
+              className={cn(
+                "rounded-lg border border-[var(--color-brand-primary)] py-3",
+                "text-sm font-medium text-[var(--color-brand-primary)]",
+                "transition-opacity hover:bg-[var(--color-bg-secondary)]",
+              )}
+            >
+              View Partial Result
+            </button>
+          )}
         </div>
       )}
 
@@ -158,9 +189,9 @@ export default function SessionStateCard({
         <span className="text-sm text-[var(--color-text-secondary)]">
           {participants} participant{participants !== 1 ? "s" : ""}
         </span>
-        {platform && (
+        {platformLabel && (
           <span className="rounded-md border border-[var(--color-card-border)] bg-[var(--color-card-bg)] px-3 py-1 text-xs font-medium text-[var(--color-text-color-primary)]">
-            {platform}
+            {platformLabel}
           </span>
         )}
       </div>
@@ -187,8 +218,8 @@ type PhaseConfig = {
   showWave?: boolean;
 };
 
-function getPhaseConfig(phase: SessionPhase): PhaseConfig {
-  const map: Record<SessionPhase, PhaseConfig> = {
+function getPhaseConfig(phase: InterviewSessionStatus): PhaseConfig {
+  const map: Record<InterviewSessionStatus, PhaseConfig> = {
     connecting: {
       badge: "Connecting...",
       badgeClass:
@@ -245,6 +276,24 @@ function getPhaseConfig(phase: SessionPhase): PhaseConfig {
       description: "Evaluating context and generating the most relevant reply.",
       showDots: true,
     },
+    processing: {
+      badge: "Processing",
+      badgeClass:
+        "bg-[var(--color-session-purple-bg)] text-[var(--color-session-purple-text-dark)]",
+      statusLabel: "Processing",
+      statusClass: "text-[var(--color-session-purple-text)]",
+      dotClass: "bg-[var(--color-session-purple-text)]",
+      boxClass:
+        "border-[var(--color-session-purple-border)] bg-[var(--color-session-purple-bg)]",
+      iconBg: "bg-[var(--color-session-purple-icon-bg)]",
+      icon: (
+        <FiLoader className="h-4 w-4 animate-spin text-[var(--color-session-purple-text)]" />
+      ),
+      title: "Processing",
+      titleClass: "text-[var(--color-session-purple-text-dark)]",
+      description: "Evaluating context and generating the most relevant reply.",
+      showDots: true,
+    },
     reconnecting: {
       badge: "Reconnecting...",
       badgeClass:
@@ -296,37 +345,30 @@ function getPhaseConfig(phase: SessionPhase): PhaseConfig {
       titleClass: "text-[var(--color-session-purple-text-dark)]",
       description: "Delivering response to the interviewee.",
     },
-    live_transcript: {
-      badge: "Live",
-      badgeClass:
-        "bg-[var(--color-badge-live-bg)] text-[var(--color-badge-live-text)]",
-      statusLabel: "Live",
-      statusClass: "text-[var(--color-session-green-text)]",
-      dotClass: "bg-[var(--color-text-success)]",
-      boxClass: "border-[var(--color-card-border)] bg-[var(--color-card-bg)]",
-      iconBg: "bg-[var(--color-session-purple-bg)]",
-      icon: (
-        <FiLoader className="h-4 w-4 animate-spin text-[var(--color-session-purple-text)]" />
-      ),
-      title: "Live transcript",
-      titleClass: "text-[var(--color-text-color-primary)]",
-      description: "Recording in progress.",
-    },
-    transcript_error: {
-      badge: "Error",
-      badgeClass: "bg-[var(--color-error-bg)] text-[var(--color-error)]",
-      statusLabel: "Error",
-      statusClass: "text-[var(--color-error)]",
-      dotClass: "bg-[var(--color-error)]",
-      boxClass: "border-[var(--color-card-border)] bg-[var(--color-error-bg)]",
-      iconBg: "bg-[var(--color-error-bg)]",
-      icon: <FiZap className="h-4 w-4 text-[var(--color-error)]" />,
-      title: "Transcript interrupted",
-      titleClass: "text-[var(--color-error-dark)]",
-      description:
-        "The live transcript stream was lost. Your recording is still running.",
-    },
   };
 
   return map[phase] ?? map.connecting;
+}
+
+function getBadgeLabel(session: InterviewSession, config: PhaseConfig): string {
+  if (session.session_status === "listening") return session.meeting_status;
+  return config.badge;
+}
+
+function getSessionDescription(
+  session: InterviewSession,
+  config: PhaseConfig,
+): string {
+  if (session.session_status !== "connection_lost") {
+    return config.description;
+  }
+
+  if (session.message) return session.message;
+
+  const droppedText = session.dropped_at_display
+    ? `The agent was dropped from the meeting at ${session.dropped_at_display}.`
+    : "The agent was dropped from the meeting.";
+  const savedText = session.partial_data_saved ? " Session data is saved." : "";
+
+  return `${droppedText}${savedText}`;
 }
