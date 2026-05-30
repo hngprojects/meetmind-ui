@@ -66,7 +66,12 @@ const SignOutModal: React.FC<SignOutModalProps> = ({
             type="button"
             onClick={onClose}
             disabled={isSigningOut}
-            className="flex-1 py-3 rounded-xl border border-[#02505E] text-[#02505E] font-semibold text-[14px] hover:bg-gray-50 transition-colors cursor-pointer disabled:opacity-50 disabled:cursor-not
+            className={
+              "flex-1 py-3 rounded-xl border border-[#02505E] " +
+              "text-[#02505E] font-semibold text-[14px] hover:bg-gray-50 " +
+              "transition-colors cursor-pointer disabled:opacity-50 " +
+              "disabled:cursor-not-allowed"
+            }
           >
             Cancel
           </button>
@@ -75,7 +80,12 @@ const SignOutModal: React.FC<SignOutModalProps> = ({
             type="button"
             onClick={() => onSignOut(signOutAllDevices)}
             disabled={isSigningOut}
-            className="flex-1 py-3 rounded-xl border border-[#EF4444] text-[#EF4444] font-semibold text-[14px] hover:bg-red-50 transition-colors cursor-pointer disabled:opacity-50 disabled:cursor-not-
+            className={
+              "flex-1 py-3 rounded-xl border border-[#EF4444] " +
+              "text-[#EF4444] font-semibold text-[14px] hover:bg-red-50 " +
+              "transition-colors cursor-pointer disabled:opacity-50 " +
+              "disabled:cursor-not-allowed"
+            }
           >
             {isSigningOut ? "Signing out..." : "Sign out"}
           </button>
