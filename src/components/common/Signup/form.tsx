@@ -103,10 +103,15 @@ const Signform = () => {
         const message =
           responseData?.error?.details?.[0]?.msg ||
           responseData?.message ||
+          error.message ||
           "Something went wrong. Try again.";
         setServerError(message);
       } else {
-        setServerError("Unexpected error. Please try again.");
+        setServerError(
+          error instanceof Error
+            ? error.message
+            : "Unexpected error. Please try again.",
+        );
       }
     } finally {
       setIsLoading(false);

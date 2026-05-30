@@ -1,17 +1,24 @@
 import api from "@/lib/api";
 import { unwrapData } from "@/lib/api-response";
 import {
+  INTERVIEW_SESSION_STATUSES,
+  REJOIN_SESSION_MESSAGE,
+  SESSION_STATUS_LABELS,
+  type ChatMessage,
+  type InterviewDetail,
+  type InterviewListItem,
+  type InterviewSession,
+  type InterviewSessionRejoinResponse,
+  type InterviewSessionStatus,
+  type TranscriptMessage,
+} from "@/types/interview";
+import {
   getMockInterviewById,
   MOCK_CHAT,
+  MOCK_INTERVIEW_SESSION,
   MOCK_INTERVIEW_LIST,
   MOCK_TRANSCRIPT,
 } from "@/lib/mocks/interviews.mock";
-import type {
-  ChatMessage,
-  InterviewDetail,
-  InterviewListItem,
-  TranscriptMessage,
-} from "@/types/interview";
 
 const MOCKS_ENABLED = process.env.NEXT_PUBLIC_USE_MOCKS === "true";
 
@@ -25,9 +32,20 @@ type ApiInterview = {
   platform?: string | null;
   scheduled_start?: string | null;
   scheduled_end?: string | null;
+  elapsed_display?: string;
+  elapsed_seconds?: number;
+  participants_count?: number;
+  resume_url?: string | null;
+  portfolio_url?: string | null;
+  session?: ApiInterviewSession | null;
   candidate_name?: string;
   candidate_email?: string | null;
-  candidate?: { name?: string; email?: string };
+  candidate?: {
+    name?: string;
+    email?: string;
+    resume_url?: string | null;
+    portfolio_url?: string | null;
+  };
 };
 
 type ApiListResponse = {
@@ -64,6 +82,27 @@ type ApiTranscriptTurn = {
   content?: string;
   is_typing?: boolean;
   is_active?: boolean;
+};
+
+type ApiInterviewSession = {
+  interview_id?: string;
+  session_status?: string;
+  meeting_status?: string;
+  agent_status_display?: string;
+  elapsed_display?: string;
+  elapsed_seconds?: number;
+  participants_count?: number;
+  platform?: string | null;
+  dropped_at_display?: string | null;
+  partial_data_saved?: boolean;
+  message?: string | null;
+};
+
+type ApiInterviewSessionRejoinResponse = {
+  success?: boolean;
+  message?: string;
+  session_status?: string;
+  interview_id?: string;
 };
 
 // ── List interviews ────────────────────────────────────────────────────────────
@@ -155,6 +194,45 @@ export async function getTranscript(id: string): Promise<TranscriptMessage[]> {
 
   const raw = data.turns ?? data.transcript ?? data.data ?? [];
   return raw.map(mapApiToTranscriptMessage);
+}
+
+// ── Live interview session state ──────────────────────────────────────────────
+// GET /api/v1/interviews/{interview_id}/session
+
+export async function getInterviewSession(
+  id: string,
+): Promise<InterviewSession> {
+  if (MOCKS_ENABLED) return { ...MOCK_INTERVIEW_SESSION, interview_id: id };
+
+  const res = await api.get(`/api/v1/interviews/${id}/session`);
+  const data = unwrapData<ApiInterviewSession>(res.data);
+  return mapApiToInterviewSession(data, id);
+}
+
+// ── Rejoin live interview session ─────────────────────────────────────────────
+// POST /api/v1/interviews/{interview_id}/session/rejoin
+
+export async function rejoinInterviewSession(
+  id: string,
+): Promise<InterviewSessionRejoinResponse> {
+  if (MOCKS_ENABLED) {
+    return {
+      success: true,
+      message: REJOIN_SESSION_MESSAGE,
+      session_status: "reconnecting",
+      interview_id: id,
+    };
+  }
+
+  const res = await api.post(`/api/v1/interviews/${id}/session/rejoin`);
+  const data = unwrapData<ApiInterviewSessionRejoinResponse>(res.data);
+
+  return {
+    success: data.success ?? true,
+    message: data.message ?? REJOIN_SESSION_MESSAGE,
+    session_status: normalizeSessionStatus(data.session_status),
+    interview_id: data.interview_id ?? id,
+  };
 }
 
 // ── Export transcript ──────────────────────────────────────────────────────────
@@ -290,6 +368,14 @@ function mapApiToDetail(raw: ApiInterview, id: string): InterviewDetail {
       .map((part) => part[0]?.toUpperCase() ?? "")
       .join("") || "??";
 
+  const elapsed =
+    raw.status === "in_progress"
+      ? normalizeElapsedDisplay(
+          raw.session?.elapsed_display ?? raw.elapsed_display,
+          raw.session?.elapsed_seconds ?? raw.elapsed_seconds,
+        )
+      : "";
+
   return {
     id,
     roleTitle: raw.role_title ?? raw.title ?? "",
@@ -324,12 +410,16 @@ function mapApiToDetail(raw: ApiInterview, id: string): InterviewDetail {
     jobDescription: "",
     scoringRubric: "",
     callLink: null,
+    resumeUrl: raw.resume_url ?? raw.candidate?.resume_url ?? null,
+    portfolioUrl: raw.portfolio_url ?? raw.candidate?.portfolio_url ?? null,
     observation: "",
     highlights: [],
     redFlags: [],
     // sessionPhase: "live_transcript",
-    elapsed: "",
-    participants: 0,
+    elapsed,
+    participants: normalizeParticipantsCount(
+      raw.session?.participants_count ?? raw.participants_count,
+    ),
   };
 }
 
@@ -353,6 +443,100 @@ function mapApiToTranscriptMessage(raw: ApiTranscriptTurn): TranscriptMessage {
     isTyping: raw.is_typing ?? false,
     isActive: raw.is_active ?? false,
   };
+}
+
+function mapApiToInterviewSession(
+  raw: ApiInterviewSession,
+  fallbackId: string,
+): InterviewSession {
+  const sessionStatus = normalizeSessionStatus(raw.session_status);
+
+  return {
+    interview_id: raw.interview_id ?? fallbackId,
+    session_status: sessionStatus,
+    meeting_status: normalizeMeetingStatus(raw.meeting_status),
+    agent_status_display: normalizeAgentDisplay(
+      raw.agent_status_display,
+      sessionStatus,
+    ),
+    elapsed_display: normalizeElapsedDisplay(
+      raw.elapsed_display,
+      raw.elapsed_seconds,
+    ),
+    participants_count: normalizeParticipantsCount(raw.participants_count),
+    platform: raw.platform ?? null,
+    dropped_at_display: raw.dropped_at_display ?? null,
+    partial_data_saved: raw.partial_data_saved ?? false,
+    message: raw.message ?? null,
+  };
+}
+
+function normalizeSessionStatus(value: unknown): InterviewSessionStatus {
+  if (
+    typeof value === "string" &&
+    (INTERVIEW_SESSION_STATUSES as readonly string[]).includes(value)
+  ) {
+    return value as InterviewSessionStatus;
+  }
+
+  console.warn("Unknown session_status received from API.", {
+    value,
+    valueType: value === null ? "null" : typeof value,
+    fallback: "connecting",
+  });
+
+  return "connecting";
+}
+
+function normalizeMeetingStatus(
+  value: unknown,
+): InterviewSession["meeting_status"] {
+  return value === "Scheduled" ? "Scheduled" : "Live";
+}
+
+function normalizeAgentDisplay(
+  value: unknown,
+  status: InterviewSessionStatus,
+): string {
+  if (typeof value === "string" && value.trim()) return value.trim();
+  return SESSION_STATUS_LABELS[status];
+}
+
+function normalizeElapsedDisplay(
+  value: unknown,
+  elapsedSeconds?: number,
+): string {
+  if (typeof value === "string" && value.trim()) {
+    const parts = value.trim().split(":");
+
+    if (parts.length === 3) {
+      return parts.map((part) => part.padStart(2, "0")).join(":");
+    }
+
+    if (parts.length === 2) {
+      const [minutes, seconds] = parts;
+      return `00:${minutes.padStart(2, "0")}:${seconds.padStart(2, "0")}`;
+    }
+  }
+
+  if (typeof elapsedSeconds === "number" && Number.isFinite(elapsedSeconds)) {
+    const totalSeconds = Math.max(0, Math.floor(elapsedSeconds));
+    const hours = Math.floor(totalSeconds / 3600);
+    const minutes = Math.floor((totalSeconds % 3600) / 60);
+    const seconds = totalSeconds % 60;
+
+    return [hours, minutes, seconds]
+      .map((part) => String(part).padStart(2, "0"))
+      .join(":");
+  }
+
+  return "00:00:00";
+}
+
+function normalizeParticipantsCount(value: unknown): number {
+  return typeof value === "number" && Number.isFinite(value)
+    ? Math.max(0, Math.floor(value))
+    : 0;
 }
 
 function formatScheduledDate(isoString: string): string {

@@ -8,7 +8,8 @@ import {
 import { cn } from "@/lib/utils";
 import type {
   InterviewDetail,
-  SessionPhase,
+  InterviewSession,
+  InterviewSessionStatus,
   TranscriptMessage,
 } from "@/types/interview";
 import { useState } from "react";
@@ -21,29 +22,37 @@ import {
 type Props = {
   interview: InterviewDetail;
   messages: TranscriptMessage[];
-  sessionPhase: SessionPhase;
-  onPhaseChange?: (phase: SessionPhase) => void;
+  session?: InterviewSession;
+  onRejoin?: () => Promise<void>;
+  isRejoining?: boolean;
 };
 
-const SESSION_ONLY: SessionPhase[] = [
+const SESSION_ONLY: InterviewSessionStatus[] = [
   "connecting",
   "listening",
   "thinking",
   "reconnecting",
   "connection_lost",
   "speaking",
+  "processing",
 ];
 
 // ==================== 🧩Main Component ====================
 export default function TranscriptTab({
   interview,
   messages,
-  sessionPhase,
-  onPhaseChange,
+  session,
+  onRejoin,
+  isRejoining = false,
 }: Props) {
   const [isStopping, setIsStopping] = useState(false);
-  const showSessionCard = SESSION_ONLY.includes(sessionPhase);
   const [isDownloading, setIsDownloading] = useState(false);
+  const [rejoinError, setRejoinError] = useState<string | null>(null);
+  const visibleSession =
+    session ??
+    (interview.status === "in_progress" ? getFallbackSession(interview) : null);
+  const showSessionCard =
+    !!visibleSession && SESSION_ONLY.includes(visibleSession.session_status);
 
   // ── Stop transcribing ──────────────────────────────────────────────────────
   // POST /api/v1/interviews/{interview_id}/transcript/stop
@@ -52,7 +61,6 @@ export default function TranscriptTab({
     setIsStopping(true);
     try {
       await stopTranscript(interview.id);
-      onPhaseChange?.("live_transcript");
     } catch {
       // Surface error visually if needed — for now just re-enable the button
     } finally {
@@ -72,59 +80,44 @@ export default function TranscriptTab({
       setIsDownloading(false);
     }
   };
-  if (showSessionCard) {
+
+  const handleRejoin = async () => {
+    if (!onRejoin || isRejoining) return;
+
+    setRejoinError(null);
+    try {
+      await onRejoin();
+    } catch (error) {
+      setRejoinError(
+        error instanceof Error
+          ? error.message
+          : "Unable to rejoin the meeting. Please try again.",
+      );
+    }
+  };
+
+  if (showSessionCard && visibleSession) {
     return (
       <div className="p-6">
         <SessionStateCard
           roleTitle={interview.roleTitle}
-          phase={sessionPhase}
-          elapsed={interview.elapsed}
-          participants={interview.participants}
-          // platform is string | null — default to empty string for display
-          platform={interview.platform ?? ""}
-          onRejoin={() => onPhaseChange?.("connecting")}
-          onViewPartial={() => onPhaseChange?.("live_transcript")}
+          session={visibleSession}
+          platform={visibleSession.platform ?? interview.platform ?? ""}
+          onRejoin={handleRejoin}
+          isRejoining={isRejoining}
         />
-        {process.env.NODE_ENV === "development" && (
-          <div className="mt-4 flex flex-wrap gap-2">
-            {SESSION_ONLY.map((p) => (
-              <button
-                key={p}
-                type="button"
-                onClick={() => onPhaseChange?.(p)}
-                className="rounded border px-2 py-1 text-xs text-[var(--color-text-secondary)]"
-              >
-                {p}
-              </button>
-            ))}
-          </div>
+        {rejoinError && (
+          <p className="mt-3 text-sm text-[var(--color-error)]">
+            {rejoinError}
+          </p>
         )}
-      </div>
-    );
-  }
-
-  if (sessionPhase === "transcript_error") {
-    return (
-      <div className="p-6">
-        <div className="mb-4 flex items-center justify-between rounded-lg bg-[var(--color-error-bg)] px-4 py-2">
-          <span className="flex items-center gap-2 text-sm text-[var(--color-error)]">
-            <span className="h-2 w-2 rounded-full bg-[var(--color-error)]" />
-            We lost the feed — your recording is safe
-          </span>
-          <span className="text-sm font-medium text-[var(--color-brand-accent)]">
-            {interview.elapsed}
-          </span>
-        </div>
-        <TranscriptError
-          elapsed={interview.elapsed}
-          onRetry={() => onPhaseChange?.("live_transcript")}
-        />
       </div>
     );
   }
 
   // ── Live transcript / completed view ──────────────────────────────────────
   const isLive = interview.status === "in_progress";
+  const liveElapsed = session?.elapsed_display ?? interview.elapsed;
 
   return (
     <div className="flex h-full min-h-[32.5rem] flex-col">
@@ -226,9 +219,9 @@ export default function TranscriptTab({
             <span className="text-sm font-medium text-[var(--color-brand-accent)]">
               Live
             </span>
-            {interview.elapsed && (
+            {liveElapsed && (
               <span className="text-sm text-[var(--color-text-secondary)]">
-                {interview.elapsed}
+                {liveElapsed}
               </span>
             )}
           </div>
@@ -248,54 +241,15 @@ export default function TranscriptTab({
   );
 }
 
-function TranscriptError({
-  elapsed,
-  onRetry,
-}: {
-  elapsed?: string;
-  onRetry: () => void;
-}) {
-  return (
-    <div className="flex flex-col items-center justify-center py-16 text-center">
-      <div className="mb-4 text-[var(--color-error)]">
-        <svg
-          className="mx-auto h-12 w-12"
-          fill="none"
-          viewBox="0 0 24 24"
-          stroke="currentColor"
-        >
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            strokeWidth={1.5}
-            d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z"
-          />
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            strokeWidth={2}
-            d="M4 4l16 16"
-          />
-        </svg>
-      </div>
-      <h3 className="text-lg font-semibold text-[var(--color-text-color-primary)]">
-        Transcript failed to load
-      </h3>
-      <p className="mt-2 max-w-md text-sm text-[var(--color-text-secondary)]">
-        Live transcript stream was interrupted.
-        {elapsed
-          ? ` The agent was dropped from the meeting at ${elapsed}.`
-          : ""}{" "}
-        Your audio recording is still running.
-      </p>
-      <button
-        type="button"
-        onClick={onRetry}
-        className="mt-6 flex items-center gap-2 rounded-lg border border-[var(--color-card-border)] px-5 py-2.5 text-sm font-medium
-         text-[var(--color-text-color-primary)] hover:bg-[var(--color-bg-secondary)]"
-      >
-        Try again
-      </button>
-    </div>
-  );
+function getFallbackSession(interview: InterviewDetail): InterviewSession {
+  return {
+    interview_id: interview.id,
+    session_status: "connecting",
+    meeting_status: "Live",
+    agent_status_display: "Connecting...",
+    elapsed_display: "00:00:00",
+    participants_count: interview.participants,
+    platform: interview.platform,
+    partial_data_saved: false,
+  };
 }
