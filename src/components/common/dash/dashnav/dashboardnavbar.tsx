@@ -5,11 +5,9 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import Dashnavlist from "./dashnavlist";
 import SignOutModal from "./SignOutModal";
+import { useUnreadNotificationsCount } from "@/hooks/useNotifications";
 import { useAuthStore } from "@/store/authStore";
-import {
-  getUnreadNotificationsCount,
-  useNotificationsStore,
-} from "@/store/notificationsStore";
+import { revokeAllSessions } from "@/lib/auth";
 import { MdKeyboardArrowDown } from "react-icons/md";
 import {
   LuUser,
@@ -17,96 +15,58 @@ import {
   LuCreditCard,
   LuCircleHelp,
   LuLogOut,
-  LuMenu,
-  LuX,
 } from "react-icons/lu";
 
 const Dashboardnavbar = () => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isSignOutModalOpen, setIsSignOutModalOpen] = useState(false);
+  const [isSigningOut, setIsSigningOut] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
-  const mobileMenuRef = useRef<HTMLDivElement>(null);
-  const mobileMenuButtonRef = useRef<HTMLButtonElement>(null);
   const router = useRouter();
+  const { data: unreadNotificationCount = 0 } = useUnreadNotificationsCount();
   const logout = useAuthStore((state) => state.logout);
-  const notifications = useNotificationsStore((state) => state.notifications);
-  const unreadNotificationCount = getUnreadNotificationsCount(notifications);
 
-  // Close open menus from outside clicks or Escape.
+  // Close dropdown when clicking outside
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
-      const target = event.target as Node;
-
-      if (dropdownRef.current && !dropdownRef.current.contains(target)) {
-        setIsDropdownOpen(false);
-      }
-
       if (
-        mobileMenuRef.current &&
-        mobileMenuButtonRef.current &&
-        !mobileMenuRef.current.contains(target) &&
-        !mobileMenuButtonRef.current.contains(target)
+        dropdownRef.current &&
+        !dropdownRef.current.contains(event.target as Node)
       ) {
-        setIsMobileMenuOpen(false);
-      }
-    };
-
-    const handleEscapeKey = (event: KeyboardEvent) => {
-      if (event.key === "Escape") {
         setIsDropdownOpen(false);
-        setIsMobileMenuOpen(false);
       }
     };
-
     document.addEventListener("mousedown", handleClickOutside);
-    document.addEventListener("keydown", handleEscapeKey);
-
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-      document.removeEventListener("keydown", handleEscapeKey);
-    };
+    return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
   return (
     <section className="border-b border-[#E5E7EB] bg-white sticky top-0 z-50">
-      <div className="flex flex-row justify-between py-4 md:py-6 px-4 md:px-8 lg:px-16 items-center">
-        {/* Mobile Menu Button + Logo */}
-        <div className="flex items-center gap-2 md:gap-3 shrink-0">
-          <button
-            ref={mobileMenuButtonRef}
-            type="button"
-            className="md:hidden p-1.5 -ml-1.5 text-gray-600 hover:bg-gray-100 rounded-lg cursor-pointer transition-colors"
-            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-            aria-expanded={isMobileMenuOpen}
-            aria-controls="mobile-nav-menu"
-            aria-label="Toggle mobile menu"
-          >
-            {isMobileMenuOpen ? <LuX size={24} /> : <LuMenu size={24} />}
-          </button>
-
+      <div className="flex flex-row justify-between py-6 px-16 items-center">
+        {/* Logo + Brand Name */}
+        <div className="flex gap-3 w-[30%]">
           <Link href="/" className="flex items-center gap-2">
             <Image
               src="/icons/meetmind-logo.svg"
               alt="MeetMind Logo"
               width={32}
               height={32}
-              className="h-7 w-auto md:h-8"
+              className="h-8 w-auto"
             />
-            <p className="font-bold text-[20px] md:text-[24px]">
-              Meet<span className="text-[#4F46E5]">Mind</span>
-            </p>
           </Link>
+          <p className="font-bold text-[24px]">
+            Meet<span className="text-[#4F46E5]">Mind</span>
+          </p>
         </div>
 
-        <div className="flex items-center justify-end h-10 flex-1 gap-4 md:gap-8">
-          {/* Desktop navlist */}
-          <div className="hidden md:flex h-10 bg-card rounded-lg items-center justify-center">
+        <div className="flex items-center justify-end h-10 w-[70%] gap-8">
+          {/* navlist */}
+          <div className="h-10 bg-card flex rounded-lg items-center justify-center w-[50%]">
             <Dashnavlist />
           </div>
 
           {/* icons & profile dropdown */}
-          <div className="flex flex-row items-center justify-end gap-3 md:gap-6 shrink-0">
+          <div className="flex flex-row items-center justify-end gap-6 w-[40%]">
             <button
               type="button"
               className="p-1 hover:bg-gray-50 rounded-full transition-colors cursor-pointer"
@@ -132,7 +92,13 @@ const Dashboardnavbar = () => {
                 height={20}
               />
               {unreadNotificationCount > 0 && (
-                <span className="absolute -top-0.5 -right-0.5 w-4 h-4 rounded-full bg-[#EF4444] text-white text-[9px] font-bold flex items-center justify-center leading-none">
+                <span
+                  className={
+                    "absolute -top-0.5 -right-0.5 w-4 h-4 rounded-full " +
+                    "bg-[var(--color-error)] text-[var(--color-text-white-primary)] " +
+                    "text-[9px] font-bold flex items-center justify-center"
+                  }
+                >
                   {unreadNotificationCount > 9 ? "9+" : unreadNotificationCount}
                 </span>
               )}
@@ -225,21 +191,21 @@ const Dashboardnavbar = () => {
         </div>
       </div>
 
-      {/* Mobile Menu Dropdown */}
-      {isMobileMenuOpen && (
-        <div
-          id="mobile-nav-menu"
-          ref={mobileMenuRef}
-          className="md:hidden border-t border-gray-100 bg-white px-4 py-4 absolute w-full left-0 top-full shadow-md animate-in slide-in-from-top-2 duration-150"
-        >
-          <Dashnavlist mobile onLinkClick={() => setIsMobileMenuOpen(false)} />
-        </div>
-      )}
-
       <SignOutModal
         isOpen={isSignOutModalOpen}
+        isSigningOut={isSigningOut}
         onClose={() => setIsSignOutModalOpen(false)}
-        onSignOut={() => {
+        onSignOut={async (signOutAllDevices) => {
+          if (signOutAllDevices) {
+            setIsSigningOut(true);
+            try {
+              await revokeAllSessions();
+            } catch (error) {
+              console.error("Failed to revoke all sessions:", error);
+            } finally {
+              setIsSigningOut(false);
+            }
+          }
           logout();
           setIsSignOutModalOpen(false);
           router.push("/sign-in");
