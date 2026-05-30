@@ -20,12 +20,12 @@ const statusVariant: Record<
 export default async function Dashboard() {
   let sessions: SessionDTO[] = [];
   try {
-    const res = await fetch(
-      "https://api.staging.meetmind.hng14.com/api/v1/interviews/",
-      {
-        cache: "no-store",
-      },
-    );
+    const API_BASE =
+      process.env.NEXT_PUBLIC_API_BASE_URL ||
+      "https://api.staging.meetmind.hng14.com";
+    const res = await fetch(`${API_BASE}/api/v1/interviews/`, {
+      cache: "no-store",
+    });
     if (res.ok) {
       sessions = await res.json();
     }

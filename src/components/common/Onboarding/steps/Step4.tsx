@@ -91,7 +91,7 @@ const Step4 = () => {
               />
             }
             isConnected={data.integrations === "livekit"}
-            disabled={true}
+            disabled={false}
             onConnect={() => updateData({ integrations: "livekit" })}
           />
         </div>

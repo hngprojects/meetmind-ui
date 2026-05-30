@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useEffect, useState, use } from "react";
 import { ArrowLeft } from "lucide-react";
 import { CopyField } from "@/components/common/call/copy-field";
 import { Badge } from "@/components/ui/badge";
@@ -36,8 +36,13 @@ const overallVariant: Record<string, "default" | "destructive"> = {
   strong_no: "destructive",
 };
 
-export default function SessionDetail({ params }: { params: { id: string } }) {
-  const { id } = params;
+export default function SessionDetail({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}) {
+  const unwrappedParams = use(params);
+  const id = unwrappedParams.id;
   const [session, setSession] = useState<SessionDTO | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);

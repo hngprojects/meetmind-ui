@@ -15,10 +15,12 @@ export default async function EditSessionPage({
 
   let session = null;
   try {
-    const res = await fetch(
-      `https://api.staging.meetmind.hng14.com/api/v1/sessions/${id}`,
-      { cache: "no-store" },
-    );
+    const API_BASE =
+      process.env.NEXT_PUBLIC_API_BASE_URL ||
+      "https://api.staging.meetmind.hng14.com";
+    const res = await fetch(`${API_BASE}/api/v1/interviews/${id}`, {
+      cache: "no-store",
+    });
     if (res.ok) {
       session = await res.json();
     }

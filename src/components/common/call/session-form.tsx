@@ -84,7 +84,10 @@ export function SessionForm({ initial }: { initial?: SessionDTO }) {
     setSaving(true);
     const payload = {
       role,
-      candidateName,
+      // Backend expects a nested candidate object, not a flat candidateName field
+      candidate: {
+        name: candidateName,
+      },
       intro,
       durationMinutes,
       closing,
