@@ -74,8 +74,8 @@ export default function Testimonials() {
             Loved by Remote Teams
           </h2>
           <p className="text-[#3F4555] max-w-md md:max-w-179 text-[16px] lg:text-[18px] text-center">
-            Polio is the customer relationship management tool for everyone who
-            values collaboration.
+            MeetMind is the customer relationship management tool for everyone
+            who values collaboration.
           </p>
         </div>
 
