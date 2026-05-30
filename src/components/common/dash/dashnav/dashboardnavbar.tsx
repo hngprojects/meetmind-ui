@@ -6,6 +6,10 @@ import { useRouter } from "next/navigation";
 import Dashnavlist from "./dashnavlist";
 import SignOutModal from "./SignOutModal";
 import { useAuthStore } from "@/store/authStore";
+import {
+  getUnreadNotificationsCount,
+  useNotificationsStore,
+} from "@/store/notificationsStore";
 import { MdKeyboardArrowDown } from "react-icons/md";
 import {
   LuUser,
@@ -26,9 +30,8 @@ const Dashboardnavbar = () => {
   const mobileMenuButtonRef = useRef<HTMLButtonElement>(null);
   const router = useRouter();
   const logout = useAuthStore((state) => state.logout);
-
-  // Unread notification count — wire to real API when backend is ready
-  const unreadNotificationCount = 3;
+  const notifications = useNotificationsStore((state) => state.notifications);
+  const unreadNotificationCount = getUnreadNotificationsCount(notifications);
 
   // Close open menus from outside clicks or Escape.
   useEffect(() => {
