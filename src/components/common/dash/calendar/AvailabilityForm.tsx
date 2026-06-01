@@ -3,11 +3,9 @@
 import { useEffect, useRef, useState } from "react";
 import { HiOutlineMail } from "react-icons/hi";
 import type { Appointment, TimeOption } from "@/lib/appointmentTypes";
-import {
-  availableEndTimes,
-  availableStartTimes,
-} from "@/lib/calendar/timeOptions";
+import { useCalendarAvailability } from "@/lib/hooks/useCalendar";
 import { Button } from "@/components/ui/button";
+import { useRescheduleAppointment } from "@/lib/hooks/useCalendar";
 
 type AvailabilityFormProps = {
   selectedAppointment: Appointment | null;
@@ -16,6 +14,8 @@ type AvailabilityFormProps = {
   selectedEndTime: TimeOption | null;
   setSelectedEndTime: React.Dispatch<React.SetStateAction<TimeOption | null>>;
   setIsSuccessModalOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  currentDate: Date;
+  selectedDate: number;
 };
 
 const isStartBeforeEnd = (start: TimeOption, end: TimeOption): boolean => {
@@ -39,8 +39,12 @@ const AvailabilityForm = ({
   selectedEndTime,
   setSelectedEndTime,
   setIsSuccessModalOpen,
+  currentDate,
+  selectedDate,
 }: AvailabilityFormProps) => {
   const [showAvailability, setShowAvailability] = useState(true);
+
+  const rescheduleMutation = useRescheduleAppointment();
 
   const [showStartDropdown, setShowStartDropdown] = useState(false);
 
@@ -70,6 +74,75 @@ const AvailabilityForm = ({
       document.removeEventListener("mousedown", handleClickOutside);
     };
   }, []);
+
+  const selectedDateObject = new Date(
+    currentDate.getFullYear(),
+    currentDate.getMonth(),
+    selectedDate,
+  );
+
+  const formattedDate = [
+    selectedDateObject.getFullYear(),
+    String(selectedDateObject.getMonth() + 1).padStart(2, "0"),
+    String(selectedDateObject.getDate()).padStart(2, "0"),
+  ].join("-");
+
+  const { data: availabilityResponse } = useCalendarAvailability(formattedDate);
+
+  const availabilitySlots = availabilityResponse ?? [];
+
+  const buildDateTime = (currentDate: Date, day: number, time: TimeOption) => {
+    let hour = Number(time.hour);
+
+    if (time.period === "PM" && hour !== 12) {
+      hour += 12;
+    }
+
+    if (time.period === "AM" && hour === 12) {
+      hour = 0;
+    }
+
+    return new Date(
+      currentDate.getFullYear(),
+      currentDate.getMonth(),
+      day,
+      hour,
+      Number(time.minute),
+    ).toISOString();
+  };
+
+  const handleScheduleInterview = () => {
+    if (!selectedAppointment || !selectedStartTime || !selectedEndTime) {
+      return;
+    }
+
+    const scheduled_start = buildDateTime(
+      currentDate,
+      selectedDate,
+      selectedStartTime,
+    );
+
+    const scheduled_end = buildDateTime(
+      currentDate,
+      selectedDate,
+      selectedEndTime,
+    );
+
+    rescheduleMutation.mutate(
+      {
+        interviewId: selectedAppointment.id,
+        payload: {
+          scheduled_start,
+          scheduled_end,
+        },
+      },
+      {
+        onSuccess: () => {
+          setIsSuccessModalOpen(true);
+        },
+      },
+    );
+  };
 
   const isFormComplete =
     selectedAppointment &&
@@ -139,23 +212,23 @@ const AvailabilityForm = ({
                     className="absolute left-0 top-14 z-20 w-[150px] rounded-xl 
                       border border-calendar-border bg-white p-2 shadow-md"
                   >
-                    {availableStartTimes.map((time, index) => (
+                    {availabilitySlots.map((slot, index) => (
                       <Button
                         variant="ghost"
                         key={index}
                         type="button"
                         onClick={() => {
-                          setSelectedStartTime(time);
+                          setSelectedStartTime(slot.startTime);
                           setShowStartDropdown(false);
                         }}
                         className="flex w-full items-center justify-between
                         rounded-lg px-3 py-2 text-sm hover:bg-soft-white"
                       >
                         <span>
-                          {time.hour}:{time.minute}
+                          {slot.startTime.hour}:{slot.startTime.minute}
                         </span>
 
-                        <span>{time.period}</span>
+                        <span>{slot.startTime.period}</span>
                       </Button>
                     ))}
                   </div>
@@ -204,23 +277,23 @@ const AvailabilityForm = ({
                     className="absolute left-0 top-14 z-20 w-[150px] rounded-xl 
                       border border-calendar-border bg-white p-2 shadow-md"
                   >
-                    {availableEndTimes.map((time, index) => (
+                    {availabilitySlots.map((slot, index) => (
                       <Button
                         variant="ghost"
                         key={index}
                         type="button"
                         onClick={() => {
-                          setSelectedEndTime(time);
+                          setSelectedEndTime(slot.endTime);
                           setShowEndDropdown(false);
                         }}
                         className="flex w-full items-center justify-between
                         rounded-lg px-3 py-2 text-sm hover:bg-soft-white"
                       >
                         <span>
-                          {time.hour}:{time.minute}
+                          {slot.endTime.hour}:{slot.endTime.minute}
                         </span>
 
-                        <span>{time.period}</span>
+                        <span>{slot.endTime.period}</span>
                       </Button>
                     ))}
                   </div>
@@ -282,7 +355,7 @@ const AvailabilityForm = ({
             <Button
               type="button"
               disabled={!isFormComplete}
-              onClick={() => setIsSuccessModalOpen(true)}
+              onClick={handleScheduleInterview}
               className={`
                 mb-6 flex h-12 w-full md:w-[190px] items-center justify-center rounded-lg
                 text-sm font-medium transition-opacity

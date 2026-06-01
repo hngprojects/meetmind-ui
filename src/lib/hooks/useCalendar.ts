@@ -1,4 +1,4 @@
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
   getCalendarUsers,
   getCalendarAppointments,
@@ -31,6 +31,8 @@ export function useCalendarAvailability(date: string, interviewerId?: string) {
 }
 
 export function useRescheduleAppointment() {
+  const queryClient = useQueryClient();
+
   return useMutation({
     mutationFn: ({
       interviewId,
@@ -39,11 +41,24 @@ export function useRescheduleAppointment() {
       interviewId: string;
       payload: RescheduleAppointmentPayload;
     }) => rescheduleAppointment(interviewId, payload),
+
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: ["calendar-appointments"],
+      });
+    },
   });
 }
 
 export function useCancelAppointment() {
+  const queryClient = useQueryClient();
   return useMutation({
     mutationFn: (interviewId: string) => cancelAppointment(interviewId),
+
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: ["calendar-appointments"],
+      });
+    },
   });
 }

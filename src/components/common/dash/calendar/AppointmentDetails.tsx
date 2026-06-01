@@ -45,12 +45,12 @@ const AppointmentDetails = ({
           </div>
 
           {/* Role */}
-          <h2 className="mt-6 text-center text-[20px] font-bold text-text-color-primary">
+          <h2 className="mt-6 text-center text-[20px] font-bold text-text-color-primary break-words">
             {appointment.role}
           </h2>
 
           {/* Email */}
-          <p className="mt-2 text-center text-base font-medium text-text-subtext">
+          <p className="mt-2 text-center text-base font-medium text-text-subtext break-all">
             {appointment.email}
           </p>
 

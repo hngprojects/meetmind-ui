@@ -1,5 +1,5 @@
 export type Appointment = {
-  id: number;
+  id: string;
   candidate: string;
   email: string;
   role: string;

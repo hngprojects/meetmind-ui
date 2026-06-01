@@ -4,7 +4,7 @@ import { useState } from "react";
 import AppointmentCard from "./AppointmentCard";
 import EmptyState from "./EmptyState";
 import type { Appointment, TimeOption } from "@/lib/appointmentTypes";
-import { appointmentGroups } from "@/lib/calendar/mockAppointments";
+import { useCalendarAppointments } from "@/lib/hooks/useCalendar";
 
 type CalendarPanelProps = {
   selectedDate: number;
@@ -30,21 +30,10 @@ const CalendarPanel = ({
   const currentYear = currentDate.getFullYear();
   const [selectedView, setSelectedView] = useState("today");
 
-  const selectedDateObject = new Date(
-    currentYear,
-    currentDate.getMonth(),
-    selectedDate,
-  );
+  const { data: todayAppointments = [] } = useCalendarAppointments("today");
 
-  const selectedDateKey = [
-    selectedDateObject.getFullYear(),
-    String(selectedDateObject.getMonth() + 1).padStart(2, "0"),
-    String(selectedDateObject.getDate()).padStart(2, "0"),
-  ].join("-");
-
-  const todayAppointments = appointmentGroups.filter(
-    (group) => group.dateISO === selectedDateKey,
-  );
+  const { data: upcomingAppointments = [] } =
+    useCalendarAppointments("all_upcoming");
 
   return (
     <section>
@@ -80,95 +69,73 @@ const CalendarPanel = ({
       {selectedView === "today" ? (
         todayAppointments.length > 0 ? (
           <div className="mt-6 space-y-8">
-            {todayAppointments.map((group) => (
-              <section key={group.id}>
-                {/* Date Heading */}
-                <h3 className="mb-4 text-sm font-medium text-calendar-secondary">
-                  {group.date}
-                </h3>
+            {todayAppointments.map((appointment) => (
+              <AppointmentCard
+                key={appointment.id}
+                candidate={appointment.candidate}
+                email={appointment.email}
+                role={appointment.role}
+                startTime={appointment.startTime}
+                endTime={appointment.endTime}
+                onClick={() => {
+                  const isSameAppointment =
+                    selectedAppointment?.id === appointment.id;
 
-                {/* Appointment Cards */}
-                <div className="space-y-4">
-                  {group.appointments.map((appointment) => (
-                    <AppointmentCard
-                      key={appointment.id}
-                      candidate={appointment.candidate}
-                      email={appointment.email}
-                      role={appointment.role}
-                      startTime={appointment.startTime}
-                      endTime={appointment.endTime}
-                      onClick={() => {
-                        const isSameAppointment =
-                          selectedAppointment?.id === appointment.id;
+                  if (isSameAppointment) {
+                    setSelectedAppointment(null);
 
-                        if (isSameAppointment) {
-                          setSelectedAppointment(null);
+                    setSelectedStartTime(null);
+                    setSelectedEndTime(null);
 
-                          setSelectedStartTime(null);
-                          setSelectedEndTime(null);
+                    return;
+                  }
 
-                          return;
-                        }
+                  setSelectedAppointment(appointment);
 
-                        setSelectedAppointment(appointment);
+                  setSelectedStartTime(appointment.startTime);
 
-                        setSelectedStartTime(appointment.startTime);
-
-                        setSelectedEndTime(appointment.endTime);
-                      }}
-                    />
-                  ))}
-                </div>
-              </section>
+                  setSelectedEndTime(appointment.endTime);
+                }}
+              />
             ))}
           </div>
         ) : (
           <EmptyState />
         )
-      ) : (
+      ) : upcomingAppointments.length > 0 ? (
         <div className="mt-6 space-y-8">
-          {appointmentGroups.map((group) => (
-            <section key={group.id}>
-              {/* Date Heading */}
-              <h3 className="mb-4 text-sm font-medium text-calendar-secondary">
-                {group.date}
-              </h3>
+          {upcomingAppointments.map((appointment) => (
+            <AppointmentCard
+              key={appointment.id}
+              candidate={appointment.candidate}
+              email={appointment.email}
+              role={appointment.role}
+              startTime={appointment.startTime}
+              endTime={appointment.endTime}
+              onClick={() => {
+                const isSameAppointment =
+                  selectedAppointment?.id === appointment.id;
 
-              {/* Appointment Cards */}
-              <div className="space-y-4">
-                {group.appointments.map((appointment) => (
-                  <AppointmentCard
-                    key={appointment.id}
-                    candidate={appointment.candidate}
-                    email={appointment.email}
-                    role={appointment.role}
-                    startTime={appointment.startTime}
-                    endTime={appointment.endTime}
-                    onClick={() => {
-                      const isSameAppointment =
-                        selectedAppointment?.id === appointment.id;
+                if (isSameAppointment) {
+                  setSelectedAppointment(null);
 
-                      if (isSameAppointment) {
-                        setSelectedAppointment(null);
+                  setSelectedStartTime(null);
+                  setSelectedEndTime(null);
 
-                        setSelectedStartTime(null);
-                        setSelectedEndTime(null);
+                  return;
+                }
 
-                        return;
-                      }
+                setSelectedAppointment(appointment);
 
-                      setSelectedAppointment(appointment);
+                setSelectedStartTime(appointment.startTime);
 
-                      setSelectedStartTime(appointment.startTime);
-
-                      setSelectedEndTime(appointment.endTime);
-                    }}
-                  />
-                ))}
-              </div>
-            </section>
+                setSelectedEndTime(appointment.endTime);
+              }}
+            />
           ))}
         </div>
+      ) : (
+        <EmptyState />
       )}
     </section>
   );

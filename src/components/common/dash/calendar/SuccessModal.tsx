@@ -99,12 +99,12 @@ const SuccessModal = ({
         role="dialog"
         aria-modal="true"
         aria-labelledby="success-modal-title"
-        className="w-full max-w-[580px] rounded-[32px] max-h-[356px]
+        className="w-full max-w-[680px] rounded-[32px] max-h-[356px]
           bg-white p-6 md:p-8
         "
       >
         {/* Title */}
-        <div className="text-center">
+        <div className="text-center flex flex-col justify-center items-center">
           <h2
             id="success-modal-title"
             className="text-[20px] font-bold text-calendar-primary"
@@ -123,7 +123,7 @@ const SuccessModal = ({
           className="mt-8 flex items-center justify-between rounded-2xl bg-bg-secondary
                 px-5 py-5"
         >
-          <div className="flex items-center gap-4 max-w-[531px]">
+          <div className="flex items-center gap-4 flex-1 min-w-0">
             {/* Avatar */}
             <div
               className="flex h-10 w-10 items-center justify-center rounded-full bg-calendar-avatar
@@ -133,18 +133,18 @@ const SuccessModal = ({
             </div>
 
             {/* Details */}
-            <div>
-              <h3 className="text-[20px] font-bold text-calendar-primary">
+            <div className="min-w-0">
+              <h3 className="text-[20px] font-bold text-calendar-primary break-words">
                 {appointment.role}
               </h3>
 
-              <p className="mt-1 text-base text-calendar-secondary">
+              <p className="mt-1 text-base text-calendar-secondary break-all">
                 {appointment.email}
               </p>
             </div>
           </div>
 
-          <div className="text-right">
+          <div className="text-right shrink-0 ml-4">
             <p className="text-sm text-calendar-secondary">{formattedDate}</p>
 
             <p className="mt-1 text-base text-calendar-secondary">

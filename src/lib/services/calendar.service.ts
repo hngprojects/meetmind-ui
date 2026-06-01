@@ -1,5 +1,9 @@
 import api from "@/lib/api";
-import { CalendarAppointmentsResponse } from "@/lib/types/calendar";
+import {
+  CalendarAppointment,
+  CalendarAppointmentsResponse,
+} from "@/lib/types/calendar";
+import { Appointment } from "../appointmentTypes";
 
 export type CalendarUser = {
   id: string;
@@ -58,6 +62,37 @@ export type CancelAppointmentResponse = {
   message: string;
 };
 
+const convertToTimeOption = (dateString: string) => {
+  const date = new Date(dateString);
+
+  let hour = date.getHours();
+  const minute = String(date.getMinutes()).padStart(2, "0");
+
+  const period = hour >= 12 ? "PM" : "AM";
+
+  hour = hour % 12 || 12;
+
+  return {
+    hour: String(hour),
+    minute,
+    period,
+  } as const;
+};
+
+const transformAppointment = (
+  appointment: CalendarAppointment,
+): Appointment => {
+  return {
+    id: appointment.id,
+    candidate: appointment.candidate_name,
+    email: appointment.candidate_email,
+    role: appointment.role_title,
+    startTime: convertToTimeOption(appointment.scheduled_start),
+    endTime: convertToTimeOption(appointment.scheduled_end),
+    date: appointment.scheduled_start,
+  };
+};
+
 export async function getCalendarUsers() {
   const response = await api.get<CalendarUsersResponse>(
     "/api/v1/calendar/users",
@@ -78,7 +113,24 @@ export const getCalendarAppointments = async (
     },
   );
 
-  return response.data.data.appointments;
+  return response.data.data.appointments.map(transformAppointment);
+};
+
+const convertAvailabilityTime = (time: string, period: string) => {
+  const [hour, minute] = time.split(":");
+
+  return {
+    hour,
+    minute,
+    period: period as "AM" | "PM",
+  };
+};
+
+const transformAvailabilitySlot = (slot: AvailabilitySlot) => {
+  return {
+    startTime: convertAvailabilityTime(slot.start_time, slot.period_start),
+    endTime: convertAvailabilityTime(slot.end_time, slot.period_end),
+  };
 };
 
 export async function getCalendarAvailability(
@@ -95,7 +147,7 @@ export async function getCalendarAvailability(
     },
   );
 
-  return response.data;
+  return response.data.data.map(transformAvailabilitySlot);
 }
 
 export async function rescheduleAppointment(
