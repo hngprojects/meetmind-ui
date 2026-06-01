@@ -44,6 +44,7 @@ export function normalizeCurrentUser(raw: unknown): CurrentUserProfile {
     companyName:
       getStringValue(source.company_name) ??
       getStringValue(source.companyName) ??
+      getStringValue(source.company) ??
       getStringValue(company?.name) ??
       null,
     avatarUrl:
