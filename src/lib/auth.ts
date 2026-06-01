@@ -15,3 +15,11 @@ export const revokeAllSessions = async () => {
   const response = await api.post("/api/v1/auth/signout/all");
   return response.data;
 };
+
+export const resendVerificationEmail = async (email: string) => {
+  const response = await api.post("/api/v1/auth/resend-verification", {
+    email,
+  });
+
+  return response.data;
+};
