@@ -55,10 +55,13 @@ export function ViewController({ appConfig }: ViewControllerProps) {
           name: error.name,
           permissionRequired: error.name === "NotAllowedError",
         });
-        
+
         // If it's a permission error, the agent-session-block component will handle showing the banner
         // Don't prevent starting the session - let the user connect and handle permissions there
-        if (error.name !== "NotAllowedError" && error.name !== "NotFoundError") {
+        if (
+          error.name !== "NotAllowedError" &&
+          error.name !== "NotFoundError"
+        ) {
           console.error("Unexpected media device error:", error);
         }
       }
