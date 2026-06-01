@@ -223,7 +223,7 @@ function mergeChatMessages(
 function createChatMessageSignature(message: ChatMessage): string {
   return [
     message.role,
-    message.content.trim(),
+    (message.content ?? "").trim(),
     message.title?.trim() ?? "",
     message.bullets?.join("|") ?? "",
   ].join("::");

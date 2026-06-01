@@ -447,7 +447,11 @@ function mapApiToChatMessage(raw: ApiChatResponse): ChatMessage {
     .filter(Boolean);
 
   return {
-    id: raw.id ?? raw.message_id ?? globalThis.crypto?.randomUUID?.(),
+    id:
+      raw.id ??
+      raw.message_id ??
+      globalThis.crypto?.randomUUID?.() ??
+      String(Date.now()),
     role: raw.role ?? "assistant",
     content: raw.content ?? raw.answer?.summary ?? "",
     title: raw.title ?? raw.answer?.title,
