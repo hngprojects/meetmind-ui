@@ -1,4 +1,4 @@
-import { type ComponentProps, Fragment, useMemo, useState } from "react";
+import { type ComponentProps, useMemo, useState } from "react";
 import { type VariantProps, cva } from "class-variance-authority";
 import { Track } from "livekit-client";
 import {
@@ -43,24 +43,30 @@ export const agentTrackToggleVariants = cva(["size-9"], {
   },
 });
 
-function getSourceIcon(
-  source: Track.Source,
+function renderSourceIcon(
+  source: Track.Source | "microphone" | "camera" | "screen_share",
   enabled: boolean,
   pending = false,
+  className?: string,
 ) {
   if (pending) {
-    return LoaderIcon;
+    return <LoaderIcon className={className} />;
   }
 
-  switch (source) {
-    case Track.Source.Microphone:
-      return enabled ? MicIcon : MicOffIcon;
-    case Track.Source.Camera:
-      return enabled ? VideoIcon : VideoOffIcon;
-    case Track.Source.ScreenShare:
-      return enabled ? MonitorUpIcon : MonitorOffIcon;
+  const sourceStr = typeof source === "string" ? source : String(source);
+
+  switch (sourceStr) {
+    case "microphone":
+    case Track.Source?.Microphone:
+      return enabled ? <MicIcon className={className} /> : <MicOffIcon className={className} />;
+    case "camera":
+    case Track.Source?.Camera:
+      return enabled ? <VideoIcon className={className} /> : <VideoOffIcon className={className} />;
+    case "screen_share":
+    case Track.Source?.ScreenShare:
+      return enabled ? <MonitorUpIcon className={className} /> : <MonitorOffIcon className={className} />;
     default:
-      return Fragment;
+      return null;
   }
 }
 
@@ -140,11 +146,7 @@ export function AgentTrackToggle({
     () => (isControlled ? pressed : uncontrolledPressed) ?? false,
     [isControlled, pressed, uncontrolledPressed],
   );
-  const IconComponent = getSourceIcon(
-    source as Track.Source,
-    resolvedPressed,
-    pending,
-  );
+  const iconClassName = cn(pending && "animate-spin");
   const handlePressedChange = (nextPressed: boolean) => {
     if (!isControlled) {
       setUncontrolledPressed(nextPressed);
@@ -169,8 +171,12 @@ export function AgentTrackToggle({
       )}
       {...props}
     >
-      {/* Call directly as a function reference to bypass the JSX-in-render lint rule */}
-      {IconComponent({ className: cn(pending && "animate-spin") })}
+      {renderSourceIcon(
+        source as Track.Source,
+        resolvedPressed,
+        pending,
+        iconClassName,
+      )}
       {props.children}
     </Toggle>
   );
