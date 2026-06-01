@@ -15,6 +15,7 @@ import type {
   SessionStatus,
   TranscriptTurn,
 } from "@/lib/call/interview-types";
+import Dashboardnavbar from "@/components/common/dash/dashnav/dashboardnavbar";
 
 export const dynamic = "force-dynamic";
 
@@ -117,6 +118,7 @@ export default function SessionDetail({
 
   return (
     <main className="bg-background text-foreground min-h-svh">
+      <Dashboardnavbar />
       <div className="mx-auto max-w-3xl space-y-6 px-6 py-10">
         <Button asChild variant="ghost" size="sm" className="-ml-2">
           <Link href="/call">
