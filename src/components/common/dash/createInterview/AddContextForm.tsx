@@ -81,7 +81,7 @@ export default function AddContextForm() {
           type="text"
           id="role"
           className="bg-white h-11 py-2 px-3 
-          placeholder:text-text-color-primary"
+          placeholder:text-muted-foreground"
           {...register("roleTitle")}
           placeholder="Senior Product Manager"
         />
@@ -98,7 +98,7 @@ export default function AddContextForm() {
         <textarea
           id="job"
           className="bg-white pt-2 px-4 
-           py-6 placeholder:text-text-color-primary
+           py-6 placeholder:text-muted-foreground
            h-20"
           {...register("jobDescription")}
           placeholder="We’re looking for a product manager ..."
@@ -118,7 +118,7 @@ export default function AddContextForm() {
         <input
           type="text"
           id="keySkills"
-          className="bg-white pt-2 placeholder:text-[#0F172A]"
+          className="bg-white pt-2 placeholder:text-muted-foreground"
           {...register("keySkills")}
           placeholder="Communication, technical depth…"
         />
@@ -131,13 +131,13 @@ export default function AddContextForm() {
       <div className="flex flex-col gap-1">
         <label
           htmlFor="custom"
-          className="text-base text-text-subtext  placeholder:text-[#0F172A]"
+          className="text-base text-text-subtext  placeholder:text-muted-foreground"
         >
           Custom question
         </label>
         <textarea
           id="custom"
-          className="bg-white  placeholder:text-[#0F172A] pt-2
+          className="bg-white  placeholder:text-muted-foreground pt-2
            h-20"
           {...register("customQuestion")}
           placeholder="Validate product judgement, visual ...."

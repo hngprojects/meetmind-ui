@@ -57,6 +57,8 @@ const FileUpload = () => {
       setFileName(file.name);
       setFileSize(file.size);
       setValue("CandidateUpload", file, { shouldValidate: true });
+
+      handleSubmit(onSubmit)();
     }
   };
 
@@ -68,6 +70,8 @@ const FileUpload = () => {
       setFileName(file.name);
       setFileSize(file.size);
       setValue("CandidateUpload", file, { shouldValidate: true });
+
+      handleSubmit(onSubmit)();
     }
   };
 
