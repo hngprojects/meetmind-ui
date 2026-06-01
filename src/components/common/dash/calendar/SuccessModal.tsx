@@ -99,7 +99,7 @@ const SuccessModal = ({
         role="dialog"
         aria-modal="true"
         aria-labelledby="success-modal-title"
-        className="w-full max-w-[680px] rounded-[32px] max-h-[356px]
+        className="w-full max-w-[680px] rounded-[32px] 
           bg-white p-6 md:p-8
         "
       >

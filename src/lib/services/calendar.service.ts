@@ -109,17 +109,20 @@ export const getCalendarAppointments = async (
     {
       params: {
         filter,
+        exclude_cancelled: true,
       },
     },
   );
 
-  return response.data.data.appointments
-    .filter((appointment) => appointment.status !== "cancelled")
-    .map(transformAppointment);
+  return response.data.data.appointments.map(transformAppointment);
 };
 
 const convertAvailabilityTime = (time: string, period: string) => {
   const [hour, minute] = time.split(":");
+
+  if (period !== "AM" && period !== "PM") {
+    throw new Error(`Invalid period: ${period}. Expected "AM" or "PM".`);
+  }
 
   return {
     hour,

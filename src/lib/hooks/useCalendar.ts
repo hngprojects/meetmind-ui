@@ -46,6 +46,9 @@ export function useRescheduleAppointment() {
       queryClient.invalidateQueries({
         queryKey: ["calendar-appointments"],
       });
+      queryClient.invalidateQueries({
+        queryKey: ["calendar-availability"],
+      });
     },
   });
 }
@@ -58,6 +61,9 @@ export function useCancelAppointment() {
     onSuccess: () => {
       queryClient.invalidateQueries({
         queryKey: ["calendar-appointments"],
+      });
+      queryClient.invalidateQueries({
+        queryKey: ["calendar-availability"],
       });
     },
   });

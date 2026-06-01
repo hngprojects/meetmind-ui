@@ -1,7 +1,13 @@
+export type AppointmentStatus =
+  | "scheduled"
+  | "cancelled"
+  | "completed"
+  | "rescheduled";
+
 export type CalendarAppointment = {
   id: string;
   role_title: string;
-  status: string;
+  status: AppointmentStatus;
   scheduled_start: string;
   scheduled_end: string;
   candidate_name: string;
