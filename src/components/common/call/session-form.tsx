@@ -84,7 +84,10 @@ export function SessionForm({ initial }: { initial?: SessionDTO }) {
     setSaving(true);
     const payload = {
       role,
-      candidateName,
+      // Backend expects a nested candidate object, not a flat candidateName field
+      candidate: {
+        name: candidateName,
+      },
       intro,
       durationMinutes,
       closing,
@@ -98,7 +101,8 @@ export function SessionForm({ initial }: { initial?: SessionDTO }) {
         : await api.post(`/api/v1/interviews`, payload);
 
       const session = response.data as SessionDTO;
-      router.push(`/call/sessions/${session.id}`);
+      // Redirect to the interview route instead of sessions
+      router.push(`/call/interview/${session.id}`);
       router.refresh();
     } catch (error) {
       const axiosError = error as { response?: { data?: unknown } };

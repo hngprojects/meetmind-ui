@@ -12,6 +12,7 @@ import { FaRegEyeSlash } from "react-icons/fa";
 import { IoEyeOutline } from "react-icons/io5";
 import Buttons from "@/components/reuseable-component/buttons";
 import { useAuthStore } from "@/store/authStore";
+import { useVerifyStore } from "@/store/verifyStore";
 
 const Signform = () => {
   const router = useRouter();
@@ -70,6 +71,7 @@ const Signform = () => {
       setFormData(data);
 
       if (next_step === "verify_email") {
+        useVerifyStore.getState().setPendingEmail(data.email);
         setIsSuccess(true);
         router.push("/verify-email");
         return;

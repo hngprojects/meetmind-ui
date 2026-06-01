@@ -11,6 +11,7 @@ import { ViewController } from "../app/view-controller";
 import { Toaster } from "@/components/ui/sonner";
 import { useAgentErrors } from "@/hooks/call/useAgentErrors";
 import { useDebugMode } from "@/hooks/call/useDebug";
+import api from "@/lib/api";
 import { getSandboxTokenSource } from "@/lib/call/utils";
 
 const IN_DEVELOPMENT = process.env.NODE_ENV !== "production";
@@ -30,35 +31,49 @@ interface AppProps {
 
 export function App({ appConfig, sessionId }: AppProps) {
   const tokenSource = useMemo(() => {
+    const API_BASE =
+      process.env.NEXT_PUBLIC_API_BASE_URL ||
+      "https://api.staging.meetmind.hng14.com";
+
     if (sessionId) {
       // Custom token source: pin the room name to the interview session id so
       // the agent loads that session's config.
       return TokenSource.custom(async () => {
-        const res = await fetch(
-          `https://api.staging.meetmind.hng14.com/api/v1/livekit/${sessionId}/token`,
-          {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-              participant_name: appConfig.agentName ?? "Candidate",
-            }),
-          },
-        );
-
-        if (!res.ok) {
-          const err = await res.text();
-          console.error("Token error:", err);
-          throw new Error(err);
+        // 1. Fetch interview details using the authenticated api client (includes JWT)
+        let participantName = "Candidate";
+        try {
+          const interviewRes = await api.get(`/api/v1/interviews/${sessionId}`);
+          const interviewData = interviewRes.data;
+          const payload = interviewData?.data ?? interviewData;
+          participantName =
+            payload?.candidate?.name ?? payload?.candidate_name ?? "Candidate";
+        } catch (e) {
+          console.warn(
+            "Failed to fetch interview details for candidate name:",
+            e,
+          );
         }
 
-        return res.json();
+        // 2. Fetch the LiveKit token — useSession will use these credentials to
+        //    call room.connect() internally. Do NOT call room.connect() here;
+        //    doing so consumes the token and prevents useSession from connecting.
+        const tokenRes = await api.post(`/api/v1/livekit/${sessionId}/token`, {
+          participant_name: participantName,
+        });
+        const tokenData = tokenRes.data;
+
+        // Return credentials to useSession which manages the WSS connection.
+        return {
+          serverUrl: tokenData.serverUrl,
+          participantToken: tokenData.participantToken,
+          roomName: tokenData.roomName || sessionId,
+          participantName: tokenData.participantName || participantName,
+        };
       });
     }
     return typeof process.env.NEXT_PUBLIC_CONN_DETAILS_ENDPOINT === "string"
       ? getSandboxTokenSource(appConfig)
-      : TokenSource.endpoint(
-          "https://api.staging.meetmind.hng14.com/api/v1/token",
-        );
+      : TokenSource.endpoint(`${API_BASE}/api/v1/token`);
   }, [appConfig, sessionId]);
 
   const session = useSession(

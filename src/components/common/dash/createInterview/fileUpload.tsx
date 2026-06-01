@@ -57,6 +57,8 @@ const FileUpload = () => {
       setFileName(file.name);
       setFileSize(file.size);
       setValue("CandidateUpload", file, { shouldValidate: true });
+
+      handleSubmit(onSubmit)();
     }
   };
 
@@ -68,6 +70,8 @@ const FileUpload = () => {
       setFileName(file.name);
       setFileSize(file.size);
       setValue("CandidateUpload", file, { shouldValidate: true });
+
+      handleSubmit(onSubmit)();
     }
   };
 
@@ -104,8 +108,9 @@ const FileUpload = () => {
         formData,
         {
           headers: {
-            "Content-Type": undefined,
+            "Content-Type": "multipart/form-data",
           },
+          timeout: 60000, // Increase timeout for file upload and parsing
         },
       );
       if (response.status === 200 || response.status === 201) {

@@ -1,6 +1,7 @@
 "use client";
 import React, { useState } from "react";
 import { ToggleSwitch } from "@/components/common/ToggleSwitch";
+import Link from "next/link";
 
 export default function SettingsForm() {
   // State for selectors
@@ -228,7 +229,7 @@ export default function SettingsForm() {
                 w-full sm:w-auto text-center shadow-sm
               `}
             >
-              Manage
+              <Link href="/calendar">Manage</Link>
             </button>
           </div>
         </div>

@@ -1,10 +1,11 @@
 import Link from "next/link";
 import { Plus } from "lucide-react";
-import { SiteHeader } from "@/components/common/call/site-header";
+// import { SiteHeader } from "@/components/common/call/site-header";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import type { SessionDTO, SessionStatus } from "@/lib/call/interview-types";
+import Dashboardnavbar from "@/components/common/dash/dashnav/dashboardnavbar";
 
 export const dynamic = "force-dynamic";
 
@@ -20,12 +21,12 @@ const statusVariant: Record<
 export default async function Dashboard() {
   let sessions: SessionDTO[] = [];
   try {
-    const res = await fetch(
-      "https://api.staging.meetmind.hng14.com/api/v1/interviews/",
-      {
-        cache: "no-store",
-      },
-    );
+    const API_BASE =
+      process.env.NEXT_PUBLIC_API_BASE_URL ||
+      "https://api.staging.meetmind.hng14.com";
+    const res = await fetch(`${API_BASE}/api/v1/interviews/`, {
+      cache: "no-store",
+    });
     if (res.ok) {
       sessions = await res.json();
     }
@@ -35,7 +36,9 @@ export default async function Dashboard() {
 
   return (
     <main className="bg-background text-foreground min-h-svh">
-      <SiteHeader />
+      {/* <SiteHeader /> */}
+
+      <Dashboardnavbar />
       <div className="mx-auto max-w-3xl px-6 py-10">
         <header className="mb-8 flex items-center justify-between">
           <h1 className="text-2xl font-semibold tracking-tight">Interviews</h1>
