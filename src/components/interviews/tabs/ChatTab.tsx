@@ -17,6 +17,7 @@ type AttachmentPreview = {
 type Props = {
   messages: ChatMessage[];
   onSendMessage?: (content: string, attachments: File[]) => Promise<void>;
+  isSendingMessage?: boolean;
   onEditMessage?: (messageId: string, newContent: string) => Promise<void>;
 };
 
@@ -24,6 +25,13 @@ type Props = {
 
 const ACCEPTED_FILE_TYPES = "image/*,application/pdf,.doc,.docx,.txt";
 const COPY_CHECKMARK_DURATION_MS = 2000;
+const ATTACHMENT_ONLY_MESSAGE =
+  "Add a message before sending an attachment. " +
+  "Document-only chat is not connected yet.";
+const MICROPHONE_BLOCKED_MESSAGE =
+  "Microphone access was not granted. Check Chrome site permissions and Windows microphone privacy settings, then reload and try again.";
+const SEND_FAILURE_MESSAGE =
+  "We could not send your message. Please try again.";
 
 // ─── Sub-components ───────────────────────────────────────────────────────────
 
@@ -211,15 +219,62 @@ function EditableUserMessage({
 
 type RecordingState = "idle" | "recording" | "transcribing";
 
+function isLocalhost(): boolean {
+  return ["localhost", "127.0.0.1", "::1"].includes(window.location.hostname);
+}
+
+function getErrorMessage(error: unknown, fallback: string): string {
+  if (error instanceof Error && error.message.trim()) return error.message;
+  return fallback;
+}
+
+function getMicrophoneErrorMessage(error: unknown): string {
+  if (!(error instanceof DOMException)) {
+    return "We could not start voice input. Please try again.";
+  }
+
+  switch (error.name) {
+    case "NotAllowedError":
+    case "SecurityError":
+      return MICROPHONE_BLOCKED_MESSAGE;
+    case "NotFoundError":
+      return "No microphone was found on this device.";
+    case "NotReadableError":
+      return "Your microphone is already in use by another app.";
+    case "AbortError":
+      return "Microphone setup was interrupted. Please try again.";
+    default:
+      return "We could not start voice input. Please try again.";
+  }
+}
+
 function useVoiceRecorder(
   onTranscript: (text: string) => void,
   transcribeAudio?: (audioBlob: Blob) => Promise<string>,
 ) {
   const [state, setState] = useState<RecordingState>("idle");
+  const [error, setError] = useState<string | null>(null);
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
   const chunksRef = useRef<Blob[]>([]);
 
   const start = useCallback(async () => {
+    setError(null);
+
+    if (!navigator.mediaDevices?.getUserMedia) {
+      setError("Voice input is not supported in this browser.");
+      return;
+    }
+
+    if (typeof MediaRecorder === "undefined") {
+      setError("Voice recording is not supported in this browser.");
+      return;
+    }
+
+    if (!window.isSecureContext && !isLocalhost()) {
+      setError("Microphone access requires HTTPS or localhost.");
+      return;
+    }
+
     try {
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
       const recorder = new MediaRecorder(stream);
@@ -253,30 +308,38 @@ function useVoiceRecorder(
       recorder.start();
       mediaRecorderRef.current = recorder;
       setState("recording");
-    } catch {
-      alert(
-        "Microphone access denied. Please allow microphone access and try again.",
-      );
+    } catch (recordingError) {
+      setState("idle");
+      setError(getMicrophoneErrorMessage(recordingError));
     }
   }, [onTranscript, transcribeAudio]);
 
   const stop = useCallback(() => {
-    mediaRecorderRef.current?.stop();
+    if (
+      mediaRecorderRef.current &&
+      mediaRecorderRef.current.state !== "inactive"
+    ) {
+      mediaRecorderRef.current.stop();
+    }
     mediaRecorderRef.current = null;
   }, []);
 
   const toggle = useCallback(() => {
-    if (state === "idle") start();
+    setError(null);
+    if (state === "idle") void start();
     else if (state === "recording") stop();
   }, [state, start, stop]);
 
-  return { state, toggle };
+  const clearError = useCallback(() => setError(null), []);
+
+  return { state, error, toggle, clearError };
 }
 
 // ==================== 🧩Main Component ====================
 export default function ChatTab({
   messages,
   onSendMessage,
+  isSendingMessage = false,
   onEditMessage,
 }: Props) {
   const [inputValue, setInputValue] = useState("");
@@ -285,6 +348,7 @@ export default function ChatTab({
   const fileInputRef = useRef<HTMLInputElement>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
+  const [composerError, setComposerError] = useState<string | null>(null);
   const attachmentsRef = useRef<AttachmentPreview[]>([]);
 
   useEffect(() => {
@@ -304,18 +368,35 @@ export default function ChatTab({
     };
   }, []);
 
-  const { state: recordingState, toggle: toggleRecording } = useVoiceRecorder(
-    (text) => setInputValue((prev) => (prev ? `${prev} ${text}` : text)),
-    undefined,
-  );
+  const {
+    state: recordingState,
+    error: recordingError,
+    toggle: toggleRecording,
+    clearError: clearRecordingError,
+  } = useVoiceRecorder((text) => {
+    setInputValue((prev) => (prev ? `${prev} ${text}` : text));
+  }, undefined);
 
   const handleSend = useCallback(async () => {
     const text = inputValue.trim();
     if (!text && attachments.length === 0) return;
-    if (isSending) return;
+    if (isSending || isSendingMessage) return;
 
     setIsSending(true);
     try {
+      setComposerError(null);
+
+      if (!onSendMessage) {
+        setComposerError("Chat sending is not available yet.");
+        return;
+      }
+
+      if (!text && attachments.length > 0) {
+        setComposerError(ATTACHMENT_ONLY_MESSAGE);
+        inputRef.current?.focus();
+        return;
+      }
+
       await onSendMessage?.(
         text,
         attachments.map((a) => a.file),
@@ -328,11 +409,13 @@ export default function ChatTab({
 
       setInputValue("");
       setAttachments([]);
+    } catch (error) {
+      setComposerError(getErrorMessage(error, SEND_FAILURE_MESSAGE));
     } finally {
       setIsSending(false);
       inputRef.current?.focus();
     }
-  }, [inputValue, attachments, isSending, onSendMessage]);
+  }, [inputValue, attachments, isSending, isSendingMessage, onSendMessage]);
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter" && !e.shiftKey) {
@@ -349,6 +432,7 @@ export default function ChatTab({
       url: file.type.startsWith("image/") ? URL.createObjectURL(file) : "",
       type: file.type.startsWith("image/") ? "image" : "file",
     }));
+    setComposerError(null);
     setAttachments((prev) => [...prev, ...previews]);
     e.target.value = "";
   };
@@ -367,6 +451,7 @@ export default function ChatTab({
       : recordingState === "transcribing"
         ? "Transcribing…"
         : "Voice input";
+  const inlineError = composerError ?? recordingError;
 
   return (
     <div className="flex h-full min-h-[520px] flex-col">
@@ -457,6 +542,14 @@ export default function ChatTab({
             ))}
           </div>
         )}
+        {inlineError && (
+          <p
+            role="alert"
+            className="mb-3 rounded-xl bg-[var(--color-error-bg)] px-4 py-2 text-xs font-medium text-[var(--color-error-text)]"
+          >
+            {inlineError}
+          </p>
+        )}
 
         <div className="flex items-center gap-3 rounded-full border border-[var(--color-card-border)] bg-[var(--color-card-bg)] px-4 py-3">
           <input
@@ -484,9 +577,12 @@ export default function ChatTab({
             type="text"
             placeholder="Reply to meet mind"
             value={inputValue}
-            onChange={(e) => setInputValue(e.target.value)}
+            onChange={(e) => {
+              setInputValue(e.target.value);
+              setComposerError(null);
+            }}
             onKeyDown={handleKeyDown}
-            disabled={isSending}
+            disabled={isSending || isSendingMessage}
             className="flex-1 bg-transparent text-sm outline-none placeholder:text-[var(--color-text-placeholder)] disabled:opacity-50"
           />
 
@@ -502,8 +598,13 @@ export default function ChatTab({
                   : "text-[var(--color-card-text)] hover:text-[var(--color-text-color-primary)]",
             ].join(" ")}
             aria-label={micLabel}
-            onClick={toggleRecording}
-            disabled={recordingState === "transcribing" || isSending}
+            onClick={() => {
+              clearRecordingError();
+              toggleRecording();
+            }}
+            disabled={
+              recordingState === "transcribing" || isSending || isSendingMessage
+            }
           >
             {recordingState === "recording" ? (
               <span className="relative flex h-[18px] w-[18px] items-center justify-center">
@@ -523,6 +624,7 @@ export default function ChatTab({
             disabled={
               !onSendMessage ||
               isSending ||
+              isSendingMessage ||
               (!inputValue.trim() && attachments.length === 0)
             }
             className="transition-opacity disabled:opacity-40 hover:opacity-70"
