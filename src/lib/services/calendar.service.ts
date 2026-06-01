@@ -113,7 +113,9 @@ export const getCalendarAppointments = async (
     },
   );
 
-  return response.data.data.appointments.map(transformAppointment);
+  return response.data.data.appointments
+    .filter((appointment) => appointment.status !== "cancelled")
+    .map(transformAppointment);
 };
 
 const convertAvailabilityTime = (time: string, period: string) => {
