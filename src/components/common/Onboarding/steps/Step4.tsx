@@ -8,6 +8,7 @@ import Image from "next/image";
 import { GoArrowLeft } from "react-icons/go";
 import { useMutation } from "@tanstack/react-query";
 import { onboardingAPI } from "@/lib/api/onboarding";
+import { Bot } from "lucide-react";
 
 const Step4 = () => {
   const data = onboardingStore((state) => state.data);
@@ -88,11 +89,10 @@ const Step4 = () => {
           <IntegrationCard
             name="LiveKit"
             logo={
-              <Image
-                src="/onboarding/LiveKit.svg"
-                width={24}
-                height={24}
-                alt="LiveKit"
+              <Bot
+                size={24}
+                aria-label="LiveKit"
+                className="text-[var(--color-brand-primary)]"
               />
             }
             isConnected={true}
