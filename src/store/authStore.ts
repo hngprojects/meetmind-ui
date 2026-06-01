@@ -1,6 +1,7 @@
 import { create } from "zustand";
 import { onboardingStore } from "./onboardingStore";
 import { clearAuthCookie, setAuthCookie } from "@/lib/auth-cookie";
+import type { CurrentUserProfile } from "@/lib/api/currentUser";
 
 const ONBOARDING_STORAGE_KEY = "onboarding-storage";
 
@@ -9,11 +10,7 @@ const clearOnboardingProgress = () => {
   localStorage.removeItem(ONBOARDING_STORAGE_KEY);
 };
 
-interface AuthUser {
-  id: string;
-  email: string;
-  name: string;
-}
+export type AuthUser = CurrentUserProfile;
 
 interface AuthState {
   user: AuthUser | null;
@@ -28,6 +25,7 @@ interface AuthState {
     refreshToken?: string | null,
     accessTokenExpiresAt?: string | null,
   ) => void;
+  setUser: (user: AuthUser) => void;
   logout: () => void;
   hydrateAuth: () => void;
 }
@@ -77,6 +75,11 @@ export const useAuthStore = create<AuthState>((set) => ({
       accessTokenExpiresAt,
       isAuthenticated: true,
     });
+  },
+
+  setUser: (user) => {
+    localStorage.setItem("user", JSON.stringify(user));
+    set({ user });
   },
 
   logout: () => {

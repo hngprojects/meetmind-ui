@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { onboardingStore } from "../../../../store/onboardingStore";
 import { IntegrationCard } from "../onboarding/IntegrationCard";
@@ -14,7 +15,13 @@ const Step4 = () => {
   const nextStep = onboardingStore((state) => state.nextStep);
   const prevStep = onboardingStore((state) => state.prevStep);
   const addToast = onboardingStore((s) => s.addToast);
-  const isValid = data.integrations !== null;
+  const activeIntegration = "livekit";
+
+  useEffect(() => {
+    if (data.integrations !== "livekit") {
+      updateData({ integrations: "livekit" });
+    }
+  }, [data.integrations, updateData]);
 
   const mutation = useMutation({
     mutationFn: onboardingAPI.setIntegrations,
@@ -62,9 +69,9 @@ const Step4 = () => {
                 alt="Google"
               />
             }
-            isConnected={data.integrations === "google"}
+            isConnected={false}
             disabled={true}
-            onConnect={() => updateData({ integrations: "google" })}
+            onConnect={() => undefined}
           />
           <IntegrationCard
             name="Zoom"
@@ -76,22 +83,23 @@ const Step4 = () => {
                 alt="Zoom"
               />
             }
-            isConnected={data.integrations === "zoom"}
+            isConnected={false}
             disabled={true}
-            onConnect={() => updateData({ integrations: "zoom" })}
+            onConnect={() => undefined}
           />
           <IntegrationCard
-            name="Livekit"
+            name="LiveKit"
             logo={
               <Image
                 src="/onboarding/Zoom.svg"
                 width={24}
                 height={24}
-                alt="Livekit"
+                alt="LiveKit"
               />
             }
-            isConnected={data.integrations === "livekit"}
+            isConnected={activeIntegration === "livekit"}
             disabled={false}
+            connectedLabel="Connected"
             onConnect={() => updateData({ integrations: "livekit" })}
           />
         </div>
@@ -99,10 +107,10 @@ const Step4 = () => {
           <Button
             onClick={() =>
               mutation.mutate({
-                integrations: data.integrations,
+                integrations: activeIntegration,
               })
             }
-            disabled={!isValid || mutation.isPending}
+            disabled={mutation.isPending}
             size="lg"
             className="w-full bg-primary hover:bg-primary/90 text-primary-foreground"
           >

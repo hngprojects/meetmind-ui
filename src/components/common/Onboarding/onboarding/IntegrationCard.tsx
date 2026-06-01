@@ -7,6 +7,7 @@ interface IntegrationCardProps {
   isConnected: boolean;
   onConnect: () => void;
   disabled?: boolean;
+  connectedLabel?: string;
 }
 
 export function IntegrationCard({
@@ -15,6 +16,7 @@ export function IntegrationCard({
   isConnected,
   onConnect,
   disabled,
+  connectedLabel = "Connected",
 }: IntegrationCardProps) {
   return (
     <div className="flex items-center justify-between p-4 bg-white border border-slate-100 rounded-xl">
@@ -26,7 +28,7 @@ export function IntegrationCard({
       {isConnected ? (
         <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-emerald-50 text-emerald-600 border border-emerald-100">
           <FaCheck size={14} strokeWidth={3} />
-          <span className="text-xs font-bold">Done</span>
+          <span className="text-xs font-bold">{connectedLabel}</span>
         </div>
       ) : (
         <button

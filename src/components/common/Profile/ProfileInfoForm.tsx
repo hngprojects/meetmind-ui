@@ -1,15 +1,35 @@
 "use client";
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
 import { ToggleSwitch } from "@/components/common/ToggleSwitch";
+import { useCurrentUserProfile } from "@/hooks/useCurrentUserProfile";
+import type { CurrentUserProfile } from "@/lib/api/currentUser";
 
 export default function ProfileInfoForm() {
+  const { data: currentUser } = useCurrentUserProfile();
+  const profileValues = useMemo(
+    () => getProfileFormValues(currentUser),
+    [currentUser],
+  );
+  const profileKey = [
+    currentUser?.id,
+    profileValues.fullName,
+    profileValues.role,
+    profileValues.company,
+    profileValues.email,
+  ].join(":");
+
+  return <ProfileInfoFields key={profileKey} initialProfile={profileValues} />;
+}
+
+type ProfileFormValues = ReturnType<typeof getProfileFormValues>;
+
+function ProfileInfoFields({
+  initialProfile,
+}: {
+  initialProfile: ProfileFormValues;
+}) {
   // State for form fields
-  const [profile, setProfile] = useState({
-    fullName: "John Micheal",
-    role: "Hiring Manager",
-    company: "Emmy LLC",
-    email: "johnmicheal@gmail.com",
-  });
+  const [profile, setProfile] = useState(initialProfile);
 
   // State for toggles
   const [requireApproval, setRequireApproval] = useState(true);
@@ -67,6 +87,7 @@ export default function ProfileInfoForm() {
               name="role"
               value={profile.role}
               onChange={handleProfileChange}
+              placeholder="No role set"
               className="w-full px-4 py-3 bg-white border border-[#DADADA] rounded-xl text-gray-800 text-sm focus:outline-none focus:border-[#02505e] transition-colors"
             />
           </div>
@@ -80,6 +101,7 @@ export default function ProfileInfoForm() {
               name="company"
               value={profile.company}
               onChange={handleProfileChange}
+              placeholder="No company set"
               className="w-full px-4 py-3 bg-white border border-[#DADADA] rounded-xl text-gray-800 text-sm focus:outline-none focus:border-[#02505e] transition-colors"
             />
           </div>
@@ -93,6 +115,7 @@ export default function ProfileInfoForm() {
               name="email"
               value={profile.email}
               onChange={handleProfileChange}
+              placeholder="No email available"
               className="w-full px-4 py-3 bg-white border border-[#DADADA] rounded-xl text-gray-800 text-sm focus:outline-none focus:border-[#02505e] transition-colors"
             />
           </div>
@@ -206,9 +229,10 @@ export default function ProfileInfoForm() {
             </div>
             <button
               type="button"
-              className="px-5 py-2.5 border border-[#DADADA] hover:bg-gray-50 text-gray-700 font-semibold text-sm rounded-xl transition-colors cursor-pointer w-full sm:w-auto text-center"
+              disabled
+              className="px-5 py-2.5 bg-[#E5E7EB] text-gray-500 font-semibold text-sm rounded-xl transition-colors cursor-not-allowed w-full sm:w-auto text-center"
             >
-              Disconnect
+              Coming soon
             </button>
           </div>
 
@@ -239,10 +263,40 @@ export default function ProfileInfoForm() {
             </div>
             <button
               type="button"
-              className="px-5 py-2.5 bg-[#02505E] hover:bg-[#02505E]/95 text-white font-semibold text-sm rounded-xl transition-colors cursor-pointer w-full sm:w-auto text-center"
+              disabled
+              className="px-5 py-2.5 bg-[#E5E7EB] text-gray-500 font-semibold text-sm rounded-xl transition-colors cursor-not-allowed w-full sm:w-auto text-center"
             >
-              Connect
+              Coming soon
             </button>
+          </div>
+
+          {/* LiveKit Row */}
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between p-4 bg-white border border-gray-100 rounded-2xl gap-4 shadow-sm">
+            <div className="flex items-center gap-3">
+              <div className="p-2 bg-gray-50 rounded-xl">
+                <svg
+                  width="24"
+                  height="24"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M15 10L21 6V18L15 14V17C15 18.1 14.1 19 13 19H3C1.9 19 1 18.1 1 17V7C1 5.9 1.9 5 3 5H13C14.1 5 15 5.9 15 7V10Z"
+                    fill="#02505E"
+                  />
+                </svg>
+              </div>
+              <div>
+                <h3 className="text-sm font-bold text-[#0F172A]">LiveKit</h3>
+                <p className="text-xs text-[#5E6470]">
+                  Connected for live AI interview rooms and transcripts.
+                </p>
+              </div>
+            </div>
+            <div className="px-5 py-2.5 rounded-xl bg-emerald-50 text-emerald-600 border border-emerald-100 font-semibold text-sm w-full sm:w-auto text-center">
+              Connected
+            </div>
           </div>
         </div>
       </section>
@@ -281,4 +335,13 @@ export default function ProfileInfoForm() {
       </section>
     </div>
   );
+}
+
+function getProfileFormValues(user?: CurrentUserProfile | null) {
+  return {
+    fullName: user?.name?.trim() || "User",
+    role: user?.role?.trim() || "",
+    company: user?.companyName?.trim() || "",
+    email: user?.email?.trim() || "",
+  };
 }

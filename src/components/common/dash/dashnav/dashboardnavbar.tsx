@@ -6,8 +6,14 @@ import { useRouter } from "next/navigation";
 import Dashnavlist from "./dashnavlist";
 import SignOutModal from "./SignOutModal";
 import { useUnreadNotificationsCount } from "@/hooks/useNotifications";
+import { useCurrentUserProfile } from "@/hooks/useCurrentUserProfile";
 import { useAuthStore } from "@/store/authStore";
 import { revokeAllSessions } from "@/lib/auth";
+import {
+  getCurrentUserDisplayName,
+  getCurrentUserEmail,
+} from "@/lib/api/currentUser";
+import { UserAvatar } from "@/components/common/UserAvatar";
 import { MdKeyboardArrowDown } from "react-icons/md";
 import {
   LuUser,
@@ -24,7 +30,10 @@ const Dashboardnavbar = () => {
   const dropdownRef = useRef<HTMLDivElement>(null);
   const router = useRouter();
   const { data: unreadNotificationCount = 0 } = useUnreadNotificationsCount();
+  const { data: currentUser } = useCurrentUserProfile();
   const logout = useAuthStore((state) => state.logout);
+  const displayName = getCurrentUserDisplayName(currentUser);
+  const displayEmail = getCurrentUserEmail(currentUser);
 
   // Close dropdown when clicking outside
   useEffect(() => {
@@ -107,18 +116,15 @@ const Dashboardnavbar = () => {
             {/* Profile Dropdown Container */}
             <div className="relative" ref={dropdownRef}>
               <button
+                type="button"
                 onClick={() => setIsDropdownOpen(!isDropdownOpen)}
                 className="flex items-center gap-2 cursor-pointer hover:opacity-90 transition-opacity p-1 rounded-lg"
+                aria-label="Open profile menu"
               >
-                <div className="w-[35px] h-[35px] rounded-full overflow-hidden border border-gray-100">
-                  <Image
-                    src="/images/profile-icon.png"
-                    alt="profile-icon"
-                    width={35}
-                    height={35}
-                    className="object-cover"
-                  />
-                </div>
+                <UserAvatar
+                  user={currentUser}
+                  className="h-[35px] w-[35px] border border-gray-100 text-xs"
+                />
                 <MdKeyboardArrowDown
                   className={`text-xl transition-transform duration-200 ${isDropdownOpen ? "rotate-180" : ""}`}
                 />
@@ -129,10 +135,10 @@ const Dashboardnavbar = () => {
                 <div className="absolute right-0 mt-3 w-56 bg-white rounded-xl shadow-lg border border-gray-100 py-2 z-50 animate-in fade-in slide-in-from-top-2 duration-150">
                   <div className="px-4 py-2.5 border-b border-gray-50">
                     <p className="text-sm font-semibold text-[#0F172A]">
-                      John Micheal
+                      {displayName}
                     </p>
                     <p className="text-xs text-gray-500 truncate">
-                      johnmicheal@gmail.com
+                      {displayEmail}
                     </p>
                   </div>
 
