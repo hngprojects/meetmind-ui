@@ -129,10 +129,7 @@ export default function AddContextForm() {
 
       {/* Custom question */}
       <div className="flex flex-col gap-1">
-        <label
-          htmlFor="custom"
-          className="text-base text-text-subtext  placeholder:text-muted-foreground"
-        >
+        <label htmlFor="custom" className="text-base text-text-subtext">
           Custom question
         </label>
         <textarea

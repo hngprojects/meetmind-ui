@@ -4,6 +4,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { Mail } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { resendVerificationEmail } from "@/lib/auth";
+import Toast from "./Toast";
 
 interface Props {
   email: string | null;
@@ -14,6 +15,10 @@ const COOLDOWN_TIME = 60;
 const VerifyEmailView = ({ email }: Props) => {
   const [loading, setLoading] = useState(false);
   const [sent, setSent] = useState(false);
+  const [toast, setToast] = useState<{
+    type: "success" | "error";
+    message: string;
+  } | null>(null);
   const [cooldown, setCooldown] = useState(0);
 
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
@@ -24,8 +29,14 @@ const VerifyEmailView = ({ email }: Props) => {
     try {
       setLoading(true);
       setSent(false);
+      setToast(null);
 
       await resendVerificationEmail(email);
+
+      setToast({
+        type: "success",
+        message: "A new verification email has been sent.",
+      });
 
       setSent(true);
 
@@ -51,6 +62,10 @@ const VerifyEmailView = ({ email }: Props) => {
       }, 1000);
     } catch (err) {
       console.error("Failed to resend email", err);
+      setToast({
+        type: "error",
+        message: "Couldn’t resend the email. Please try again.",
+      });
     } finally {
       setLoading(false);
     }
@@ -64,6 +79,16 @@ const VerifyEmailView = ({ email }: Props) => {
       }
     };
   }, []);
+
+  useEffect(() => {
+    if (!toast) return;
+
+    const timeout = setTimeout(() => {
+      setToast(null);
+    }, 5000);
+
+    return () => clearTimeout(timeout);
+  }, [toast]);
 
   if (!email) {
     return (
@@ -83,6 +108,13 @@ const VerifyEmailView = ({ email }: Props) => {
   return (
     <div className="min-h-screen flex items-center justify-center bg-[var(--color-bg-secondary)] px-4">
       <div className="w-full max-w-[480px] text-center">
+        {toast && (
+          <Toast
+            type={toast.type}
+            message={toast.message}
+            onClose={() => setToast(null)}
+          />
+        )}
         {/* Icon */}
         <div className="flex justify-center mb-6">
           <div className="w-16 h-16 rounded-full bg-[var(--color-soft-green)] flex items-center justify-center">

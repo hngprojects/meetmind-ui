@@ -160,9 +160,7 @@ export default function Analyzer() {
             <div key={index} className="flex items-center justify-between py-4">
               <div className="flex items-center gap-3">
                 <div className="w-9 h-9 rounded-lg flex items-center justify-center text-gray-500">
-                  <div className="w-9 h-9 rounded-lg flex items-center justify-center text-gray-500">
-                    <Icon size={18} />
-                  </div>
+                  <Icon size={18} />
                 </div>
                 <span className="text-[15px] text-gray-900">{step.label}</span>
               </div>
