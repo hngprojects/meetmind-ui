@@ -35,6 +35,26 @@ const CalendarPanel = ({
   const { data: upcomingAppointments = [] } =
     useCalendarAppointments("all_upcoming");
 
+  const handleSelect = (appointment: Appointment) => {
+    const isSameAppointment = selectedAppointment?.id === appointment.id;
+
+    if (isSameAppointment) {
+      setSelectedAppointment(null);
+
+      setSelectedStartTime(null);
+
+      setSelectedEndTime(null);
+
+      return;
+    }
+
+    setSelectedAppointment(appointment);
+
+    setSelectedStartTime(appointment.startTime);
+
+    setSelectedEndTime(appointment.endTime);
+  };
+
   return (
     <section>
       <div className="flex items-start justify-between">
@@ -77,25 +97,7 @@ const CalendarPanel = ({
                 role={appointment.role}
                 startTime={appointment.startTime}
                 endTime={appointment.endTime}
-                onClick={() => {
-                  const isSameAppointment =
-                    selectedAppointment?.id === appointment.id;
-
-                  if (isSameAppointment) {
-                    setSelectedAppointment(null);
-
-                    setSelectedStartTime(null);
-                    setSelectedEndTime(null);
-
-                    return;
-                  }
-
-                  setSelectedAppointment(appointment);
-
-                  setSelectedStartTime(appointment.startTime);
-
-                  setSelectedEndTime(appointment.endTime);
-                }}
+                onClick={() => handleSelect(appointment)}
               />
             ))}
           </div>
@@ -112,25 +114,7 @@ const CalendarPanel = ({
               role={appointment.role}
               startTime={appointment.startTime}
               endTime={appointment.endTime}
-              onClick={() => {
-                const isSameAppointment =
-                  selectedAppointment?.id === appointment.id;
-
-                if (isSameAppointment) {
-                  setSelectedAppointment(null);
-
-                  setSelectedStartTime(null);
-                  setSelectedEndTime(null);
-
-                  return;
-                }
-
-                setSelectedAppointment(appointment);
-
-                setSelectedStartTime(appointment.startTime);
-
-                setSelectedEndTime(appointment.endTime);
-              }}
+              onClick={() => handleSelect(appointment)}
             />
           ))}
         </div>
