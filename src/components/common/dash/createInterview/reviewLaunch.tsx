@@ -78,7 +78,7 @@ export default function ReviewLaunch() {
 
       resetAll();
 
-      router.push(`/call/sessions/${encodeURIComponent(sessionId)}`);
+      router.push(`/call/interview/${encodeURIComponent(sessionId)}`);
     } catch (error) {
       setServerError(getErrorMessage(error));
     } finally {

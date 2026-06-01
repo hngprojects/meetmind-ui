@@ -12,9 +12,15 @@ export const inputSchema = z.object({
     .string()
     .trim()
     .nonempty("Phone number is required")
-    .regex(
-      /^\+?(234|0)[789][01]\d{8}$/,
-      "Please enter a valid Nigerian phone number",
+    .refine(
+      (value) => {
+        const normalized = value.replace(/[\s\-().]/g, "");
+        return /^\+\d{7,15}$/.test(normalized);
+      },
+      {
+        message:
+          "Please enter a valid phone number with country code (e.g., +1234567890)",
+      },
     ),
   roleTitle: z
     .string()

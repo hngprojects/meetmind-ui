@@ -56,14 +56,17 @@ const Input = () => {
       roleTitle: candidate.current_role || extractedDetails?.current_role || "",
       yearsofExperience:
         candidate.years_of_experience ??
-        extractedDetails?.years_of_experience ??
+        (Number.isFinite(extractedDetails?.years_of_experience)
+          ? extractedDetails?.years_of_experience
+          : undefined) ??
         undefined,
       keySkills:
         candidate.skills?.join(", ") ||
         extractedDetails?.skills?.join(", ") ||
         "",
       location: candidate.location || extractedDetails?.location || "",
-      portfolioLink: candidate.portfolio_url || "",
+      portfolioLink:
+        candidate.portfolio_url || extractedDetails?.portfolio_url || "",
     },
   });
   // ← replace watch() with useWatch()
@@ -116,7 +119,7 @@ const Input = () => {
           <input
             type="text"
             id="name"
-            className="bg-white h-11 py-2 px-3 placeholder:text-text-color-primary
+            className="bg-white h-11 py-2 px-3 placeholder:text-muted-foreground
               border border-gray-200 rounded-lg focus:outline-none focus:border-[#02505E]"
             {...register("name")}
             placeholder="John Doe"
@@ -134,7 +137,7 @@ const Input = () => {
           <input
             type="email"
             id="email"
-            className="bg-white h-11 py-2 px-3 placeholder:text-text-color-primary
+            className="bg-white h-11 py-2 px-3 placeholder:text-muted-foreground
               border border-gray-200 rounded-lg focus:outline-none focus:border-[#02505E]"
             {...register("email")}
             placeholder="Temibalogun@gmail.com"
@@ -152,7 +155,7 @@ const Input = () => {
           <input
             type="text"
             id="roleTitle"
-            className="bg-white h-11 py-2 px-3 placeholder:text-text-color-primary
+            className="bg-white h-11 py-2 px-3 placeholder:text-muted-foreground
               border border-gray-200 rounded-lg focus:outline-none focus:border-[#02505E]"
             {...register("roleTitle")}
             placeholder="Product Designer"
@@ -173,7 +176,7 @@ const Input = () => {
           <input
             type="number"
             id="yearsofExperience"
-            className="bg-white h-11 py-2 px-3 placeholder:text-text-color-primary
+            className="bg-white h-11 py-2 px-3 placeholder:text-muted-foreground
               border border-gray-200 rounded-lg focus:outline-none focus:border-[#02505E]"
             {...register("yearsofExperience", { valueAsNumber: true })}
             placeholder="5"
@@ -196,7 +199,7 @@ const Input = () => {
           <input
             type="text"
             id="keySkills"
-            className="bg-white h-11 py-2 px-3 placeholder:text-text-color-primary
+            className="bg-white h-11 py-2 px-3 placeholder:text-muted-foreground
               border border-gray-200 rounded-lg focus:outline-none focus:border-[#02505E]"
             {...register("keySkills")}
             placeholder="Figma, Sketch, Adobe XD"
@@ -216,7 +219,7 @@ const Input = () => {
           <input
             type="text"
             id="location"
-            className="bg-white h-11 py-2 px-3 placeholder:text-text-color-primary
+            className="bg-white h-11 py-2 px-3 placeholder:text-muted-foreground
               border border-gray-200 rounded-lg focus:outline-none focus:border-[#02505E]"
             {...register("location")}
             placeholder="Lagos, Nigeria"
@@ -234,7 +237,7 @@ const Input = () => {
           <input
             type="text"
             id="phone"
-            className="bg-white h-11 py-2 px-3 placeholder:text-text-color-primary
+            className="bg-white h-11 py-2 px-3 placeholder:text-muted-foreground
               border border-gray-200 rounded-lg focus:outline-none focus:border-[#02505E]"
             {...register("phone")}
             placeholder="+2348012345678"
@@ -255,7 +258,7 @@ const Input = () => {
           <input
             type="text"
             id="portfolioLink"
-            className="bg-white h-11 py-2 px-3 placeholder:text-text-color-primary
+            className="bg-white h-11 py-2 px-3 placeholder:text-muted-foreground
               border border-gray-200 rounded-lg focus:outline-none focus:border-[#02505E]"
             {...register("portfolioLink")}
             placeholder="https://www.behance.net/your-profile"
