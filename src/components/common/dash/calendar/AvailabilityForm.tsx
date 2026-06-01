@@ -3,9 +3,12 @@
 import { useEffect, useRef, useState } from "react";
 import { HiOutlineMail } from "react-icons/hi";
 import type { Appointment, TimeOption } from "@/lib/appointmentTypes";
-import { useCalendarAvailability } from "@/lib/hooks/useCalendar";
+import {
+  useCalendarAvailability,
+  useRescheduleAppointment,
+} from "@/lib/hooks/useCalendar";
 import { Button } from "@/components/ui/button";
-import { useRescheduleAppointment } from "@/lib/hooks/useCalendar";
+import { AxiosError } from "axios";
 
 type AvailabilityFormProps = {
   selectedAppointment: Appointment | null;
@@ -47,6 +50,7 @@ const AvailabilityForm = ({
   const rescheduleMutation = useRescheduleAppointment();
 
   const [showStartDropdown, setShowStartDropdown] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
 
   const [showEndDropdown, setShowEndDropdown] = useState(false);
   const startDropdownRef = useRef<HTMLDivElement | null>(null);
@@ -138,7 +142,23 @@ const AvailabilityForm = ({
       },
       {
         onSuccess: () => {
+          setErrorMessage("");
           setIsSuccessModalOpen(true);
+        },
+
+        onError: (error: Error) => {
+          if (error instanceof AxiosError) {
+            setErrorMessage(
+              error.response?.data?.message ??
+                "Failed to reschedule interview. Please try again.",
+            );
+            return;
+          }
+
+          setErrorMessage(
+            error.message ||
+              "Failed to reschedule interview. Please try again.",
+          );
         },
       },
     );
@@ -352,21 +372,26 @@ const AvailabilityForm = ({
             </div>
 
             {/* Button */}
+            {errorMessage && (
+              <p className="text-sm text-error">{errorMessage}</p>
+            )}
             <Button
               type="button"
-              disabled={!isFormComplete}
+              disabled={!isFormComplete || rescheduleMutation.isPending}
               onClick={handleScheduleInterview}
               className={`
                 mb-6 flex h-12 w-full md:w-[190px] items-center justify-center rounded-lg
                 text-sm font-medium transition-opacity
                 ${
-                  isFormComplete
+                  isFormComplete && !rescheduleMutation.isPending
                     ? "cursor-pointer bg-text-primary text-white hover:opacity-90"
                     : "cursor-not-allowed bg-gray-300 text-gray-500"
                 }
               `}
             >
-              Schedule Interview
+              {rescheduleMutation.isPending
+                ? "Scheduling..."
+                : "Schedule Interview"}
             </Button>
           </div>
         </div>
