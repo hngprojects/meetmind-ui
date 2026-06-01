@@ -1,11 +1,11 @@
 import { Public_Sans } from "next/font/google";
 import { Geist, Geist_Mono, Figtree, Instrument_Serif } from "next/font/google";
 import { headers } from "next/headers";
-import { ThemeProvider } from "@/components/common/call/app/theme-provider";
-import { ThemeToggle } from "@/components/common/call/app/theme-toggle";
+// import { ThemeProvider } from "@/components/common/call/app/theme-provider";
+// import { ThemeToggle } from "@/components/common/call/app/theme-toggle";
 import { cn } from "@/lib/utils";
 import { getAppConfig, getStyles } from "@/lib/call/utils";
-import Dashboardnavbar from "@/components/common/dash/dashnav/dashboardnavbar";
+// import Dashboardnavbar from "@/components/common/dash/dashnav/dashboardnavbar";
 
 const publicSans = Public_Sans({
   variable: "--font-public-sans",
@@ -57,19 +57,18 @@ export default async function RootLayout({ children }: RootLayoutProps) {
       <title>{pageTitle}</title>
       <meta name="description" content={pageDescription} />
 
-      <ThemeProvider
+      {/* <ThemeProvider
         attribute="class"
         defaultTheme="system"
         enableSystem
         disableTransitionOnChange
-      >
-        <Dashboardnavbar />
+      > */}
 
-        {children}
-        <div className="group fixed bottom-0 left-1/2 z-50 mb-2 -translate-x-1/2">
-          <ThemeToggle className="translate-y-20 transition-transform delay-150 duration-300 group-hover:translate-y-0" />
-        </div>
-      </ThemeProvider>
+      {children}
+      <div className="group fixed bottom-0 left-1/2 z-50 mb-2 -translate-x-1/2">
+        {/* <ThemeToggle className="translate-y-20 transition-transform delay-150 duration-300 group-hover:translate-y-0" /> */}
+      </div>
+      {/* </ThemeProvider> */}
     </div>
   );
 }
