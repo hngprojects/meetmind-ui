@@ -37,6 +37,9 @@ const GoogleCallback = () => {
 
         if (!isMounted) {
           localStorage.removeItem("token");
+          localStorage.removeItem("user");
+          localStorage.removeItem("refresh_token");
+          localStorage.removeItem("access_token_expires_at");
           return;
         }
         setAuth(authUser, token);
@@ -49,6 +52,8 @@ const GoogleCallback = () => {
       } catch {
         localStorage.removeItem("token");
         localStorage.removeItem("user");
+        localStorage.removeItem("refresh_token");
+        localStorage.removeItem("access_token_expires_at");
 
         if (isMounted) {
           router.replace("/sign-in?error=google_auth_failed");

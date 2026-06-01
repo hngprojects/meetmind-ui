@@ -96,6 +96,8 @@ const Signform = () => {
     } catch (error) {
       localStorage.removeItem("token");
       localStorage.removeItem("user");
+      localStorage.removeItem("refresh_token");
+      localStorage.removeItem("access_token_expires_at");
 
       if (axios.isAxiosError(error)) {
         const responseData = error.response?.data;

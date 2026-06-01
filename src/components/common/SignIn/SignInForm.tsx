@@ -73,6 +73,11 @@ const SignInForm = () => {
         router.push("/dashboard");
       }
     } catch (error) {
+      localStorage.removeItem("token");
+      localStorage.removeItem("user");
+      localStorage.removeItem("refresh_token");
+      localStorage.removeItem("access_token_expires_at");
+
       if (axios.isAxiosError(error)) {
         const detail = error.response?.data?.detail;
         const errorMessage =

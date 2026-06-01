@@ -15,8 +15,6 @@ const Step4 = () => {
   const nextStep = onboardingStore((state) => state.nextStep);
   const prevStep = onboardingStore((state) => state.prevStep);
   const addToast = onboardingStore((s) => s.addToast);
-  const activeIntegration = "livekit";
-
   useEffect(() => {
     if (data.integrations !== "livekit") {
       updateData({ integrations: "livekit" });
@@ -91,23 +89,22 @@ const Step4 = () => {
             name="LiveKit"
             logo={
               <Image
-                src="/onboarding/Zoom.svg"
+                src="/onboarding/LiveKit.svg"
                 width={24}
                 height={24}
                 alt="LiveKit"
               />
             }
-            isConnected={activeIntegration === "livekit"}
+            isConnected={true}
             disabled={false}
             connectedLabel="Connected"
-            onConnect={() => updateData({ integrations: "livekit" })}
           />
         </div>
         <div className="flex flex-col gap-2 items-center">
           <Button
             onClick={() =>
               mutation.mutate({
-                integrations: activeIntegration,
+                integrations: "livekit",
               })
             }
             disabled={mutation.isPending}

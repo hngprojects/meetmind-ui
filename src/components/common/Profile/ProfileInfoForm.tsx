@@ -76,6 +76,7 @@ function ProfileInfoFields({
               name="fullName"
               value={profile.fullName}
               onChange={handleProfileChange}
+              placeholder="User"
               className="w-full px-4 py-3 bg-white border border-[#DADADA] rounded-xl text-gray-800 text-sm focus:outline-none focus:border-[#02505e] transition-colors"
             />
           </div>
@@ -339,7 +340,7 @@ function ProfileInfoFields({
 
 function getProfileFormValues(user?: CurrentUserProfile | null) {
   return {
-    fullName: user?.name?.trim() || "User",
+    fullName: user?.name?.trim() || "",
     role: user?.role?.trim() || "",
     company: user?.companyName?.trim() || "",
     email: user?.email?.trim() || "",

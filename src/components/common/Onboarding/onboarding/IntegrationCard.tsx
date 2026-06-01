@@ -5,7 +5,7 @@ interface IntegrationCardProps {
   name: string;
   logo: ReactNode;
   isConnected: boolean;
-  onConnect: () => void;
+  onConnect?: () => void;
   disabled?: boolean;
   connectedLabel?: string;
 }
@@ -36,7 +36,7 @@ export function IntegrationCard({
           disabled={disabled}
           onClick={() => {
             if (disabled) return;
-            onConnect();
+            onConnect?.();
           }}
           className={`px-4 py-1.5 text-xs font-bold rounded-full transition-colors
       ${

@@ -14,7 +14,7 @@ export function useCurrentUserProfile() {
   const setUser = useAuthStore((state) => state.setUser);
 
   const query = useQuery({
-    queryKey: ["current-user-profile"],
+    queryKey: ["current-user-profile", token],
     queryFn: getCurrentUserProfile,
     enabled: Boolean(token),
     staleTime: 60_000,

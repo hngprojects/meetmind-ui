@@ -34,7 +34,7 @@ export function normalizeCurrentUser(raw: unknown): CurrentUserProfile {
 
   return {
     id: getStringValue(source.id) ?? "",
-    name: name || "User",
+    name,
     email: getStringValue(source.email) ?? "",
     role:
       getStringValue(source.role) ??
