@@ -29,7 +29,7 @@ interface DashboardResponse {
 interface Session {
   interview_id: string;
   candidate_name: string;
-  // role_title: string;
+  role_title: string;
   elapsed_seconds: number | null;
   questions_asked: number;
   questions_total: number;
