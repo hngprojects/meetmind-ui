@@ -48,8 +48,8 @@ const CreatePage1 = () => {
          flex items-center justify-center w-full scrollbar-none"
         >
           <div
-            className=" rounded-2xl max-h-[80vh] overflow-y-auto
-          p-6 md:w-[55%] lg:w-[35%] scrollbar-none flex flex-col gap-7 bg-background"
+            className=" rounded-2xl max-h-[90vh] overflow-y-auto
+          p-6 md:w-[57%] lg:w-[37%] scrollbar-none flex flex-col gap-7 bg-background"
           >
             {/* Header */}
             <div className="flex justify-between items-start">

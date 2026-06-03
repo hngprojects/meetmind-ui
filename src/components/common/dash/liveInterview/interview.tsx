@@ -6,11 +6,13 @@ import LiveSession from "./liveSession";
 import Schedule from "./schedule";
 import NeedAttention from "./needAttenstion";
 import Completed from "./completed";
+import { ToastContainer } from "react-toastify";
 
 const Interview = () => {
   const { open } = useCreateStore();
   return (
     <div className="flex flex-col gap-6">
+      <ToastContainer />
       <InterviewOverview />
       <LiveSession />
       <div

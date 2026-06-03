@@ -118,7 +118,8 @@ export default function AddContextForm() {
         <input
           type="text"
           id="keySkills"
-          className="bg-white pt-2 placeholder:text-muted-foreground"
+          className="bg-white h-11 py-2 px-3 
+          placeholder:text-muted-foreground"
           {...register("keySkills")}
           placeholder="Communication, technical depth…"
         />
@@ -134,8 +135,8 @@ export default function AddContextForm() {
         </label>
         <textarea
           id="custom"
-          className="bg-white  placeholder:text-muted-foreground pt-2
-           h-20"
+          className="bg-white  placeholder:text-muted-foreground pt-2 px-4 
+           py-6 h-20"
           {...register("customQuestion")}
           placeholder="Validate product judgement, visual ...."
         />
