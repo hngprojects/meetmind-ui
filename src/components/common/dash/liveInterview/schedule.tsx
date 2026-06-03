@@ -16,6 +16,7 @@ function getWeekDays() {
   const today = new Date();
   const days = [];
   const dayLabels = ["sun", "mon", "tue", "wed", "thu", "fri", "sat"];
+  // const currentDay = today.getDay();
 
   // Show 5 days centered around today
   const start = new Date(today);

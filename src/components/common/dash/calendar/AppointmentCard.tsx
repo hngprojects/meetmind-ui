@@ -42,12 +42,12 @@ const AppointmentCard = ({
         </div>
 
         {/* Text Content */}
-        <div>
-          <h3 className="text-[20px] font-bold leading-[28px] text-calendar-primary">
+        <div className="min-w-0 flex-1">
+          <h3 className="text-[20px] font-bold leading-[28px] text-calendar-primary break-words">
             {role}
           </h3>
 
-          <p className="mt-1 text-base font-medium text-calendar-secondary">
+          <p className="mt-1 text-base font-medium text-calendar-secondary break-all">
             {email}
           </p>
 

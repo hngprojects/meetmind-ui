@@ -7,10 +7,12 @@ import CalendarSidebar from "./CalendarSidebar";
 import type { Appointment, TimeOption } from "@/lib/appointmentTypes";
 import AppointmentDetails from "./AppointmentDetails";
 import SuccessModal from "./SuccessModal";
+import { useCancelAppointment } from "@/lib/hooks/useCalendar";
 
 const Calendar = () => {
   const [selectedDate, setSelectedDate] = useState(new Date().getDate());
   const [currentDate, setCurrentDate] = useState(new Date());
+  const [cancelError, setCancelError] = useState("");
 
   const [selectedAppointment, setSelectedAppointment] =
     useState<Appointment | null>(null);
@@ -24,9 +26,35 @@ const Calendar = () => {
   );
 
   const [isSuccessModalOpen, setIsSuccessModalOpen] = useState(false);
+  const cancelMutation = useCancelAppointment();
+
+  const handleCancelAppointment = () => {
+    if (!selectedAppointment) {
+      return;
+    }
+
+    cancelMutation.mutate(selectedAppointment.id, {
+      onSuccess: () => {
+        setCancelError("");
+
+        setSelectedAppointment(null);
+
+        setSelectedStartTime(null);
+
+        setSelectedEndTime(null);
+      },
+
+      onError: (error: Error) => {
+        setCancelError(
+          error.message || "Failed to cancel interview. Please try again.",
+        );
+      },
+    });
+  };
 
   return (
     <>
+      {cancelError && <p className="mb-4 text-sm text-error">{cancelError}</p>}
       <CalendarLayout
         sidebar={
           <CalendarSidebar
@@ -58,13 +86,7 @@ const Calendar = () => {
               appointment={selectedAppointment}
               selectedStartTime={selectedStartTime}
               selectedEndTime={selectedEndTime}
-              onCancel={() => {
-                setSelectedAppointment(null);
-
-                setSelectedStartTime(null);
-
-                setSelectedEndTime(null);
-              }}
+              onCancel={handleCancelAppointment}
               onReschedule={() => {
                 setSelectedStartTime(null);
 
