@@ -43,6 +43,8 @@ const CalendarSidebar = ({
         selectedEndTime={selectedEndTime}
         setSelectedEndTime={setSelectedEndTime}
         setIsSuccessModalOpen={setIsSuccessModalOpen}
+        currentDate={currentDate}
+        selectedDate={selectedDate}
       />
     </aside>
   );

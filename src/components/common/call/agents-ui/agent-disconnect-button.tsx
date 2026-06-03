@@ -6,6 +6,7 @@ import { PhoneOffIcon } from "lucide-react";
 import { useSessionContext } from "@livekit/components-react";
 import { Button, buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import { useRouter } from "next/navigation";
 
 /**
  * Props for the AgentDisconnectButton component.
@@ -56,10 +57,12 @@ export function AgentDisconnectButton({
   ...props
 }: AgentDisconnectButtonProps) {
   const { end } = useSessionContext();
+  const router = useRouter();
   const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
     onClick?.(event);
     if (typeof end === "function") {
       end();
+      router.push("/dashboard");
     }
   };
 

@@ -58,13 +58,25 @@ function renderSourceIcon(
   switch (sourceStr) {
     case "microphone":
     case Track.Source?.Microphone:
-      return enabled ? <MicIcon className={className} /> : <MicOffIcon className={className} />;
+      return enabled ? (
+        <MicIcon className={className} />
+      ) : (
+        <MicOffIcon className={className} />
+      );
     case "camera":
     case Track.Source?.Camera:
-      return enabled ? <VideoIcon className={className} /> : <VideoOffIcon className={className} />;
+      return enabled ? (
+        <VideoIcon className={className} />
+      ) : (
+        <VideoOffIcon className={className} />
+      );
     case "screen_share":
     case Track.Source?.ScreenShare:
-      return enabled ? <MonitorUpIcon className={className} /> : <MonitorOffIcon className={className} />;
+      return enabled ? (
+        <MonitorUpIcon className={className} />
+      ) : (
+        <MonitorOffIcon className={className} />
+      );
     default:
       return null;
   }

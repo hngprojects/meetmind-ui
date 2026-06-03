@@ -73,6 +73,20 @@ type ApiChatTurn = {
   bullets?: string[];
 };
 
+type ApiChatAnswer = {
+  title?: string;
+  summary?: string;
+  points?: Array<{
+    label?: string;
+    detail?: string;
+  }>;
+};
+
+type ApiChatResponse = ApiChatTurn & {
+  message_id?: string;
+  answer?: ApiChatAnswer;
+};
+
 type ApiTranscriptTurn = {
   id?: string;
   speaker?: "meet_mind" | "candidate";
@@ -156,7 +170,7 @@ export async function getChatHistory(id: string): Promise<ChatMessage[]> {
 }
 
 // ── Ask MeetMind a question about the interview (sends a chat message) ─────────
-// POST /api/v1/interviews/{interview_id}/ask
+// POST /api/v1/interviews/{interview_id}/chat
 // Body: { query: string }
 
 export async function askQuestion(
@@ -174,8 +188,8 @@ export async function askQuestion(
     };
   }
 
-  const res = await api.post(`/api/v1/interviews/${id}/ask`, { query });
-  const data = unwrapData<ApiChatTurn>(res.data);
+  const res = await api.post(`/api/v1/interviews/${id}/chat`, { query });
+  const data = unwrapData<ApiChatResponse>(res.data);
   return mapApiToChatMessage(data);
 }
 
@@ -423,13 +437,25 @@ function mapApiToDetail(raw: ApiInterview, id: string): InterviewDetail {
   };
 }
 
-function mapApiToChatMessage(raw: ApiChatTurn): ChatMessage {
+function mapApiToChatMessage(raw: ApiChatResponse): ChatMessage {
+  const answerPoints = raw.answer?.points
+    ?.map((point) => {
+      const label = point.label?.trim();
+      const detail = point.detail?.trim();
+      return [label, detail].filter(Boolean).join(": ");
+    })
+    .filter(Boolean);
+
   return {
-    id: raw.id ?? globalThis.crypto?.randomUUID?.(),
+    id:
+      raw.id ??
+      raw.message_id ??
+      globalThis.crypto?.randomUUID?.() ??
+      String(Date.now()),
     role: raw.role ?? "assistant",
-    content: raw.content ?? "",
-    title: raw.title,
-    bullets: raw.bullets,
+    content: raw.content ?? raw.answer?.summary ?? "",
+    title: raw.title ?? raw.answer?.title,
+    bullets: raw.bullets ?? answerPoints,
   };
 }
 

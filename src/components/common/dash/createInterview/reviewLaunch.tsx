@@ -1,6 +1,6 @@
 "use client";
 import { useState } from "react";
-import { useRouter } from "next/navigation";
+// import { useRouter } from "next/navigation";
 import api from "@/lib/api";
 import { getErrorMessage } from "@/lib/api-response";
 import Buttons from "@/components/reuseable-component/buttons";
@@ -15,9 +15,10 @@ import {
   useCreateStore,
 } from "@/store/createInterviewStore";
 import { useUserDetailsStore } from "@/store/userDetail";
+import { toast } from "react-toastify";
 
 export default function ReviewLaunch() {
-  const router = useRouter();
+  // const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
   const [serverError, setServerError] = useState<string | null>(null);
 
@@ -54,6 +55,9 @@ export default function ReviewLaunch() {
     setStep6(false);
     setOpen(false);
   };
+  // toast notification
+  const notifySuccess = (message: string) => toast.success(message);
+  const notifyError = (message: string) => toast.error(message);
 
   const handleSubmit = async () => {
     if (!candidateId) {
@@ -66,7 +70,7 @@ export default function ReviewLaunch() {
       setServerError(null);
 
       const payload = buildPayload(candidateId);
-      const res = await api.post("/api/v1/interviews", payload);
+      const res = await api.post(`/api/v1/interviews`, payload);
 
       const sessionId =
         res.data?.id ?? res.data?.data?.id ?? res.data?.data?.data?.id;
@@ -75,12 +79,20 @@ export default function ReviewLaunch() {
         console.error("Unexpected interview creation response:", res.data);
         throw new Error("Interview created but no session ID was returned.");
       }
+      await api.post(`api/v1/interviews/${sessionId}/send-link`);
 
+      notifySuccess("Interview scheduled and invites sent successfully!");
       resetAll();
 
-      router.push(`/call/interview/${encodeURIComponent(sessionId)}`);
+      // router.push(`/call/interview/${encodeURIComponent(sessionId)}`);
+      // router.push(`/call/sessions/${encodeURIComponent(sessionId)}`);
     } catch (error) {
       setServerError(getErrorMessage(error));
+      notifyError(
+        error instanceof Error
+          ? error.message
+          : "An unexpected error occurred.",
+      );
     } finally {
       setIsLoading(false);
     }

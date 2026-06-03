@@ -14,6 +14,7 @@ import AuthFooter from "@/components/common/SignIn/AuthFooter";
 import { useRouter } from "next/navigation";
 import { useAuthStore } from "@/store/authStore";
 import api from "@/lib/api";
+import { normalizeCurrentUser } from "@/lib/api/currentUser";
 
 const SignInForm = () => {
   const [serverError, setServerError] = useState("");
@@ -50,27 +51,21 @@ const SignInForm = () => {
         return;
       }
 
-      // Save access token in browser storage under the key "token"
-      localStorage.setItem("token", response.data.access_token);
-
-      const authUser = {
-        id: response.data.id,
-        email: response.data.email,
-        name: response.data.name,
-      };
-
-      localStorage.setItem("user", JSON.stringify(authUser));
       const { access_token, refresh_token, access_token_expires_at } =
         response.data;
       if (!access_token || !refresh_token || !access_token_expires_at) {
         setServerError("Invalid authentication response. Please try again.");
         return;
       }
-      setAuth(authUser, access_token, refresh_token, access_token_expires_at);
+
+      // Save access token before calling /users/me so the API interceptor can attach it.
+      localStorage.setItem("token", access_token);
 
       const meRes = await api.get("/api/v1/users/me");
-
       const user = meRes.data.data;
+      const authUser = normalizeCurrentUser({ ...response.data, ...user });
+
+      setAuth(authUser, access_token, refresh_token, access_token_expires_at);
 
       if (!user.onboarding_completed) {
         router.push("/onboarding");
@@ -78,6 +73,11 @@ const SignInForm = () => {
         router.push("/dashboard");
       }
     } catch (error) {
+      localStorage.removeItem("token");
+      localStorage.removeItem("user");
+      localStorage.removeItem("refresh_token");
+      localStorage.removeItem("access_token_expires_at");
+
       if (axios.isAxiosError(error)) {
         const detail = error.response?.data?.detail;
         const errorMessage =

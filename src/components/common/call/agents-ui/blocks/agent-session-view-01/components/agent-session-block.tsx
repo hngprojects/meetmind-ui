@@ -209,12 +209,14 @@ export function AgentSessionView_01({
             const micStatus = await navigator.permissions.query({
               name: "microphone" as PermissionName,
             });
-            
+
             if (micStatus.state === "denied") {
               console.warn("Microphone permission is explicitly denied");
               setPermissionDenied(true);
             } else if (micStatus.state === "prompt") {
-              console.log("Microphone permission is in prompt state - will request on first use");
+              console.log(
+                "Microphone permission is in prompt state - will request on first use",
+              );
               setPermissionDenied(false);
             } else if (micStatus.state === "granted") {
               console.log("Microphone permission is granted");
@@ -226,15 +228,21 @@ export function AgentSessionView_01({
               setPermissionDenied(micStatus.state === "denied");
               console.log("Microphone permission changed to:", micStatus.state);
             };
-            
+
             micStatus.addEventListener("change", handlePermissionChange);
-            return () => micStatus.removeEventListener("change", handlePermissionChange);
+            return () =>
+              micStatus.removeEventListener("change", handlePermissionChange);
           } catch (permErr) {
             // Permissions API might not support 'microphone' in some browsers
-            console.debug("Permissions API query failed (this is normal in some browsers):", (permErr as Error).message);
+            console.debug(
+              "Permissions API query failed (this is normal in some browsers):",
+              (permErr as Error).message,
+            );
           }
         } else {
-          console.debug("Permissions API not available - relying on device error handling");
+          console.debug(
+            "Permissions API not available - relying on device error handling",
+          );
         }
       } catch (err) {
         console.error("Unexpected error during permission check:", err);
@@ -244,8 +252,13 @@ export function AgentSessionView_01({
     checkPermissions();
   }, []);
 
-  const handleDeviceError = (deviceError: { source: Track.Source; error: unknown }) => {
-    const domErr = deviceError.error as { name?: string; message?: string } | undefined;
+  const handleDeviceError = (deviceError: {
+    source: Track.Source;
+    error: unknown;
+  }) => {
+    const domErr = deviceError.error as
+      | { name?: string; message?: string }
+      | undefined;
     const errorName = domErr?.name ?? "UnknownError";
     const errorMessage = domErr?.message ?? String(deviceError.error);
 
@@ -332,14 +345,15 @@ export function AgentSessionView_01({
           >
             <path
               fillRule="evenodd"
-              d="M8.485 2.495c.673-1.167 2.357-1.167 3.03 0l6.28 10.875c.673 1.167-.17 2.625-1.516 2.625H3.72c-1.347 0-2.189-1.458-1.515-2.625L8.485 2.495zM10 5a.75.75 0 01.75.75v3.5a.75.75 0 01-1.5 0v-3.5A.75.75 0 0110 5zm0 9a1 1 0 100-2 1 1 0 000 2z"
+              d="M8.485 2.495c.673-1.167 2.357-1.167 3.03 0l6.28 10.875c.673 1.167-.17 2.625-1.516 2.625H3.72c-1.347 0-2.189-1.458-1.515-2.625L8.485 2.495zM10 
+                5a.75.75 0 01.75.75v3.5a.75.75 0 01-1.5 0"
               clipRule="evenodd"
             />
           </svg>
           <span>
-            <strong>Microphone/Camera blocked.</strong>{" "}
-            Click the lock or tune icon (🔒/⚙️) in your browser address bar → set Microphone &amp; Camera to{" "}
-            <strong>&quot;Allow&quot;</strong> → then reload the page.
+            <strong>Microphone/Camera blocked.</strong> Click the lock or tune
+            icon (🔒/⚙️) in your browser address bar → set Microphone &amp;
+            Camera to <strong>&quot;Allow&quot;</strong> → then reload the page.
           </span>
           <button
             type="button"

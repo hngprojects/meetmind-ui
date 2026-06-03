@@ -12,6 +12,7 @@ import { FaRegEyeSlash } from "react-icons/fa";
 import { IoEyeOutline } from "react-icons/io5";
 import Buttons from "@/components/reuseable-component/buttons";
 import { useAuthStore } from "@/store/authStore";
+import { normalizeCurrentUser } from "@/lib/api/currentUser";
 import { useVerifyStore } from "@/store/verifyStore";
 
 const Signform = () => {
@@ -86,11 +87,7 @@ const Signform = () => {
       const meRes = await api.get("/api/v1/users/me");
       const user = meRes.data.data;
 
-      const authUser = {
-        id: user.id,
-        email: user.email,
-        name: user.name,
-      };
+      const authUser = normalizeCurrentUser(user);
 
       setAuth(authUser, access_token);
       setIsSuccess(true);
@@ -99,6 +96,8 @@ const Signform = () => {
     } catch (error) {
       localStorage.removeItem("token");
       localStorage.removeItem("user");
+      localStorage.removeItem("refresh_token");
+      localStorage.removeItem("access_token_expires_at");
 
       if (axios.isAxiosError(error)) {
         const responseData = error.response?.data;
