@@ -4,6 +4,7 @@ import { useEffect } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import api from "@/lib/api";
 import { useAuthStore } from "@/store/authStore";
+import { normalizeCurrentUser } from "@/lib/api/currentUser";
 
 const GoogleCallback = () => {
   const router = useRouter();
@@ -32,15 +33,13 @@ const GoogleCallback = () => {
 
         const meRes = await api.get("/api/v1/users/me");
         const user = meRes.data.data;
-
-        const authUser = {
-          id: user.id,
-          email: user.email,
-          name: user.name,
-        };
+        const authUser = normalizeCurrentUser(user);
 
         if (!isMounted) {
           localStorage.removeItem("token");
+          localStorage.removeItem("user");
+          localStorage.removeItem("refresh_token");
+          localStorage.removeItem("access_token_expires_at");
           return;
         }
         setAuth(authUser, token);
@@ -53,6 +52,8 @@ const GoogleCallback = () => {
       } catch {
         localStorage.removeItem("token");
         localStorage.removeItem("user");
+        localStorage.removeItem("refresh_token");
+        localStorage.removeItem("access_token_expires_at");
 
         if (isMounted) {
           router.replace("/sign-in?error=google_auth_failed");
