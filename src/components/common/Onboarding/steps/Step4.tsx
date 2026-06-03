@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { onboardingStore } from "../../../../store/onboardingStore";
 import { IntegrationCard } from "../onboarding/IntegrationCard";
@@ -7,6 +8,7 @@ import Image from "next/image";
 import { GoArrowLeft } from "react-icons/go";
 import { useMutation } from "@tanstack/react-query";
 import { onboardingAPI } from "@/lib/api/onboarding";
+import { Bot } from "lucide-react";
 
 const Step4 = () => {
   const data = onboardingStore((state) => state.data);
@@ -14,7 +16,11 @@ const Step4 = () => {
   const nextStep = onboardingStore((state) => state.nextStep);
   const prevStep = onboardingStore((state) => state.prevStep);
   const addToast = onboardingStore((s) => s.addToast);
-  const isValid = data.integrations !== null;
+  useEffect(() => {
+    if (data.integrations !== "livekit") {
+      updateData({ integrations: "livekit" });
+    }
+  }, [data.integrations, updateData]);
 
   const mutation = useMutation({
     mutationFn: onboardingAPI.setIntegrations,
@@ -62,9 +68,9 @@ const Step4 = () => {
                 alt="Google"
               />
             }
-            isConnected={data.integrations === "google"}
+            isConnected={false}
             disabled={true}
-            onConnect={() => updateData({ integrations: "google" })}
+            onConnect={() => undefined}
           />
           <IntegrationCard
             name="Zoom"
@@ -76,33 +82,32 @@ const Step4 = () => {
                 alt="Zoom"
               />
             }
-            isConnected={data.integrations === "zoom"}
+            isConnected={false}
             disabled={true}
-            onConnect={() => updateData({ integrations: "zoom" })}
+            onConnect={() => undefined}
           />
           <IntegrationCard
-            name="Livekit"
+            name="LiveKit"
             logo={
-              <Image
-                src="/onboarding/Zoom.svg"
-                width={24}
-                height={24}
-                alt="Livekit"
+              <Bot
+                size={24}
+                aria-label="LiveKit"
+                className="text-[var(--color-brand-primary)]"
               />
             }
-            isConnected={data.integrations === "livekit"}
+            isConnected={true}
             disabled={false}
-            onConnect={() => updateData({ integrations: "livekit" })}
+            connectedLabel="Connected"
           />
         </div>
         <div className="flex flex-col gap-2 items-center">
           <Button
             onClick={() =>
               mutation.mutate({
-                integrations: data.integrations,
+                integrations: "livekit",
               })
             }
-            disabled={!isValid || mutation.isPending}
+            disabled={mutation.isPending}
             size="lg"
             className="w-full bg-primary hover:bg-primary/90 text-primary-foreground"
           >

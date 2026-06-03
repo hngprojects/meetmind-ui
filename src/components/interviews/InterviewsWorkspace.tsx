@@ -12,6 +12,7 @@ import {
   useInterview,
   useInterviewSession,
   useInterviewsList,
+  useSendChatMessage,
   useRejoinInterviewSession,
   useTranscript,
 } from "@/hooks/useInterviews";
@@ -53,6 +54,7 @@ export default function InterviewsWorkspace() {
     interview?.status,
   );
   const rejoinSession = useRejoinInterviewSession(currentSelectedId);
+  const sendChatMessage = useSendChatMessage(currentSelectedId);
 
   const handleRejoinSession = async () => {
     await rejoinSession.mutateAsync();
@@ -141,6 +143,10 @@ export default function InterviewsWorkspace() {
     session,
     onRejoinSession: handleRejoinSession,
     isRejoiningSession: rejoinSession.isPending,
+    onSendChatMessage: async (content: string) => {
+      await sendChatMessage.mutateAsync(content);
+    },
+    isSendingChatMessage: sendChatMessage.isPending,
   };
 
   return (
@@ -224,6 +230,8 @@ type DetailsPanelProps = {
   session: ReturnType<typeof useInterviewSession>["data"];
   onRejoinSession: () => Promise<void>;
   isRejoiningSession: boolean;
+  onSendChatMessage: (content: string) => Promise<void>;
+  isSendingChatMessage: boolean;
 };
 
 function DetailsPanel({
@@ -237,6 +245,8 @@ function DetailsPanel({
   session,
   onRejoinSession,
   isRejoiningSession,
+  onSendChatMessage,
+  isSendingChatMessage,
 }: DetailsPanelProps) {
   return (
     <section className="flex min-h-[40rem] flex-1 flex-col overflow-hidden rounded-2xl border border-[var(--color-card-border)] bg-[var(--color-card-bg)] shadow-sm">
@@ -246,7 +256,13 @@ function DetailsPanel({
           renderEmptyState()
         ) : (
           <>
-            {activeTab === "chat" && <ChatTab messages={chat ?? []} />}
+            {activeTab === "chat" && (
+              <ChatTab
+                messages={chat ?? []}
+                onSendMessage={onSendChatMessage}
+                isSendingMessage={isSendingChatMessage}
+              />
+            )}
             {activeTab === "transcript" && (
               <TranscriptTab
                 interview={interview}
