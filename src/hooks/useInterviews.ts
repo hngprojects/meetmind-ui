@@ -1,6 +1,7 @@
 "use client";
 
 import {
+  askQuestion,
   getChatHistory,
   getInterview,
   getInterviewSession,
@@ -9,6 +10,7 @@ import {
   rejoinInterviewSession,
 } from "@/lib/services/interviews.service";
 import type {
+  ChatMessage,
   InterviewSession,
   InterviewSessionStatus,
   InterviewStatus,
@@ -53,9 +55,66 @@ export function useChatHistory(id: string | null, status?: InterviewStatus) {
     queryKey: ["interviews", id, "chat"],
     queryFn: () => getChatHistory(id!),
     enabled: !!id,
+    placeholderData: (previousData) => previousData,
+    structuralSharing: (oldData, newData) =>
+      mergeChatMessages(
+        Array.isArray(newData) ? newData : [],
+        Array.isArray(oldData) ? oldData : [],
+      ),
     // Only poll when interview is live — no point hammering the API for completed interviews
     refetchInterval: isLive ? 5000 : false,
     refetchOnWindowFocus: isLive,
+  });
+}
+
+export function useSendChatMessage(id: string | null) {
+  const queryClient = useQueryClient();
+  const chatQueryKey = ["interviews", id, "chat"] as const;
+
+  return useMutation({
+    mutationFn: (content: string) => {
+      if (!id) throw new Error("Interview id is required to send a message.");
+
+      const query = content.trim();
+      if (!query) throw new Error("Enter a message before sending.");
+
+      return askQuestion(id, query);
+    },
+    onMutate: async (content) => {
+      if (!id) return { previousMessages: undefined };
+
+      await queryClient.cancelQueries({ queryKey: chatQueryKey });
+
+      const previousMessages =
+        queryClient.getQueryData<ChatMessage[]>(chatQueryKey);
+
+      const optimisticMessage: ChatMessage = {
+        id: `optimistic-${Date.now()}`,
+        role: "user",
+        content: content.trim(),
+      };
+
+      queryClient.setQueryData<ChatMessage[]>(chatQueryKey, (current = []) =>
+        mergeChatMessages(current, [optimisticMessage]),
+      );
+
+      return { previousMessages };
+    },
+    onSuccess: (assistantMessage) => {
+      queryClient.setQueryData<ChatMessage[]>(chatQueryKey, (current = []) =>
+        mergeChatMessages(current, [assistantMessage]),
+      );
+    },
+    onError: (_error, _variables, context) => {
+      if (context?.previousMessages) {
+        queryClient.setQueryData(chatQueryKey, context.previousMessages);
+      }
+    },
+    onSettled: () => {
+      if (id) {
+        return queryClient.invalidateQueries({ queryKey: chatQueryKey });
+      }
+    },
   });
 }
 
@@ -138,4 +197,34 @@ export function useRejoinInterviewSession(id: string | null) {
 
 function isActiveSessionStatus(status?: InterviewSessionStatus): boolean {
   return status ? ACTIVE_SESSION_STATUSES.includes(status) : false;
+}
+
+function mergeChatMessages(
+  baseMessages: ChatMessage[],
+  extraMessages: ChatMessage[],
+): ChatMessage[] {
+  const merged = [...baseMessages];
+  const seenIds = new Set(merged.map((message) => message.id));
+  const seenContent = new Set(merged.map(createChatMessageSignature));
+
+  extraMessages.forEach((message) => {
+    const signature = createChatMessageSignature(message);
+
+    if (!seenIds.has(message.id) && !seenContent.has(signature)) {
+      merged.push(message);
+      seenIds.add(message.id);
+      seenContent.add(signature);
+    }
+  });
+
+  return merged;
+}
+
+function createChatMessageSignature(message: ChatMessage): string {
+  return [
+    message.role,
+    (message.content ?? "").trim(),
+    message.title?.trim() ?? "",
+    message.bullets?.join("|") ?? "",
+  ].join("::");
 }
