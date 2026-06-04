@@ -81,7 +81,9 @@ export default function ReviewLaunch() {
         console.error("Unexpected interview creation response:", res.data);
         throw new Error("Interview created but no session ID was returned.");
       }
-      await api.post(`api/v1/interviews/${sessionId}/send-link`);
+      await api.post(`api/v1/interviews/${sessionId}/send-link`, null, {
+        params: { email: candidate.email },
+      });
 
       notifySuccess("Interview scheduled and invites sent successfully!");
       queryClient.invalidateQueries({ queryKey: ["interviews"] });
