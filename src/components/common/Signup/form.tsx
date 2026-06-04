@@ -91,7 +91,8 @@ const Signform = () => {
         router.push("/onboarding");
       } catch (err) {
         console.error("Failed to load user info after signup:", err);
-        setServerError("Unable to retrieve user info. Please sign in.");
+        setServerError("Account created! Redirecting to sign in...");
+        +setTimeout(() => router.push("/sign-in"), 1500);
       }
     },
     onError: (error) => {

@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect, Suspense } from "react";
+import React, { useState, useEffect, Suspense, useRef } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useSignupStore } from "@/store/signupStore";
 import { Loader2, CheckCircle2, MailOpen } from "lucide-react";
@@ -54,12 +54,13 @@ function VerifyEmailContent() {
   const isVerifying = verifyEmailMutation.isPending;
 
   // If there's a token in the URL, verify it automatically
+  const hasVerified = useRef(false);
   useEffect(() => {
     if (!token) return;
+    if (hasVerified.current) return;
+    hasVerified.current = true;
     verifyEmailMutation.mutate({ token });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [token]);
-
   const resendEmailMutation = useResendVerificationEmail({
     onSuccess: () => {
       setResendMessage(`Verification link resent to ${signupEmail}.`);
