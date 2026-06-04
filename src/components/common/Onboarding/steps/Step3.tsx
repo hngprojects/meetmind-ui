@@ -6,8 +6,7 @@ import { onboardingStore } from "../../../../store/onboardingStore";
 import TonePicker from "../onboarding/TonePicker";
 import { ToggleCard } from "../onboarding/ToggleCard";
 import { GoArrowLeft } from "react-icons/go";
-import { useMutation } from "@tanstack/react-query";
-import { onboardingAPI } from "@/lib/api/onboarding";
+import { useSetPreferences } from "@/api/onboarding";
 
 const Step3 = () => {
   const data = onboardingStore((state) => state.data);
@@ -15,9 +14,7 @@ const Step3 = () => {
   const nextStep = onboardingStore((state) => state.nextStep);
   const prevStep = onboardingStore((state) => state.prevStep);
   const addToast = onboardingStore((s) => s.addToast);
-  const mutation = useMutation({
-    mutationKey: ["onboarding", "preferences"],
-    mutationFn: onboardingAPI.setPreferences,
+  const mutation = useSetPreferences({
     onSuccess: () => {
       nextStep();
     },

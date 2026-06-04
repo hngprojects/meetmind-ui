@@ -6,8 +6,7 @@ import { onboardingStore } from "../../../../store/onboardingStore";
 import { IntegrationCard } from "../onboarding/IntegrationCard";
 import Image from "next/image";
 import { GoArrowLeft } from "react-icons/go";
-import { useMutation } from "@tanstack/react-query";
-import { onboardingAPI } from "@/lib/api/onboarding";
+import { useSetIntegrations } from "@/api/onboarding";
 import { Bot } from "lucide-react";
 
 const Step4 = () => {
@@ -22,8 +21,7 @@ const Step4 = () => {
     }
   }, [data.integrations, updateData]);
 
-  const mutation = useMutation({
-    mutationFn: onboardingAPI.setIntegrations,
+  const mutation = useSetIntegrations({
     onSuccess: () => {
       nextStep();
     },
