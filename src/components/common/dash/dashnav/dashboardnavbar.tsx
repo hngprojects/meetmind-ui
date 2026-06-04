@@ -8,7 +8,7 @@ import SignOutModal from "./SignOutModal";
 import { useUnreadNotificationsCount } from "@/hooks/useNotifications";
 import { useCurrentUserProfile } from "@/hooks/useCurrentUserProfile";
 import { useAuthStore } from "@/store/authStore";
-import { revokeAllSessions } from "@/lib/auth";
+import { useRevokeAllSessions } from "@/api/auth";
 import {
   getCurrentUserDisplayName,
   getCurrentUserEmail,
@@ -32,6 +32,7 @@ const Dashboardnavbar = () => {
   const { data: unreadNotificationCount = 0 } = useUnreadNotificationsCount();
   const { data: currentUser } = useCurrentUserProfile();
   const logout = useAuthStore((state) => state.logout);
+  const revokeAllSessionsMutation = useRevokeAllSessions();
   const displayName = getCurrentUserDisplayName(currentUser);
   const displayEmail = getCurrentUserEmail(currentUser);
 
@@ -205,7 +206,7 @@ const Dashboardnavbar = () => {
           if (signOutAllDevices) {
             setIsSigningOut(true);
             try {
-              await revokeAllSessions();
+              await revokeAllSessionsMutation.mutateAsync();
             } catch (error) {
               console.error("Failed to revoke all sessions:", error);
             } finally {

@@ -3,7 +3,7 @@
 import { FiArrowLeft } from "react-icons/fi";
 import { HiOutlineCheckCircle } from "react-icons/hi2";
 import { useEffect, useState } from "react";
-import api from "@/lib/api";
+import { useForgotPassword } from "@/api/auth";
 import Image from "next/image";
 
 interface Props {
@@ -28,19 +28,19 @@ export default function EmailSent({ setStep, email }: Props) {
 
   const isCooldownActive = timeLeft > 0;
 
-  async function handleResendEmail() {
-    if (isCooldownActive) return;
-
-    try {
-      await api.post("/api/v1/auth/forgot-password", {
-        email: email,
-      });
-    } catch {
+  const forgotPasswordMutation = useForgotPassword({
+    onSuccess: () => {
+      // restart countdown
+      setTimeLeft(30);
+    },
+    onError: () => {
       setStep("enter-email");
-    }
+    },
+  });
 
-    // restart countdown
-    setTimeLeft(30);
+  async function handleResendEmail() {
+    if (isCooldownActive || forgotPasswordMutation.isPending) return;
+    forgotPasswordMutation.mutate({ email });
   }
 
   return (
@@ -70,9 +70,9 @@ export default function EmailSent({ setStep, email }: Props) {
             </div>
 
             <button
-              disabled={isCooldownActive}
+              disabled={isCooldownActive || forgotPasswordMutation.isPending}
               className={`text-sm font-medium bg-[#E1E3E4] rounded-md w-full p-2 mt-4 ${
-                isCooldownActive
+                isCooldownActive || forgotPasswordMutation.isPending
                   ? "text-white cursor-not-allowed font-extrabold"
                   : "text-[#060A12] cursor-pointer"
               }`}
@@ -80,7 +80,9 @@ export default function EmailSent({ setStep, email }: Props) {
             >
               {isCooldownActive
                 ? `Resend email (${timeLeft}s)`
-                : "Resend email"}
+                : forgotPasswordMutation.isPending
+                  ? "Resending..."
+                  : "Resend email"}
             </button>
 
             <button
