@@ -1,7 +1,9 @@
 "use client";
 
+import { useState } from "react";
 import {
   askQuestion,
+  exportInterviewSummary,
   getChatHistory,
   getInterview,
   getInterviewSession,
@@ -13,6 +15,7 @@ import type {
   ChatMessage,
   InterviewSession,
   InterviewSessionStatus,
+  InterviewSummaryExportFormat,
   InterviewStatus,
 } from "@/types/interview";
 import {
@@ -193,6 +196,26 @@ export function useRejoinInterviewSession(id: string | null) {
       }
     },
   });
+}
+
+export function useExportInterviewSummary(id: string | null) {
+  const [exportingFormat, setExportingFormat] =
+    useState<InterviewSummaryExportFormat | null>(null);
+
+  const mutation = useMutation({
+    mutationFn: (format: InterviewSummaryExportFormat) => {
+      if (!id) throw new Error("Interview id is required to export a summary.");
+      return exportInterviewSummary(id, format);
+    },
+    onMutate: (format) => {
+      setExportingFormat(format);
+    },
+    onSettled: () => {
+      setExportingFormat(null);
+    },
+  });
+
+  return { ...mutation, exportingFormat };
 }
 
 function isActiveSessionStatus(status?: InterviewSessionStatus): boolean {

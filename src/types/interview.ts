@@ -70,6 +70,8 @@ export type InterviewSessionRejoinResponse = {
   interview_id: string;
 };
 
+export type InterviewSummaryExportFormat = "pdf" | "markdown";
+
 // ── Session phase ──────────────────────────────────────────────────────────────
 // Backend-driven statuses plus legacy transcript-only local states.
 

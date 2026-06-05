@@ -1,5 +1,6 @@
 import api from "@/lib/api";
 import { unwrapData } from "@/lib/api-response";
+import axios from "axios";
 import {
   INTERVIEW_SESSION_STATUSES,
   REJOIN_SESSION_MESSAGE,
@@ -10,6 +11,7 @@ import {
   type InterviewSession,
   type InterviewSessionRejoinResponse,
   type InterviewSessionStatus,
+  type InterviewSummaryExportFormat,
   type TranscriptMessage,
 } from "@/types/interview";
 import {
@@ -117,6 +119,19 @@ type ApiInterviewSessionRejoinResponse = {
   message?: string;
   session_status?: string;
   interview_id?: string;
+};
+
+type ApiExportErrorPayload = {
+  code?: string;
+  error?: string;
+  message?: string;
+  detail?:
+    | string
+    | {
+        code?: string;
+        error?: string;
+        message?: string;
+      };
 };
 
 // ── List interviews ────────────────────────────────────────────────────────────
@@ -258,24 +273,61 @@ export async function exportTranscript(id: string): Promise<void> {
     responseType: "blob", // ← tell axios to treat response as binary
   });
 
-  // Extract filename from content-disposition header or use a fallback
-  const disposition = String(res.headers["content-disposition"] ?? "");
-  const encodedName =
-    disposition.match(/filename\*\s*=\s*UTF-8''([^;]+)/i)?.[1] ?? null;
-  const plainName =
-    disposition.match(/filename\s*=\s*"([^"]+)"/i)?.[1] ??
-    disposition.match(/filename\s*=\s*([^;]+)/i)?.[1] ??
-    null;
-  const parsedName = encodedName ? decodeURIComponent(encodedName) : plainName;
-  const filename = (parsedName ?? `transcript_${id}.txt`).trim();
+  downloadBlob(
+    res.data,
+    getDownloadFilename(
+      res.headers["content-disposition"],
+      `transcript_${id}.txt`,
+    ),
+    "text/plain",
+  );
+}
 
-  // Create a temporary link and trigger the download
-  const url = URL.createObjectURL(new Blob([res.data], { type: "text/plain" }));
-  const a = document.createElement("a");
-  a.href = url;
-  a.download = filename;
-  a.click();
-  URL.revokeObjectURL(url);
+// ── Export summary ─────────────────────────────────────────────────────────────
+// GET /api/v1/interviews/{interview_id}/summary/export?format=pdf|markdown
+// Returns a PDF or Markdown file as a direct download.
+
+export async function exportInterviewSummary(
+  id: string,
+  format: InterviewSummaryExportFormat,
+): Promise<void> {
+  const extension = format === "pdf" ? "pdf" : "md";
+  const contentType = format === "pdf" ? "application/pdf" : "text/markdown";
+  const fallbackFilename = `interview_${id}_report.${extension}`;
+
+  if (MOCKS_ENABLED) {
+    const mockBody =
+      format === "pdf"
+        ? "Mock PDF export content"
+        : `# Interview Summary\n\nMock summary export for interview ${id}.`;
+
+    downloadBlob(
+      new Blob([mockBody], { type: contentType }),
+      fallbackFilename,
+      contentType,
+    );
+    return;
+  }
+
+  try {
+    const res = await api.get(`/api/v1/interviews/${id}/summary/export`, {
+      params: { format },
+      responseType: "blob",
+    });
+
+    const responseContentType =
+      typeof res.headers["content-type"] === "string"
+        ? res.headers["content-type"]
+        : contentType;
+
+    downloadBlob(
+      res.data,
+      getDownloadFilename(res.headers["content-disposition"], fallbackFilename),
+      responseContentType,
+    );
+  } catch (error) {
+    throw await toSummaryExportError(error);
+  }
 }
 
 // ── Stop transcript ────────────────────────────────────────────────────────────
@@ -325,6 +377,96 @@ export async function confirmInterview(id: string): Promise<void> {
 
 export async function cancelInterview(id: string): Promise<void> {
   await api.patch(`/api/v1/interviews/${id}/cancel`);
+}
+
+function getDownloadFilename(
+  contentDisposition: unknown,
+  fallbackFilename: string,
+): string {
+  const disposition = String(contentDisposition ?? "");
+  const encodedName =
+    disposition.match(/filename\*\s*=\s*UTF-8''([^;]+)/i)?.[1] ?? null;
+  const plainName =
+    disposition.match(/filename\s*=\s*"([^"]+)"/i)?.[1] ??
+    disposition.match(/filename\s*=\s*([^;]+)/i)?.[1] ??
+    null;
+  const parsedName = encodedName ? decodeURIComponent(encodedName) : plainName;
+
+  return (parsedName ?? fallbackFilename).trim();
+}
+
+function downloadBlob(
+  data: BlobPart | Blob,
+  filename: string,
+  contentType: string,
+) {
+  const blob =
+    data instanceof Blob ? data : new Blob([data], { type: contentType });
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement("a");
+
+  link.href = url;
+  link.download = filename;
+  link.click();
+  URL.revokeObjectURL(url);
+}
+
+async function toSummaryExportError(error: unknown): Promise<Error> {
+  const payload = await readExportErrorPayload(error);
+  const code =
+    payload?.code ?? payload?.error ?? getDetailValue(payload, "code");
+  const message =
+    payload?.message ??
+    getDetailValue(payload, "message") ??
+    (typeof payload?.detail === "string" ? payload.detail : undefined);
+
+  if (code === "summary_not_ready") {
+    return new Error(
+      "Summary is not ready yet. Please try again after it has been generated.",
+    );
+  }
+
+  if (message) return new Error(message);
+  if (error instanceof Error) return error;
+
+  return new Error("Unable to export summary. Please try again.");
+}
+
+async function readExportErrorPayload(
+  error: unknown,
+): Promise<ApiExportErrorPayload | null> {
+  if (!axios.isAxiosError(error)) return null;
+
+  const data = error.response?.data;
+
+  if (data instanceof Blob) {
+    const text = await data.text();
+    if (!text) return null;
+
+    try {
+      return JSON.parse(text) as ApiExportErrorPayload;
+    } catch {
+      return { message: text };
+    }
+  }
+
+  if (isRecord(data)) return data as ApiExportErrorPayload;
+
+  return null;
+}
+
+function getDetailValue(
+  payload: ApiExportErrorPayload | null,
+  key: "code" | "message",
+): string | undefined {
+  const detail = payload?.detail;
+  return isRecord(detail) && typeof detail[key] === "string"
+    ? detail[key]
+    : undefined;
+}
+
+function isRecord(value: unknown): value is Record<string, unknown> {
+  return typeof value === "object" && value !== null;
 }
 
 // ── Mappers ────────────────────────────────────────────────────────────────────
