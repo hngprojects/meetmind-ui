@@ -14,6 +14,7 @@ import {
   AgentControlBar,
   type AgentControlBarControls,
 } from "@/components/common/call/agents-ui/agent-control-bar";
+import { completeInterview } from "@/lib/services/interviews.service";
 import { Shimmer } from "@/components/common/call/ai-elements/shimmer";
 import { cn } from "@/lib/utils";
 import { TileLayout } from "./tile-view";
@@ -159,6 +160,8 @@ export interface AgentSessionView_01Props {
   audioVisualizerWaveLineWidth?: number;
   /** Optional class name merged onto the outer `<section>` container. */
   className?: string;
+  /** Optional interview session id used to mark the interview completed on disconnect. */
+  interviewId?: string;
 }
 
 export function AgentSessionView_01({
@@ -179,6 +182,7 @@ export function AgentSessionView_01({
   audioVisualizerWaveLineWidth,
   ref,
   className,
+  interviewId,
   ...props
 }: React.ComponentProps<"section"> & AgentSessionView_01Props) {
   const session = useSessionContext();
@@ -251,6 +255,16 @@ export function AgentSessionView_01({
 
     checkPermissions();
   }, []);
+
+  const handleDisconnect = async () => {
+    if (!interviewId) return;
+
+    try {
+      await completeInterview(interviewId);
+    } catch (err) {
+      console.error("Failed to complete interview on disconnect:", err);
+    }
+  };
 
   const handleDeviceError = (deviceError: {
     source: Track.Source;
@@ -427,7 +441,7 @@ export function AgentSessionView_01({
             controls={controls}
             isChatOpen={chatOpen}
             isConnected={session.isConnected}
-            onDisconnect={session.end}
+            onDisconnect={handleDisconnect}
             onIsChatOpenChange={setChatOpen}
             onDeviceError={handleDeviceError}
           />

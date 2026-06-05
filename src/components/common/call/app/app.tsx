@@ -85,7 +85,7 @@ export function App({ appConfig, sessionId }: AppProps) {
     <AgentSessionProvider session={session}>
       <AppSetup />
       <main className="grid h-svh grid-cols-1 place-content-center">
-        <ViewController appConfig={appConfig} />
+        <ViewController appConfig={appConfig} interviewId={sessionId} />
       </main>
       <StartAudioButton label="Start Audio" />
       <Toaster
