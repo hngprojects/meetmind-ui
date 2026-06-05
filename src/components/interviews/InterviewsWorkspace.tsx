@@ -14,6 +14,7 @@ import {
   useInterviewsList,
   useSendChatMessage,
   useRejoinInterviewSession,
+  useScorecard,
   useTranscript,
 } from "@/hooks/useInterviews";
 import type { InterviewTab } from "@/types/interview";
@@ -49,6 +50,11 @@ export default function InterviewsWorkspace() {
     currentSelectedId,
     interview?.status,
   );
+  const {
+    data: scorecard,
+    isLoading: scorecardLoading,
+    error: scorecardError,
+  } = useScorecard(activeTab === "scorecard" ? currentSelectedId : null);
   const { data: session } = useInterviewSession(
     currentSelectedId,
     interview?.status,
@@ -140,6 +146,9 @@ export default function InterviewsWorkspace() {
     renderEmptyState,
     chat,
     transcript,
+    scorecard,
+    scorecardLoading,
+    scorecardError,
     session,
     onRejoinSession: handleRejoinSession,
     isRejoiningSession: rejoinSession.isPending,
@@ -227,6 +236,9 @@ type DetailsPanelProps = {
   renderEmptyState: () => React.ReactNode;
   chat: ReturnType<typeof useChatHistory>["data"];
   transcript: ReturnType<typeof useTranscript>["data"];
+  scorecard: ReturnType<typeof useScorecard>["data"];
+  scorecardLoading: boolean;
+  scorecardError: Error | null;
   session: ReturnType<typeof useInterviewSession>["data"];
   onRejoinSession: () => Promise<void>;
   isRejoiningSession: boolean;
@@ -242,6 +254,9 @@ function DetailsPanel({
   renderEmptyState,
   chat,
   transcript,
+  scorecard,
+  scorecardLoading,
+  scorecardError,
   session,
   onRejoinSession,
   isRejoiningSession,
@@ -274,7 +289,13 @@ function DetailsPanel({
             )}
             {activeTab === "summary" && <SummaryTab interview={interview} />}
             {activeTab === "scorecard" && (
-              <ScorecardTab interview={interview} />
+              <ScorecardTab
+                interview={interview}
+                scorecard={scorecard}
+                transcript={transcript ?? []}
+                isLoading={scorecardLoading}
+                error={scorecardError}
+              />
             )}
             {activeTab === "profile" && <ProfileTab interview={interview} />}
           </>
