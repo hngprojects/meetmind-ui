@@ -16,101 +16,94 @@ const InterviewOverview = () => {
     getOverview();
   }, [getOverview]);
 
-  if (overviewLoading) return <div>Loading...</div>;
-  if (overviewError) return <div>Error: {overviewError}</div>;
+  if (overviewLoading)
+    return (
+      <div className="flex items-center justify-center py-16">
+        <p className="text-sm text-gray-400">Loading overview...</p>
+      </div>
+    );
+
+  if (overviewError)
+    return (
+      <div className="flex items-center justify-center py-16">
+        <p className="text-sm text-red-500">{overviewError}</p>
+      </div>
+    );
+
   if (!overview) return null;
 
+  const stats = [
+    {
+      label: "Total Interviews",
+      value: overview.stats.total,
+      className: "text-text-color-primary",
+    },
+    {
+      label: "In Progress",
+      value: overview.stats.in_progress,
+      className: "text-[#4600A9]",
+    },
+    {
+      label: "Scheduled",
+      value: overview.stats.scheduled,
+      className: "text-text-color-primary",
+    },
+    {
+      label: "Completed",
+      value: overview.stats.completed,
+      className: "text-text-color-primary",
+    },
+    {
+      label: "Need Attention",
+      value: overview.stats.needs_attention,
+      className: "text-[#EF4444]",
+    },
+  ];
+
   return (
-    <div className="px-2 md:px-10 lg:px-20  flex flex-col gap-4">
-      <h1 className=" text-2xl lg:text-3xl text-text-color-primary font-bold">
-        {!candidate.full_name
-          ? "Welcome back"
-          : `Welcome back, ${candidate.full_name}`}
-      </h1>
+    <div className="flex flex-col gap-4">
+      <div>
+        <h1 className="text-2xl lg:text-3xl text-text-color-primary font-bold">
+          {!candidate.full_name
+            ? "Welcome back"
+            : `Welcome back, ${candidate.full_name}`}
+        </h1>
+      </div>
 
-      <div className="bg-white p-7 flex flex-col gap-8 rounded-2xl">
-        <div className="flex flex-col gap-3">
-          <div className="flex flex-col gap-4 md:flex-row justify-between">
-            <div className=" flex flex-col gap-2">
-              <h1 className="font-bold text-2xl text-text-color-primary">
-                Set up a new interview
-              </h1>
-              <p>
-                You have {overview.stats.in_progress} interviews running and{" "}
-                {overview.stats.completed} results ready to review.
-              </p>
-            </div>
-
-            <Buttons
-              text="Create interview"
-              type="button"
-              style2="w-full md:w-[20%]"
-              onClick={toggle}
-            />
+      <div className="bg-white p-7 rounded-2xl shadow-sm">
+        <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+          <div className="flex flex-col gap-2">
+            <h1 className="font-bold text-2xl text-text-color-primary">
+              Set up a new interview
+            </h1>
+            <p className="text-sm text-text-subtext">
+              You have {overview.stats.in_progress} interviews running and{" "}
+              {overview.stats.completed} results ready to review.
+            </p>
           </div>
+
+          <Buttons
+            text="Create interview"
+            type="button"
+            style2="w-full md:w-[200px]"
+            onClick={toggle}
+          />
         </div>
 
-        {/* numbers */}
-        <div className="flex flex-col gap-4 md:flex-row justify-between">
-          {/* total interviews */}
-          <div
-            className="flex flex-row justify-between
-           md:flex-col md:items-center md:justify-center"
-          >
-            <p className="text-text-subtext">Total Interviews</p>
-            <p className="text-2xl md:text-3xl text-text-color-primary font-bold">
-              {overview.stats.total}
-            </p>
-          </div>
-
-          <p className="w-full h-0.5 md:h-14 md:w-0.5 bg-gray-400"></p>
-          {/* in progress */}
-          <div
-            className="flex flex-row justify-between
-           md:flex-col md:items-center md:justify-center"
-          >
-            <p className="text-text-subtext">In Progress</p>
-            <p className="text-2xl md:text-3xl text-[#4600A9] font-bold">
-              {overview.stats.in_progress}
-            </p>
-          </div>
-
-          <p className="w-full h-0.5 md:h-14 md:w-0.5 bg-gray-400"></p>
-
-          {/* scheduled */}
-          <div
-            className="flex flex-row justify-between
-           md:flex-col md:items-center md:justify-center"
-          >
-            <p className="text-text-subtext">Scheduled</p>
-            <p className="text-2xl md:text-3xl text-text-color-primary font-bold">
-              {overview.stats.scheduled}
-            </p>
-          </div>
-
-          <p className="w-full h-0.5 md:h-14 md:w-0.5 bg-gray-400"></p>
-          {/* completed */}
-          <div
-            className="flex flex-row justify-between
-           md:flex-col md:items-center md:justify-center"
-          >
-            <p className="text-text-subtext">Completed</p>
-            <p className="text-2xl md:text-3xl text-text-color-primary font-bold">
-              {overview.stats.completed}
-            </p>
-          </div>
-
-          <p className="w-full h-0.5 md:h-14 md:w-0.5 bg-gray-400"></p>
-          {/* need attention */}
-          <div
-            className="flex flex-row justify-between
-           md:flex-col md:items-center md:justify-center"
-          >
-            <p className="text-text-subtext">Need Attention</p>
-            <p className="text-2xl md:text-3xl text-[#EF4444] font-bold">
-              {overview.stats.needs_attention}
-            </p>
-          </div>
+        <div className="mt-8 grid gap-4 md:grid-cols-5 md:divide-x md:divide-gray-200">
+          {stats.map((stat, index) => (
+            <div
+              key={stat.label}
+              className={`flex flex-row items-center justify-between gap-4 rounded-xl bg-gray-50 px-4 py-4 md:flex-col md:items-center md:justify-center ${
+                index !== 0 ? "md:px-4" : ""
+              }`}
+            >
+              <p className="text-sm text-text-subtext">{stat.label}</p>
+              <p className={`text-3xl font-bold ${stat.className}`}>
+                {stat.value}
+              </p>
+            </div>
+          ))}
         </div>
       </div>
     </div>

@@ -68,7 +68,7 @@ function ScheduleCard({
 
   if (isFirst) {
     return (
-      <div className="bg-[#005162] text-white rounded-2xl p-5 flex justify-between items-start min-h-25">
+      <div className="bg-[#005162] text-white rounded-2xl p-5 flex justify-between items-start min-h-[6.25rem]">
         <div>
           <h4 className="font-bold text-lg leading-snug">{candidateName}</h4>
           <p className="text-xs opacity-75 mt-1.5 font-medium">{timeRange}</p>
@@ -129,7 +129,7 @@ export default function Schedule() {
   }));
 
   return (
-    <Card className="rounded-[24px] max-w-sm shadow-sm">
+    <Card className="rounded-[24px] shadow-sm w-full">
       <CardContent className="p-6 flex flex-col gap-6">
         <div className="flex justify-between items-center">
           <h3 className="font-bold text-xl text-gray-900">Schedule</h3>
