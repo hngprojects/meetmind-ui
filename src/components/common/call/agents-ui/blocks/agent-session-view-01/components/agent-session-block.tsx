@@ -15,6 +15,7 @@ import {
   type AgentControlBarControls,
 } from "@/components/common/call/agents-ui/agent-control-bar";
 import { completeInterview } from "@/lib/services/interviews.service";
+import { useDashboardStore } from "@/store/dashboardInterview";
 import { Shimmer } from "@/components/common/call/ai-elements/shimmer";
 import { cn } from "@/lib/utils";
 import { TileLayout } from "./tile-view";
@@ -187,6 +188,7 @@ export function AgentSessionView_01({
 }: React.ComponentProps<"section"> & AgentSessionView_01Props) {
   const session = useSessionContext();
   const { messages } = useSessionMessages(session);
+  const { getCompleted } = useDashboardStore();
   const [chatOpen, setChatOpen] = useState(false);
   const scrollAreaRef = useRef<HTMLDivElement>(null);
   const { state: agentState } = useAgent();
@@ -261,6 +263,12 @@ export function AgentSessionView_01({
 
     try {
       await completeInterview(interviewId);
+      try {
+        await getCompleted();
+      } catch (err) {
+        // Non-fatal: dashboard refresh failed, we'll still proceed to end the session
+        console.error("Failed to refresh dashboard completed list:", err);
+      }
     } catch (err) {
       console.error("Failed to complete interview on disconnect:", err);
     }
