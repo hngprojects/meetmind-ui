@@ -392,7 +392,8 @@ function getDownloadFilename(
     null;
   const parsedName = encodedName ? decodeURIComponent(encodedName) : plainName;
 
-  return (parsedName ?? fallbackFilename).trim();
+  const filename = (parsedName ?? "").trim();
+  return filename.length > 0 ? filename : fallbackFilename;
 }
 
 function downloadBlob(
