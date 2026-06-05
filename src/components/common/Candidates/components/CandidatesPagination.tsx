@@ -19,7 +19,7 @@ export default function CandidatesPagination({
   const totalPages = Math.max(pagination?.totalPages ?? 1, 1);
 
   return (
-    <div className="flex items-center justify-between mt-4">
+    <div className="flex px-3 items-center justify-between mt-4">
       <Button
         disabled={page <= 1 || isLoading}
         onClick={() => setFilters({ page: page - 1 })}
