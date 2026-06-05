@@ -89,10 +89,9 @@ const Signform = () => {
         setAuth(authUser, access_token);
         setIsSuccess(true);
         router.push("/onboarding");
-      } catch (err) {
-        console.error("Failed to load user info after signup:", err);
+      } catch {
         setServerError("Account created! Redirecting to sign in...");
-        +setTimeout(() => router.push("/sign-in"), 1500);
+        setTimeout(() => router.push("/sign-in"), 1500);
       }
     },
     onError: (error) => {

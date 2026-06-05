@@ -62,7 +62,7 @@ export function AgentDisconnectButton({
     onClick?.(event);
     if (typeof end === "function") {
       end();
-      router.push("/dashboard");
+      router.push("/");
     }
   };
 
