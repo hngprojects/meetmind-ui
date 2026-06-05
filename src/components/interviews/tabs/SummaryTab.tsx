@@ -1,5 +1,8 @@
 "use client";
+import { Button } from "@/components/ui/button";
+import { useExportInterviewSummary } from "@/hooks/useInterviews";
 import type { InterviewDetail } from "@/types/interview";
+import type { InterviewSummaryExportFormat } from "@/types/interview";
 import { HiOutlineSparkles, HiOutlineFlag } from "react-icons/hi2";
 
 type Props = {
@@ -8,6 +11,14 @@ type Props = {
 
 export default function SummaryTab({ interview }: Props) {
   const isLive = interview.status === "in_progress";
+  const summaryExport = useExportInterviewSummary(interview.id);
+  const exportError =
+    summaryExport.error instanceof Error ? summaryExport.error.message : null;
+
+  const handleExport = (format: InterviewSummaryExportFormat) => {
+    summaryExport.reset();
+    summaryExport.mutate(format);
+  };
 
   if (interview.status === "scheduled") {
     return (
@@ -28,7 +39,7 @@ export default function SummaryTab({ interview }: Props) {
   return (
     <div className="flex h-full min-h-[32.5rem] flex-col overflow-y-auto p-6 space-y-6">
       {/* Header */}
-      <div className="flex items-center justify-between border-b border-[var(--color-scrollbar-track)] pb-4">
+      <div className="flex flex-col gap-4 border-b border-[var(--color-scrollbar-track)] pb-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <h3 className="font-semibold text-[var(--color-text-color-primary)]">
             {interview.roleTitle}
@@ -37,20 +48,55 @@ export default function SummaryTab({ interview }: Props) {
             {interview.candidateName}
           </p>
         </div>
-        {isLive && (
-          <div className="flex items-center gap-2">
-            <span className="h-2 w-2 animate-pulse rounded-full bg-[var(--color-brand-accent)]" />
-            <span className="text-sm font-medium text-[var(--color-brand-accent)]">
-              Live
-            </span>
-            {interview.elapsed && (
-              <span className="text-sm font-medium text-[var(--color-brand-accent)] ml-1">
-                {interview.elapsed}
+        <div className="flex flex-col gap-3 sm:items-end">
+          {isLive && (
+            <div className="flex items-center gap-2">
+              <span className="h-2 w-2 animate-pulse rounded-full bg-[var(--color-brand-accent)]" />
+              <span className="text-sm font-medium text-[var(--color-brand-accent)]">
+                Live
               </span>
-            )}
+              {interview.elapsed && (
+                <span className="ml-1 text-sm font-medium text-[var(--color-brand-accent)]">
+                  {interview.elapsed}
+                </span>
+              )}
+            </div>
+          )}
+
+          <div className="flex flex-wrap gap-2">
+            <Button
+              type="button"
+              size="sm"
+              onClick={() => handleExport("pdf")}
+              disabled={summaryExport.isPending}
+            >
+              {summaryExport.exportingFormat === "pdf"
+                ? "Exporting PDF..."
+                : "Export PDF"}
+            </Button>
+            <Button
+              type="button"
+              size="sm"
+              variant="outline"
+              onClick={() => handleExport("markdown")}
+              disabled={summaryExport.isPending}
+            >
+              {summaryExport.exportingFormat === "markdown"
+                ? "Exporting Markdown..."
+                : "Export Markdown"}
+            </Button>
           </div>
-        )}
+        </div>
       </div>
+
+      {exportError && (
+        <div
+          role="alert"
+          className="rounded-xl border border-[var(--color-error)] bg-[var(--color-error-bg)] px-4 py-3 text-sm text-[var(--color-error-text)]"
+        >
+          {exportError}
+        </div>
+      )}
 
       {/* Custom Question & Key Skills */}
       <div className="space-y-4 rounded-xl border border-[var(--color-card-border)] bg-[var(--color-card-bg)] p-5">
