@@ -2,6 +2,7 @@ import { useDashboardStore } from "@/store/dashboardInterview";
 import { useEffect } from "react";
 import { GoDotFill } from "react-icons/go";
 import { MdKeyboardArrowRight } from "react-icons/md";
+import { Skeleton } from "@/components/ui/skeleton";
 
 // ── Helper to convert seconds into HH:MM:SS ──────────────────────────────────
 function formatDuration(totalSeconds: number): string {
@@ -22,8 +23,25 @@ const LiveSession = () => {
 
   if (sessionsLoading) {
     return (
-      <div className="flex items-center justify-center py-12">
-        <p className="text-sm text-gray-400">Loading live sessions...</p>
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+        {Array.from({ length: 3 }).map((_, index) => (
+          <div
+            key={index}
+            className="bg-white rounded-2xl p-5 border border-gray-100 shadow-sm"
+          >
+            <div className="flex items-center justify-between gap-4">
+              <Skeleton className="h-6 w-32" />
+              <Skeleton className="h-8 w-8 rounded-full" />
+            </div>
+            <div className="mt-6">
+              <Skeleton className="h-10 w-28 rounded-xl" />
+              <Skeleton className="mt-4 h-4 w-40" />
+            </div>
+            <div className="mt-6 border-t border-gray-100 pt-4">
+              <Skeleton className="h-4 w-full" />
+            </div>
+          </div>
+        ))}
       </div>
     );
   }

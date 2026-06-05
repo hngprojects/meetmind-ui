@@ -1,6 +1,7 @@
 // components/common/dash/dashboard/Completed.tsx
 "use client";
 import { useDashboardStore } from "@/store/dashboardInterview";
+import { Skeleton } from "@/components/ui/skeleton";
 import { useEffect } from "react";
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
@@ -155,8 +156,25 @@ export default function Completed() {
 
       {/* Content */}
       {completedLoading ? (
-        <div className="flex items-center justify-center py-8">
-          <p className="text-sm text-gray-400">Loading...</p>
+        <div className="flex flex-row gap-3">
+          {Array.from({ length: 2 }).map((_, index) => (
+            <div
+              key={index}
+              className="bg-white border border-gray-100 rounded-xl p-4 flex-1"
+            >
+              <div className="flex items-center justify-between">
+                <Skeleton className="h-4 w-24" />
+                <Skeleton className="h-6 w-6 rounded-full" />
+              </div>
+              <div className="mt-6 flex items-end justify-between">
+                <div className="space-y-2">
+                  <Skeleton className="h-4 w-32" />
+                  <Skeleton className="h-3 w-20" />
+                </div>
+                <Skeleton className="h-14 w-14 rounded-full" />
+              </div>
+            </div>
+          ))}
         </div>
       ) : completedError ? (
         <p className="text-sm text-[var(--color-error-dark)] text-center py-4">

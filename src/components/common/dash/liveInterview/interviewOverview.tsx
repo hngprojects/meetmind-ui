@@ -1,5 +1,6 @@
 "use client";
 import Buttons from "@/components/reuseable-component/buttons";
+import { Skeleton } from "@/components/ui/skeleton";
 import { useCreateStore } from "@/store/createInterviewStore";
 import { useDashboardStore } from "@/store/dashboardInterview";
 import { useUserDetailsStore } from "@/store/userDetail";
@@ -18,8 +19,28 @@ const InterviewOverview = () => {
 
   if (overviewLoading)
     return (
-      <div className="flex items-center justify-center py-16">
-        <p className="text-sm text-gray-400">Loading overview...</p>
+      <div className="flex flex-col gap-4">
+        <div className="bg-white p-7 rounded-2xl shadow-sm">
+          <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+            <div className="space-y-3">
+              <Skeleton className="h-8 w-56" />
+              <Skeleton className="h-4 w-48" />
+            </div>
+            <Skeleton className="h-11 w-40 rounded-full" />
+          </div>
+
+          <div className="mt-8 grid gap-4 md:grid-cols-5 md:divide-x md:divide-gray-200">
+            {Array.from({ length: 5 }).map((_, index) => (
+              <div
+                key={index}
+                className="flex flex-row items-center justify-between gap-4 rounded-xl bg-gray-50 px-4 py-4 md:flex-col md:items-center md:justify-center"
+              >
+                <Skeleton className="h-4 w-24" />
+                <Skeleton className="h-10 w-16" />
+              </div>
+            ))}
+          </div>
+        </div>
       </div>
     );
 

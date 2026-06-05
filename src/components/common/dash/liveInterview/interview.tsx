@@ -15,8 +15,8 @@ const Interview = () => {
       <ToastContainer />
       <InterviewOverview />
       <LiveSession />
-      <div className="grid gap-6 lg:grid-cols-[35%_65%]">
-        <div className="w-full">
+      <div className="grid gap-6 lg:grid-cols-[35%_65%] items-stretch">
+        <div className="w-full h-full">
           <Schedule />
         </div>
         <div className="flex flex-col gap-6">
