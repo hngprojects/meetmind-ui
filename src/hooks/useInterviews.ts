@@ -7,6 +7,7 @@ import {
   getChatHistory,
   getInterview,
   getInterviewSession,
+  getScorecard,
   getTranscript,
   listInterviews,
   rejoinInterviewSession,
@@ -130,6 +131,14 @@ export function useTranscript(id: string | null, status?: InterviewStatus) {
     // Poll more frequently for live transcript, not at all for completed
     refetchInterval: isLive ? 3000 : false,
     refetchOnWindowFocus: isLive,
+  });
+}
+
+export function useScorecard(id: string | null) {
+  return useQuery({
+    queryKey: ["interviews", id, "scorecard"],
+    queryFn: () => getScorecard(id!),
+    enabled: !!id,
   });
 }
 

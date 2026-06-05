@@ -12,6 +12,10 @@ import {
   type InterviewSessionRejoinResponse,
   type InterviewSessionStatus,
   type InterviewSummaryExportFormat,
+  type ScorecardEvidence,
+  type ScorecardResponse,
+  type ScorecardSection,
+  type ScorecardSubRubric,
   type TranscriptMessage,
 } from "@/types/interview";
 import {
@@ -19,6 +23,7 @@ import {
   MOCK_CHAT,
   MOCK_INTERVIEW_SESSION,
   MOCK_INTERVIEW_LIST,
+  MOCK_SCORECARD,
   MOCK_TRANSCRIPT,
 } from "@/lib/mocks/interviews.mock";
 
@@ -96,8 +101,42 @@ type ApiTranscriptTurn = {
   speakerLabel?: string;
   timestamp?: string;
   content?: string;
+  text?: string;
+  sequence_no?: number;
   is_typing?: boolean;
   is_active?: boolean;
+};
+
+type ApiScorecardEvidence = {
+  question_turn_id?: string;
+  response_turn_id?: string;
+  reason?: string | null;
+};
+
+type ApiScorecardSubRubric = {
+  id?: string | null;
+  title?: string | null;
+  score?: number | null;
+  confidence?: number | null;
+  score_bar_percent?: number | null;
+  strengths?: string[] | null;
+  weaknesses?: string[] | null;
+  justification?: string | null;
+  evidence?: ApiScorecardEvidence[] | null;
+  expanded?: boolean;
+};
+
+type ApiScorecardSection = ApiScorecardSubRubric & {
+  questions_asked?: string[] | null;
+  signals_detected?: string[] | null;
+  sub_rubrics?: ApiScorecardSubRubric[] | null;
+};
+
+type ApiScorecardResponse = {
+  interview_id?: string;
+  total_score?: number | null;
+  overall_confidence?: number | null;
+  sections?: ApiScorecardSection[] | null;
 };
 
 type ApiInterviewSession = {
@@ -223,6 +262,24 @@ export async function getTranscript(id: string): Promise<TranscriptMessage[]> {
 
   const raw = data.turns ?? data.transcript ?? data.data ?? [];
   return raw.map(mapApiToTranscriptMessage);
+}
+
+// ── Scorecard ─────────────────────────────────────────────────────────────────
+// GET /api/v1/interviews/{interview_id}/scorecard
+
+export async function getScorecard(id: string): Promise<ScorecardResponse> {
+  if (MOCKS_ENABLED) {
+    return {
+      interviewId: id,
+      totalScore: 50,
+      overallConfidence: 80,
+      sections: MOCK_SCORECARD,
+    };
+  }
+
+  const res = await api.get(`/api/v1/interviews/${id}/scorecard`);
+  const data = unwrapData<ApiScorecardResponse>(res.data);
+  return mapApiToScorecard(data, id);
 }
 
 // ── Live interview session state ──────────────────────────────────────────────
@@ -608,10 +665,87 @@ function mapApiToTranscriptMessage(raw: ApiTranscriptTurn): TranscriptMessage {
     speaker: raw.speaker ?? "candidate",
     speakerLabel: raw.speaker_label ?? raw.speakerLabel ?? raw.speaker ?? "",
     timestamp: raw.timestamp ?? "",
-    content: raw.content ?? "",
+    content: raw.content ?? raw.text ?? "",
+    sequenceNo: raw.sequence_no,
     isTyping: raw.is_typing ?? false,
     isActive: raw.is_active ?? false,
   };
+}
+
+function mapApiToScorecard(
+  raw: ApiScorecardResponse,
+  fallbackId: string,
+): ScorecardResponse {
+  const sections = (raw.sections ?? []).map(mapApiToScorecardSection);
+  const computedTotal =
+    sections.length > 0
+      ? Math.round(
+          sections.reduce((total, section) => total + section.score, 0) /
+            sections.length,
+        )
+      : 0;
+
+  return {
+    interviewId: raw.interview_id ?? fallbackId,
+    totalScore: normalizeScore(raw.total_score, computedTotal),
+    overallConfidence: normalizeScore(raw.overall_confidence, 0),
+    sections,
+  };
+}
+
+function mapApiToScorecardSection(raw: ApiScorecardSection): ScorecardSection {
+  const title = normalizeText(raw.title, "Untitled rubric");
+
+  return {
+    ...mapApiToScorecardRubric(raw, title),
+    questionsAsked: normalizeStringArray(raw.questions_asked),
+    signalsDetected: normalizeStringArray(raw.signals_detected),
+    subRubrics: (raw.sub_rubrics ?? []).map(mapApiToScorecardSubRubric),
+  };
+}
+
+function mapApiToScorecardSubRubric(
+  raw: ApiScorecardSubRubric,
+): ScorecardSubRubric {
+  return mapApiToScorecardRubric(
+    raw,
+    normalizeText(raw.title, "Untitled sub-rubric"),
+  );
+}
+
+function mapApiToScorecardRubric<T extends ApiScorecardSubRubric>(
+  raw: T,
+  fallbackTitle: string,
+): ScorecardSubRubric {
+  const title = normalizeText(raw.title, fallbackTitle);
+
+  return {
+    id: normalizeText(raw.id, toStableId(title)),
+    title,
+    score: normalizeScore(raw.score, 0),
+    confidence: normalizeScore(raw.confidence, 0),
+    scoreBarPercent: normalizeScore(raw.score_bar_percent, raw.score ?? 0),
+    strengths: normalizeStringArray(raw.strengths),
+    weaknesses: normalizeStringArray(raw.weaknesses),
+    justification:
+      typeof raw.justification === "string" && raw.justification.trim()
+        ? raw.justification.trim()
+        : null,
+    evidence: normalizeEvidence(raw.evidence),
+    expanded: raw.expanded,
+  };
+}
+
+function normalizeEvidence(
+  evidence: ApiScorecardEvidence[] | null | undefined,
+): ScorecardEvidence[] {
+  return (evidence ?? [])
+    .map((item) => ({
+      questionTurnId: normalizeText(item.question_turn_id, ""),
+      responseTurnId: normalizeText(item.response_turn_id, ""),
+      reason: normalizeText(item.reason, ""),
+    }))
+    .filter((item) => item.questionTurnId || item.responseTurnId);
 }
 
 function mapApiToInterviewSession(
@@ -706,6 +840,31 @@ function normalizeParticipantsCount(value: unknown): number {
   return typeof value === "number" && Number.isFinite(value)
     ? Math.max(0, Math.floor(value))
     : 0;
+}
+
+function normalizeScore(value: unknown, fallback: number): number {
+  const score =
+    typeof value === "number" && Number.isFinite(value) ? value : fallback;
+  return Math.min(100, Math.max(0, Math.round(score)));
+}
+
+function normalizeText(value: unknown, fallback: string): string {
+  return typeof value === "string" && value.trim() ? value.trim() : fallback;
+}
+
+function normalizeStringArray(value: string[] | null | undefined): string[] {
+  return (value ?? []).filter(
+    (item): item is string =>
+      typeof item === "string" && item.trim().length > 0,
+  );
+}
+
+function toStableId(value: string): string {
+  return value
+    .trim()
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "_")
+    .replace(/^_+|_+$/g, "");
 }
 
 function formatScheduledDate(isoString: string): string {
