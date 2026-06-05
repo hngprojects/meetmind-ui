@@ -667,8 +667,10 @@ function mapApiToTranscriptMessage(raw: ApiTranscriptTurn): TranscriptMessage {
     timestamp: raw.timestamp ?? "",
     content: raw.content ?? raw.text ?? "",
     sequenceNo:
-      typeof raw.sequence_no === "number" && Number.isFinite(raw.sequence_no)
-        ? Math.max(0, Math.floor(raw.sequence_no))
+      typeof raw.sequence_no === "number" &&
+      Number.isFinite(raw.sequence_no) &&
+      raw.sequence_no >= 0
+        ? Math.floor(raw.sequence_no)
         : undefined,
     isTyping: raw.is_typing ?? false,
     isActive: raw.is_active ?? false,
@@ -748,7 +750,7 @@ function normalizeEvidence(
       responseTurnId: normalizeText(item.response_turn_id, ""),
       reason: normalizeText(item.reason, ""),
     }))
-    .filter((item) => item.questionTurnId || item.responseTurnId);
+    .filter((item) => item.questionTurnId && item.responseTurnId);
 }
 
 function mapApiToInterviewSession(
