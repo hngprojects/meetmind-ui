@@ -2,23 +2,32 @@
 "use client";
 import { useDashboardStore } from "@/store/dashboardInterview";
 import { useEffect } from "react";
+import { Button } from "@/components/ui/button";
+import { FiArrowUpRight } from "react-icons/fi";
+import { Card, CardContent } from "@/components/ui/card";
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
 function formatTime(isoString: string): string {
   return new Date(isoString).toLocaleTimeString("en-US", {
     hour: "numeric",
     minute: "2-digit",
+    hour12: false,
+  });
+}
+
+function formatTimeWithPeriod(isoString: string): string {
+  const timeStr = new Date(isoString).toLocaleTimeString("en-US", {
+    hour: "numeric",
+    minute: "2-digit",
     hour12: true,
   });
+  return timeStr.toLowerCase().replace(" ", "");
 }
 
 function getWeekDays() {
   const today = new Date();
   const days = [];
   const dayLabels = ["sun", "mon", "tue", "wed", "thu", "fri", "sat"];
-  // const currentDay = today.getDay();
-
-  // Show 5 days centered around today
   const start = new Date(today);
   start.setDate(today.getDate() - 2);
 
@@ -42,10 +51,9 @@ function isSameDay(isoString: string, date: Date): boolean {
   return new Date(isoString).toDateString() === date.toDateString();
 }
 
-// ── Schedule Card ─────────────────────────────────────────────────────────────
+// ── Schedule Card Component ───────────────────────────────────────────────────
 function ScheduleCard({
   candidateName,
-  role,
   startTime,
   endTime,
   isFirst,
@@ -56,53 +64,35 @@ function ScheduleCard({
   endTime: string;
   isFirst: boolean;
 }) {
-  const timeRange = `${formatTime(startTime)} - ${formatTime(endTime)}`;
+  const timeRange = `${formatTimeWithPeriod(startTime)} - ${formatTime(endTime)}`;
 
   if (isFirst) {
     return (
-      <div className="bg-[#02505E] text-white rounded-xl p-3 flex justify-between items-start">
+      <div className="bg-[#005162] text-white rounded-2xl p-5 flex justify-between items-start min-h-25">
         <div>
-          <p className="font-semibold text-sm">{candidateName}</p>
-          <p className="text-xs opacity-80 mt-0.5">{timeRange}</p>
+          <h4 className="font-bold text-lg leading-snug">{candidateName}</h4>
+          <p className="text-xs opacity-75 mt-1.5 font-medium">{timeRange}</p>
         </div>
-        <button className="w-7 h-7 bg-white rounded-full flex items-center justify-center flex-shrink-0">
-          <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
-            <path
-              d="M2 10L10 2M10 2H4M10 2V8"
-              stroke="#02505E"
-              strokeWidth="1.5"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            />
-          </svg>
-        </button>
+        <Button
+          size="icon"
+          variant="secondary"
+          className="rounded-full bg-white text-[#005162] shadow-sm"
+        >
+          <FiArrowUpRight className="h-3.5 w-3.5" />
+        </Button>
       </div>
     );
   }
-
   return (
-    <div className="bg-white rounded-xl p-3 border border-gray-100 flex justify-between items-start">
+    <div className="bg-white rounded-xl p-4 border border-gray-100 flex justify-between items-center">
       <div>
-        <p className="font-semibold text-sm text-gray-900">{role}</p>
-        <p className="text-xs text-gray-500 mt-0.5">{candidateName}</p>
-        <p className="text-xs text-gray-400 mt-0.5">{timeRange}</p>
+        <p className="font-bold text-gray-900 text-sm">{candidateName}</p>
+        <p className="text-xs text-gray-400 mt-1 font-medium">{timeRange}</p>
       </div>
-      <button className="w-6 h-6 flex items-center justify-center text-gray-400 flex-shrink-0">
-        <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
-          <path
-            d="M2 10L10 2M10 2H4M10 2V8"
-            stroke="#9CA3AF"
-            strokeWidth="1.5"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          />
-        </svg>
-      </button>
     </div>
   );
 }
 
-// ── Main ──────────────────────────────────────────────────────────────────────
 export default function Schedule() {
   const { schedule, scheduleLoading, scheduleError, getSchedule } =
     useDashboardStore();
@@ -113,88 +103,134 @@ export default function Schedule() {
 
   const weekDays = getWeekDays();
   const today = new Date();
-  const todaySchedule = schedule.filter((item) =>
-    isSameDay(item.start_time, today),
-  );
+
+  const todaySchedule = schedule
+    .filter((item) => isSameDay(item.start_time, today))
+    .sort(
+      (a, b) =>
+        new Date(a.start_time).getTime() - new Date(b.start_time).getTime(),
+    );
+
+  const groupedSchedule = Object.entries(
+    todaySchedule.reduce(
+      (acc, item) => {
+        const key = item.role;
+
+        if (!acc[key]) acc[key] = [];
+        acc[key].push(item);
+
+        return acc;
+      },
+      {} as Record<string, typeof todaySchedule>,
+    ),
+  ).map(([role, items]) => ({
+    role,
+    items,
+  }));
 
   return (
-    <div
-      className="bg-white rounded-2xl p-4
-     flex flex-col gap-4 flex-1"
-    >
-      {/* Header */}
-      <div className="flex justify-between items-center">
-        <h3 className="font-bold text-base">Schedule</h3>
-        <button className="text-gray-400 hover:text-gray-600">
-          <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
-            <path
-              d="M2 12L12 2M12 2H5M12 2V9"
-              stroke="currentColor"
-              strokeWidth="1.5"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            />
-          </svg>
-        </button>
-      </div>
-
-      {/* Week Days */}
-      <div className="flex justify-between">
-        {weekDays.map(({ label, day, date }) => (
-          <div key={day} className="flex flex-col items-center gap-1">
-            <span className="text-xs text-gray-400">{label}</span>
-            <span
-              className={`text-sm font-medium w-7 h-7 flex items-center justify-center rounded-full
-                ${isToday(date) ? "bg-[#02505E] text-white" : "text-gray-700"}`}
-            >
-              {day}
-            </span>
-          </div>
-        ))}
-      </div>
-
-      {/* Content */}
-      {scheduleLoading ? (
-        <div className="flex items-center justify-center py-8">
-          <p className="text-sm text-gray-400">Loading schedule...</p>
+    <Card className="rounded-[24px] max-w-sm shadow-sm">
+      <CardContent className="p-6 flex flex-col gap-6">
+        <div className="flex justify-between items-center">
+          <h3 className="font-bold text-xl text-gray-900">Schedule</h3>
+          <Button
+            variant="outline"
+            size="icon"
+            className="rounded-full h-8 w-8"
+          >
+            <FiArrowUpRight className="h-3 w-3" />
+          </Button>
         </div>
-      ) : scheduleError ? (
-        <p className="text-sm text-[#C0392B] text-center py-4">
-          {scheduleError}
-        </p>
-      ) : todaySchedule.length === 0 ? (
-        <div className="flex items-center justify-center py-8">
-          <p className="text-sm text-gray-400">No interviews scheduled today</p>
-        </div>
-      ) : (
-        <div className="flex flex-row gap-3">
-          {/* Time + avatar column */}
-          <div className="flex flex-col items-center gap-1 pt-1">
-            <span className="text-xs text-gray-400">
-              {formatTime(todaySchedule[0].start_time).split(":")[0]}:30
-            </span>
-            <div className="w-px bg-gray-200 flex-1 relative my-1">
-              <div className="absolute top-4 left-1/2 -translate-x-1/2 w-6 h-6 rounded-full bg-purple-500 flex items-center justify-center text-white text-xs font-semibold">
-                {todaySchedule.length}
+
+        <div className="flex justify-between items-center px-1">
+          {weekDays.map(({ label, day, date }) => {
+            const current = isToday(date);
+            return (
+              <div key={day} className="flex flex-col items-center gap-1.5">
+                <span
+                  className={`text-xs font-semibold ${current ? "text-gray-900 font-bold" : "text-gray-300"}`}
+                >
+                  {label}
+                </span>
+                <span
+                  className={`text-sm font-bold w-8 h-8 flex items-center justify-center rounded-full transition-colors
+                  ${current ? "bg-gray-900 text-white" : "text-gray-400"}`}
+                >
+                  {day}
+                </span>
               </div>
-            </div>
-          </div>
-
-          {/* Cards */}
-          <div className="flex flex-col gap-3 flex-1">
-            {todaySchedule.map((item, index) => (
-              <ScheduleCard
-                key={item.interview_id}
-                candidateName={item.candidate_name}
-                role={item.role}
-                startTime={item.start_time}
-                endTime={item.end_time}
-                isFirst={index === 0}
-              />
-            ))}
-          </div>
+            );
+          })}
         </div>
-      )}
-    </div>
+
+        {scheduleLoading ? (
+          <div className="flex items-center justify-center py-12">
+            <p className="text-sm text-gray-400">Loading schedule...</p>
+          </div>
+        ) : scheduleError ? (
+          <p className="text-sm text-red-500 text-center py-6">
+            {scheduleError}
+          </p>
+        ) : todaySchedule.length === 0 ? (
+          <div className="flex items-center justify-center py-12">
+            <p className="text-sm text-gray-400">
+              No interviews scheduled today
+            </p>
+          </div>
+        ) : (
+          <div className="relative grid grid-cols-[68px_1fr] gap-x-4">
+            <div className="absolute left-6 top-4 bottom-4 w-0.5 border-l-2 border-dashed border-gray-200 pointer-events-none" />
+            {groupedSchedule.map((group) => {
+              const firstItem = group.items[0];
+
+              return (
+                <div key={group.role} className="contents">
+                  <div className="flex flex-col items-center z-10 mb-6">
+                    <div className="bg-[#B983FF] text-white text-xs font-bold w-7 h-7 flex items-center justify-center rounded-full shadow-sm">
+                      {group.items.length}
+                    </div>
+                  </div>
+                  <div className="mb-6">
+                    <div className="bg-gray-50/50 border border-gray-100 rounded-2xl p-4 flex flex-col gap-3">
+                      <div className="flex justify-between items-center mb-1">
+                        <span className="font-bold text-gray-900 text-base">
+                          {group.role}
+                        </span>
+
+                        <Button
+                          size="icon"
+                          variant="secondary"
+                          className="h-6 w-6 rounded-full"
+                        >
+                          <FiArrowUpRight className="h-3 w-3" />
+                        </Button>
+                      </div>
+                      <ScheduleCard
+                        candidateName={firstItem.candidate_name}
+                        role={firstItem.role}
+                        startTime={firstItem.start_time}
+                        endTime={firstItem.end_time}
+                        isFirst={true}
+                      />
+
+                      {group.items.slice(1).map((item) => (
+                        <ScheduleCard
+                          key={item.interview_id}
+                          candidateName={item.candidate_name}
+                          role={item.role}
+                          startTime={item.start_time}
+                          endTime={item.end_time}
+                          isFirst={false}
+                        />
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        )}
+      </CardContent>
+    </Card>
   );
 }

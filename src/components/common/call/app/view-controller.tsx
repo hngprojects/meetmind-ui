@@ -32,9 +32,13 @@ const VIEW_MOTION_PROPS = {
 
 interface ViewControllerProps {
   appConfig: AppConfig;
+  interviewId?: string;
 }
 
-export function ViewController({ appConfig }: ViewControllerProps) {
+export function ViewController({
+  appConfig,
+  interviewId,
+}: ViewControllerProps) {
   const { isConnected, start } = useSessionContext();
   const { resolvedTheme } = useTheme();
 
@@ -106,6 +110,7 @@ export function ViewController({ appConfig }: ViewControllerProps) {
           }
           audioVisualizerRadialRadius={appConfig.audioVisualizerRadialRadius}
           audioVisualizerWaveLineWidth={appConfig.audioVisualizerWaveLineWidth}
+          interviewId={interviewId}
           className="fixed inset-0"
         />
       )}
