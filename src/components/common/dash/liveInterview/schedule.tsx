@@ -68,7 +68,7 @@ function ScheduleCard({
 
   if (isFirst) {
     return (
-      <div className="bg-[#005162] text-white rounded-2xl p-5 flex justify-between items-start min-h-[6.25rem]">
+      <div className="bg-[var(--color-accent-teal-dark)] text-white rounded-2xl p-5 flex justify-between items-start min-h-[6.25rem]">
         <div>
           <h4 className="font-bold text-lg leading-snug">{candidateName}</h4>
           <p className="text-xs opacity-75 mt-1.5 font-medium">{timeRange}</p>
@@ -76,7 +76,7 @@ function ScheduleCard({
         <Button
           size="icon"
           variant="secondary"
-          className="rounded-full bg-white text-[#005162] shadow-sm"
+          className="rounded-full bg-white text-[var(--color-accent-teal-dark)] shadow-sm"
         >
           <FiArrowUpRight className="h-3.5 w-3.5" />
         </Button>
@@ -186,7 +186,7 @@ export default function Schedule() {
               return (
                 <div key={group.role} className="contents">
                   <div className="flex flex-col items-center z-10 mb-6">
-                    <div className="bg-[#B983FF] text-white text-xs font-bold w-7 h-7 flex items-center justify-center rounded-full shadow-sm">
+                    <div className="bg-[var(--color-brand-accent)] text-white text-xs font-bold w-7 h-7 flex items-center justify-center rounded-full shadow-sm">
                       {group.items.length}
                     </div>
                   </div>

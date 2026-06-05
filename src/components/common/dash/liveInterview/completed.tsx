@@ -45,7 +45,12 @@ function ScoreRing({ score }: { score: number | null }) {
   const progress = (value / 100) * circumference;
 
   // Color based on score
-  const color = value >= 70 ? "#1D9E75" : value >= 40 ? "#F59E0B" : "#EF4444";
+  const color =
+    value >= 70
+      ? "var(--color-success)"
+      : value >= 40
+        ? "var(--color-warning)"
+        : "var(--color-error)";
 
   return (
     <div className="relative w-14 h-14 flex items-center justify-center flex-shrink-0">
@@ -56,7 +61,7 @@ function ScoreRing({ score }: { score: number | null }) {
           cy="28"
           r={radius}
           fill="none"
-          stroke="#E5E7EB"
+          stroke="var(--color-card-border)"
           strokeWidth="4"
         />
         {/* Progress ring */}
@@ -154,7 +159,7 @@ export default function Completed() {
           <p className="text-sm text-gray-400">Loading...</p>
         </div>
       ) : completedError ? (
-        <p className="text-sm text-[#C0392B] text-center py-4">
+        <p className="text-sm text-[var(--color-error-dark)] text-center py-4">
           {completedError}
         </p>
       ) : completed.length === 0 ? (

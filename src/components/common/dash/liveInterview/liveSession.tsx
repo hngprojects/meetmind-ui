@@ -35,7 +35,7 @@ const LiveSession = () => {
         <h1 className="text-2xl text-gray-900 font-bold tracking-tight">
           Live Now
         </h1>
-        <button className="flex flex-row items-center gap-1 text-[#005162] font-semibold text-sm hover:opacity-80 transition-opacity">
+        <button className="flex flex-row items-center gap-1 text-[var(--color-accent-teal-dark)] font-semibold text-sm hover:opacity-80 transition-opacity">
           See all <MdKeyboardArrowRight className="text-xl" />
         </button>
       </div>
@@ -62,7 +62,7 @@ const LiveSession = () => {
                 <h3 className="text-lg font-bold text-gray-900 leading-none">
                   {session.candidate_name || "Marcus Lee"}
                 </h3>
-                <span className="text-[11px] font-bold text-[#6D28D9] bg-[#F3E8FF] rounded-full flex flex-row items-center gap-1 py-0.5 px-2">
+                <span className="text-[11px] font-bold text-[var(--color-session-purple-text-dark)] bg-[var(--color-session-purple-bg)] rounded-full flex flex-row items-center gap-1 py-0.5 px-2">
                   <GoDotFill className="text-[10px] animate-pulse" /> Live
                 </span>
               </div>
@@ -84,7 +84,7 @@ const LiveSession = () => {
               <p className="text-sm font-medium text-gray-400">
                 {session.role_title || "Product Manager"}
               </p>
-              <p className="text-3xl font-extrabold text-[#5046E5] tracking-tight font-mono">
+              <p className="text-3xl font-extrabold text-[var(--color-brand-accent)] tracking-tight font-mono">
                 {formatDuration(session.elapsed_seconds || 55330)}
               </p>
             </div>
