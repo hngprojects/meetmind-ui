@@ -54,7 +54,7 @@ export default function InterviewsWorkspace() {
     data: scorecard,
     isLoading: scorecardLoading,
     error: scorecardError,
-  } = useScorecard(activeTab === "scorecard" ? currentSelectedId : null);
+  } = useScorecard(currentSelectedId);
   const { data: session } = useInterviewSession(
     currentSelectedId,
     interview?.status,

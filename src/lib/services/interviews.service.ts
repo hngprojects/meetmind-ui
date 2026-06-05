@@ -666,7 +666,10 @@ function mapApiToTranscriptMessage(raw: ApiTranscriptTurn): TranscriptMessage {
     speakerLabel: raw.speaker_label ?? raw.speakerLabel ?? raw.speaker ?? "",
     timestamp: raw.timestamp ?? "",
     content: raw.content ?? raw.text ?? "",
-    sequenceNo: raw.sequence_no,
+    sequenceNo:
+      typeof raw.sequence_no === "number" && Number.isFinite(raw.sequence_no)
+        ? Math.max(0, Math.floor(raw.sequence_no))
+        : undefined,
     isTyping: raw.is_typing ?? false,
     isActive: raw.is_active ?? false,
   };

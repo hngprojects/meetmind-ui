@@ -139,6 +139,7 @@ export function useScorecard(id: string | null) {
     queryKey: ["interviews", id, "scorecard"],
     queryFn: () => getScorecard(id!),
     enabled: !!id,
+    staleTime: 1000 * 60 * 5,
   });
 }
 

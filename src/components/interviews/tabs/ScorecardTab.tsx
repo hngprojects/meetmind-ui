@@ -497,9 +497,9 @@ function ScoreBar({ value, className }: { value: number; className?: string }) {
         className={cn("h-full rounded-full transition-all duration-500", {
           "bg-[var(--color-text-success)]": value >= 70,
           "bg-[var(--color-badge-upcoming-text)]": value >= 40 && value < 70,
-          "bg-[var(--color-bg-divider)]": value < 40,
+          "bg-[var(--color-error)]": value < 40,
         })}
-        style={{ width: `${value}%` }}
+        style={{ width: `${Math.max(value, value > 0 ? 3 : 0)}%` }}
       />
     </div>
   );
