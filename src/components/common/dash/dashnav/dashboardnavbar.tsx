@@ -51,7 +51,7 @@ const Dashboardnavbar = () => {
 
   return (
     <section className="border-b border-[#E5E7EB] bg-white sticky top-0 z-50">
-      <div className="flex flex-row justify-between py-6 px-16 items-center">
+      <div className="flex flex-row justify-between py-4 px-4 lg:px-16 items-center">
         {/* Logo + Brand Name */}
         <div className="flex gap-3 w-[30%]">
           <Link href="/" className="flex items-center gap-2">
@@ -70,7 +70,7 @@ const Dashboardnavbar = () => {
 
         <div className="flex items-center justify-end h-10 w-[70%] gap-8">
           {/* navlist */}
-          <div className="h-10 bg-card flex rounded-lg items-center justify-center w-[50%]">
+          <div className="hidden lg:flex h-10 bg-card rounded-lg items-center justify-center w-[50%]">
             <Dashnavlist />
           </div>
 

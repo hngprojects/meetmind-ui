@@ -10,9 +10,11 @@ const CalendarLayout = ({
   detailsPanel,
 }: CalendarLayoutProps) => {
   return (
-    <section className="flex flex-col gap-6 lg:gap-10 py-10 px-16 lg:flex-row lg:items-start">
+    <section className="flex flex-col px-4 py-6 gap-6 lg:gap-10 lg:py-10 lg:px-16 lg:flex-row lg:items-start">
       {/* Sidebar */}
-      <div className="w-full lg:w-[478px] flex-shrink-0">{sidebar}</div>
+      <div className="w-full max-w-full lg:w-[478px] lg:flex-shrink-0">
+        <div className="mx-auto w-full max-w-[478px]">{sidebar}</div>
+      </div>
 
       {/* Main Panel */}
       <div
