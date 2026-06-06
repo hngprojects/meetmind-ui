@@ -1,5 +1,8 @@
-#!/bin/sh
+#!/bin/bash
 set -e
+
+# Run lint-staged first to ensure code quality
+npx lint-staged
 
 FIXED=0
 FAILED=0
@@ -40,6 +43,9 @@ fix_create_require() {
 
 # ── Scan staged files ─────────────────────────────────────────────────────────
 for file in $STAGED; do
+  echo "$file" | grep -q "pnpm-lock.yaml" && continue
+    # ── Skip assets──────────────────
+  echo "$file" | grep -qE "\.(svg|png|jpg|jpeg|ico)$" && continue
   [ -f "$file" ] || continue
 
   # ── Check 1: Long lines (the hiding technique) ──────────────────────────────

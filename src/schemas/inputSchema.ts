@@ -1,0 +1,56 @@
+import { z } from "zod";
+
+export const inputSchema = z.object({
+  name: z
+    .string()
+    .trim()
+    .nonempty("Name is required")
+    .max(100, "Name must be under 100 characters"),
+
+  email: z.email("Please enter a valid email address").trim(),
+  phone: z
+    .string()
+    .trim()
+    .nonempty("Phone number is required")
+    .refine(
+      (value) => {
+        const normalized = value.replace(/[\s\-().]/g, "");
+        return /^\+\d{7,15}$/.test(normalized);
+      },
+      {
+        message:
+          "Please enter a valid phone number with country code (e.g., +1234567890)",
+      },
+    ),
+  roleTitle: z
+    .string()
+    .trim()
+    .nonempty("Job role is required")
+    .min(2, "Role title must be at least 2 characters")
+    .max(100, "Role title must be under 100 characters"),
+
+  yearsofExperience: z
+    .number()
+    .nonnegative("Experience must be a positive number"),
+
+  keySkills: z
+    .string()
+    .trim()
+    .nonempty("Key skills are required")
+    .min(3, "Please enter at least one skill")
+    .max(300, "Key skills must be under 300 characters"),
+
+  location: z
+    .string()
+    .trim()
+    .nonempty("Location is required")
+    .max(100, "Location must be under 100 characters"),
+
+  portfolioLink: z
+    .url("Please enter a valid URL")
+    .trim()
+    .nonempty("Portfolio link is required")
+    .max(200, "Portfolio link must be under 200 characters"),
+});
+
+export type InputValuesType = z.infer<typeof inputSchema>;

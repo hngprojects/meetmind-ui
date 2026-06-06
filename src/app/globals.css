@@ -5,11 +5,165 @@
 @custom-variant dark (&:is(.dark *));
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
+  /* =============== FONTS =============== */
   --font-sans: var(--font-sans);
   --font-mono: var(--font-geist-mono);
   --font-heading: var(--font-sans);
+  --font-serif: var(--font-serif);
+
+  /* =============== BRAND COLORS =============== */
+  --color-brand-primary: #02505e;
+
+  /* =============== BACKGROUND COLORS =============== */
+  --color-bg-primary: #ffffff;
+  --color-bg-secondary: #f7f9fb;
+  --color-bg-tertiary: #e6f0f1;
+  --color-soft-white: #f4f4f5;
+  --color-soft-green: #d9e8ea;
+
+  /* =============== TEXT COLORS =============== */
+  --color-text-color-primary: #0f172a;
+  --color-text-color-secondary: #111827;
+  --color-text-primary: #035a69;
+  --color-text-secondary: #6b7280;
+  --color-text-body: #5e6470;
+  --color-text-subtext: #3f4555;
+  --color-text-divider: #91949d;
+  --color-text-white-primary: #fefeff;
+  --color-text-white-secondary: #e1e3e4;
+  --color-text-link: #3f4555;
+  --color-text-color-label: #0f0d0b;
+  --color-text-placeholder: #b5b7bd;
+  --color-text-disabled: #d1d5db;
+  --color-text-purple-accent: #5a20cb;
+
+  /* =============== BUTTON COLORS =============== */
+  --color-button-primary-bg: #02505e;
+  --color-button-primary-text: #fefeff;
+  --color-button-primary-bg-hover: #f7f9fb;
+  --color-button-primary-text-hover: #0f172a;
+  --color-button-primary-active: #1d4ed8;
+
+  --color-button-secondary-bg: #035a69;
+  --color-button-secondary-text: #ffffff;
+
+  --color-button-outline-border: #dadada;
+
+  /* =============== FORM ELEMENT COLORS =============== */
+  --color-input-bg: #fefeff;
+  --color-input-border: #dadada;
+  --color-input-border-focus: #0f766e;
+  --color-input-text: #b5b7bd;
+  --color-input-placeholder: #9ca3af;
+
+  /* =============== STATUS & FEEDBACK COLORS =============== */
+  --color-success: #25b788;
+  --color-bg-success: #ecfdf3;
+  --color-success-bg: #fefeff;
+  --color-text-success: #12b76a;
+
+  --color-error: #ef4444;
+  --color-error-bg: #fee2e2;
+  --color-error-text: #991b1b;
+  --color-error-dark: #dc2626;
+
+  --color-warning: #f59e0b;
+  --color-warning-bg: #fef3c7;
+  --color-warning-text: #78350f;
+
+  --color-info: #3b82f6;
+  --color-info-bg: #dbeafe;
+  --color-info-text: #1e3a8a;
+
+  /* =============== BORDER & DIVIDER COLORS =============== */
+  --color-bg-divider: #d1d5db;
+
+  /* =============== CARD & CONTAINER COLORS =============== */
+  --color-card-bg: #ffffff;
+  --color-card-border: #e5e7eb;
+  --color-card-text: #9ca3af;
+  --color-card-shadow: rgba(0, 0, 0, 0.05);
+
+  --color-icon-bg: #fef3f2;
+  --color-icon-text: #f04438;
+
+  /* =============== ABOUT PAGE =============== */
+  --color-brand-accent: #4f46e5;
+  --color-accent-teal: #035a69;
+  --color-accent-teal-dark: #02505e;
+  --color-newsletter-bg: #02505e;
+  --color-newsletter-subtext: #e1e3e4;
+  --color-newsletter-btn-bg: #f7f9fb;
+  --color-newsletter-btn-text: #02505e;
+  --color-belief-card-bg: #f7f9fb;
+  --color-timeline-bg: #f7f9fb;
+  --color-mission-bg: #f7f9fb;
+
+  /* =============== CALENDAR PAGE =============== */
+  --color-calendar-primary: #09090b;
+  --color-calendar-secondary: #71717a;
+  --color-calendar-bg-primary: #171717;
+  --color-text-primary-foreground: #fafafa;
+  --color-calendar-border: #e4e4e7;
+  --color-calendar-card-hover: #f8f8f8;
+  --color-calendar-avatar: #b5b7bd;
+  --color-panel-bg: #fefeff;
+
+  /* =============== SCROLLBAR COLORS =============== */
+  --color-scrollbar-track: #f3f4f6;
+  --color-scrollbar-thumb: #d1d5db;
+
+  /* =============== STATUS BADGE COLORS =============== */
+  --color-badge-live-bg: #f5f3ff;
+  --color-badge-live-text: #7c3aed;
+  --color-badge-upcoming-bg: #fff7ed;
+  --color-badge-upcoming-text: #c2410c;
+  --color-badge-upcoming-dot: #ea580c;
+
+  /* =============== SESSION STATE COLORS =============== */
+
+  /* Purple (thinking / speaking / live_transcript) */
+  --color-session-purple-text: #7c3aed;
+  --color-session-purple-text-dark: #6d28d9;
+  --color-session-purple-bg: #f5f3ff;
+  --color-session-purple-border: #ddd6fe;
+  --color-session-purple-icon-bg: #ede9fe;
+
+  /* Green (listening) */
+  --color-session-green-text: #047857;
+  --color-session-green-bg: #ecfdf3;
+  --color-session-green-border: #a7f3d0;
+  --color-session-green-icon-bg: #d1fae5;
+
+  /* Orange (connecting / reconnecting) */
+  --color-session-orange-text: #c2410c;
+  --color-session-orange-text-dark: #b45309;
+  --color-session-orange-dot: #ea580c;
+  --color-session-orange-bg: #fffbeb;
+  --color-session-orange-border: #fcd34d;
+  --color-session-orange-icon-bg: #ffedd5;
+
+  /* Connection lost */
+  --color-light-grayish-red: #fac5c5;
+  --color-dark-red: #d93e3e;
+  --color-light-red: #fdecec;
+
+  --color-session-connection-lost-text: #fac5c5;
+  --color-session-connection-lost-border: #fdecec;
+  --color-session-connection-lost-bg: #fdecec;
+
+  /* =============== RADIUS =============== */
+  --radius-sm: calc(var(--radius) * 0.6);
+  --radius-md: calc(var(--radius) * 0.8);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) * 1.4);
+  --radius-2xl: calc(var(--radius) * 1.8);
+  --radius-3xl: calc(var(--radius) * 2.2);
+  --radius-4xl: calc(var(--radius) * 2.6);
+
+  --color-surface: var(--color-dashnav);
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
   --color-sidebar-ring: var(--sidebar-ring);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
@@ -37,25 +191,17 @@
   --color-primary: var(--primary);
   --color-popover-foreground: var(--popover-foreground);
   --color-popover: var(--popover);
-  --color-card-foreground: var(--card-foreground);
-  --color-card: var(--card);
-  --radius-sm: calc(var(--radius) * 0.6);
-  --radius-md: calc(var(--radius) * 0.8);
-  --radius-lg: var(--radius);
-  --radius-xl: calc(var(--radius) * 1.4);
-  --radius-2xl: calc(var(--radius) * 1.8);
-  --radius-3xl: calc(var(--radius) * 2.2);
-  --radius-4xl: calc(var(--radius) * 2.6);
 }
 
 :root {
-  --background: oklch(1 0 0);
-  --foreground: oklch(0.145 0 0);
+  --color-dashnav: oklab(94.792% -0.0098 -0.0045);
+  --background: oklch(0.98 0.01 255);
+  --foreground: oklch(0.15 0.02 260);
   --card: oklch(1 0 0);
-  --card-foreground: oklch(0.145 0 0);
+  --card-foreground: oklch(0.15 0.02 260);
   --popover: oklch(1 0 0);
   --popover-foreground: oklch(0.145 0 0);
-  --primary: oklch(0.205 0 0);
+  --primary: oklch(0.45 0.09 200);
   --primary-foreground: oklch(0.985 0 0);
   --secondary: oklch(0.97 0 0);
   --secondary-foreground: oklch(0.205 0 0);
@@ -115,6 +261,25 @@
   --sidebar-accent-foreground: oklch(0.985 0 0);
   --sidebar-border: oklch(1 0 0 / 10%);
   --sidebar-ring: oklch(0.556 0 0);
+
+  /* About page tokens */
+  --color-brand-accent: `#6366f1`;
+  --color-accent-teal: `#0b7285`;
+  --color-accent-teal-dark: `#0a5f70`;
+  --color-newsletter-bg: `#0f2f36`;
+  --color-newsletter-subtext: `#cbd5e1`;
+  --color-newsletter-btn-bg: `#e2e8f0`;
+  --color-newsletter-btn-text: `#0f2f36`;
+  --color-belief-card-bg: `#1f2937`;
+  --color-timeline-bg: `#111827`;
+  --color-mission-bg: `#111827`;
+
+  /* STATUS BADGE COLORS - Dark Mode */
+  --color-badge-live-bg: oklch(0.269 0.08 280);
+  --color-badge-live-text: oklch(0.78 0.15 280);
+  --color-badge-upcoming-bg: oklch(0.269 0.05 60);
+  --color-badge-upcoming-text: oklch(0.75 0.12 40);
+  --color-badge-upcoming-dot: oklch(0.68 0.15 35);
 }
 
 @layer base {
@@ -126,5 +291,6 @@
   }
   html {
     @apply font-sans;
+    scroll-behavior: smooth;
   }
 }
