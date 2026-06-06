@@ -255,6 +255,7 @@ export interface AgentControlBarProps extends UseInputControlsProps {
   onIsChatOpenChange?: (open: boolean) => void;
   /** The callback for when a device error occurs. */
   onDeviceError?: (error: { source: Track.Source; error: Error }) => void;
+  sessionId?: string;
 }
 
 /**
@@ -291,6 +292,7 @@ export function AgentControlBar({
   onDeviceError,
   onIsChatOpenChange,
   className,
+  sessionId,
   ...props
 }: AgentControlBarProps & ComponentProps<"div">) {
   const { send } = useChat();
@@ -445,6 +447,7 @@ export function AgentControlBar({
           <AgentDisconnectButton
             onClick={onDisconnect}
             disabled={!isConnected}
+            sessionId={sessionId}
             className={cn(
               variant === "livekit" && [
                 "bg-destructive/10",

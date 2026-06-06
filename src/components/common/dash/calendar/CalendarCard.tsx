@@ -125,11 +125,11 @@ const CalendarCard = ({
   return (
     <section
       className="
-        overflow-hidden rounded-lg border border-calendar-border bg-white
+        mx-auto w-full overflow-hidden rounded-lg border border-calendar-border bg-white
       "
     >
       {/* Header */}
-      <div className="flex items-center justify-between px-5 pt-5">
+      <div className="flex items-center justify-between px-3 pt-4 sm:px-5 sm:pt-5">
         <button
           aria-label="Previous month"
           onClick={handlePreviousMonth}
@@ -156,7 +156,7 @@ const CalendarCard = ({
       {/* Week Days */}
       <div
         className="
-          mt-6 grid grid-cols-7 px-5 text-center
+          mt-6 grid grid-cols-7 px-3 text-center sm:px-5
         "
       >
         {weekDays.map((day) => (
@@ -172,7 +172,7 @@ const CalendarCard = ({
       </div>
 
       {/* Dates */}
-      <div className=" mt-5 grid grid-cols-7 gap-y-4 px-5 pb-6">
+      <div className=" mt-5 grid grid-cols-7 gap-y-4 px-3 pb-5 sm:px-5 sm:pb-6">
         {allCalendarDays.map((calendarDay, index) => {
           return (
             <button
