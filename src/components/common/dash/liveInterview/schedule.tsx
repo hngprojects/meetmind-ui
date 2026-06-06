@@ -5,6 +5,7 @@ import { useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { FiArrowUpRight } from "react-icons/fi";
 import { Card, CardContent } from "@/components/ui/card";
+import { Skeleton } from "@/components/ui/skeleton";
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
 function formatTime(isoString: string): string {
@@ -68,7 +69,7 @@ function ScheduleCard({
 
   if (isFirst) {
     return (
-      <div className="bg-[#005162] text-white rounded-2xl p-5 flex justify-between items-start min-h-25">
+      <div className="bg-(--color-accent-teal-dark) text-white rounded-2xl p-5 flex justify-between items-start min-h-25">
         <div>
           <h4 className="font-bold text-lg leading-snug">{candidateName}</h4>
           <p className="text-xs opacity-75 mt-1.5 font-medium">{timeRange}</p>
@@ -76,7 +77,7 @@ function ScheduleCard({
         <Button
           size="icon"
           variant="secondary"
-          className="rounded-full bg-white text-[#005162] shadow-sm"
+          className="rounded-full bg-white text-(--color-accent-teal-dark) shadow-sm"
         >
           <FiArrowUpRight className="h-3.5 w-3.5" />
         </Button>
@@ -129,8 +130,8 @@ export default function Schedule() {
   }));
 
   return (
-    <Card className="rounded-[24px] max-w-sm shadow-sm">
-      <CardContent className="p-6 flex flex-col gap-6">
+    <Card className="rounded-[24px] shadow-sm h-full">
+      <CardContent className="p-6 flex flex-col gap-6 h-full">
         <div className="flex justify-between items-center">
           <h3 className="font-bold text-xl text-gray-900">Schedule</h3>
           <Button
@@ -164,8 +165,20 @@ export default function Schedule() {
         </div>
 
         {scheduleLoading ? (
-          <div className="flex items-center justify-center py-12">
-            <p className="text-sm text-gray-400">Loading schedule...</p>
+          <div className="space-y-4">
+            <div className="flex justify-between items-center">
+              <Skeleton className="h-8 w-32" />
+              <Skeleton className="h-8 w-8 rounded-full" />
+            </div>
+            <div className="flex items-center gap-2">
+              {Array.from({ length: 5 }).map((_, index) => (
+                <Skeleton key={index} className="h-10 w-10 rounded-full" />
+              ))}
+            </div>
+            <div className="space-y-4">
+              <Skeleton className="h-24 rounded-3xl" />
+              <Skeleton className="h-16 rounded-3xl" />
+            </div>
           </div>
         ) : scheduleError ? (
           <p className="text-sm text-red-500 text-center py-6">
@@ -186,7 +199,7 @@ export default function Schedule() {
               return (
                 <div key={group.role} className="contents">
                   <div className="flex flex-col items-center z-10 mb-6">
-                    <div className="bg-[#B983FF] text-white text-xs font-bold w-7 h-7 flex items-center justify-center rounded-full shadow-sm">
+                    <div className="bg-(--color-brand-accent) text-white text-xs font-bold w-7 h-7 flex items-center justify-center rounded-full shadow-sm">
                       {group.items.length}
                     </div>
                   </div>

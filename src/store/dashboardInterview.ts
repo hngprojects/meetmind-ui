@@ -3,6 +3,7 @@ import {
   fetchInterviewSessions,
   fetchSchedule,
   fetchCompleted,
+  fetchInterviews,
 } from "@/components/common/dash/liveInterview/apiCall";
 import { create } from "zustand";
 
@@ -43,7 +44,6 @@ interface SessionsResponse {
   };
 }
 
-// Add schedule types
 interface ScheduleItem {
   interview_id: string;
   candidate_name: string;
@@ -72,6 +72,27 @@ interface CompletedResponse {
   data: CompletedItem[];
 }
 
+// ── NEW: Interview types ───────────────────────────────────────────────────────
+interface InterviewItem {
+  id: string;
+  interview_id: string | null;
+  candidate_name: string;
+  role_title: string;
+  title: string | null;
+  platform: string;
+  status: string;
+  scheduled_start: string | null;
+  scheduled_time: string | null;
+  participation_mode: string;
+  created_at: string;
+}
+
+interface InterviewsResponse {
+  success: boolean;
+  message: string;
+  data: InterviewItem[];
+}
+
 interface DashboardState {
   overview: DashboardOverview | null;
   overviewLoading: boolean;
@@ -83,7 +104,6 @@ interface DashboardState {
   sessionsError: string | null;
   getSessions: () => Promise<void>;
 
-  //  Add schedule state
   schedule: ScheduleItem[];
   scheduleLoading: boolean;
   scheduleError: string | null;
@@ -93,6 +113,12 @@ interface DashboardState {
   completedLoading: boolean;
   completedError: string | null;
   getCompleted: () => Promise<void>;
+
+  // ── NEW ──
+  interviews: InterviewItem[];
+  interviewsLoading: boolean;
+  interviewsError: string | null;
+  getInterviews: () => Promise<void>;
 }
 
 // ── Axios error helper ────────────────────────────────────────────────────────
@@ -140,7 +166,7 @@ export const useDashboardStore = create<DashboardState>((set) => ({
     }
   },
 
-  // Schedule
+  // schedule
   schedule: [],
   scheduleLoading: false,
   scheduleError: null,
@@ -156,6 +182,7 @@ export const useDashboardStore = create<DashboardState>((set) => ({
     }
   },
 
+  // completed
   completed: [],
   completedLoading: false,
   completedError: null,
@@ -168,6 +195,22 @@ export const useDashboardStore = create<DashboardState>((set) => ({
       set({ completedError: getErrorMessage(err) });
     } finally {
       set({ completedLoading: false });
+    }
+  },
+
+  // ── NEW: interviews ───────────────────────────────────────────────────────
+  interviews: [],
+  interviewsLoading: false,
+  interviewsError: null,
+  getInterviews: async () => {
+    set({ interviewsLoading: true, interviewsError: null });
+    try {
+      const data: InterviewsResponse = await fetchInterviews();
+      set({ interviews: data.data });
+    } catch (err: unknown) {
+      set({ interviewsError: getErrorMessage(err) });
+    } finally {
+      set({ interviewsLoading: false });
     }
   },
 }));
