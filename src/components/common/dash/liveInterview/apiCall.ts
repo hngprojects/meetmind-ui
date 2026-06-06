@@ -6,7 +6,7 @@ export const fetchInterviewOverview = async () => {
 };
 
 export const fetchInterviewSessions = async () => {
-  const response = await api.get(`/api/v1/dashboard/sessions`);
+  const response = await api.get(`/api/v1/dashboard/live`);
   return response.data;
 };
 
