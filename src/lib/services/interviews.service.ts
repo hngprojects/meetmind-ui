@@ -292,7 +292,7 @@ export async function askQuestionWithVoice(
   }
 
   const formData = new FormData();
-  formData.append("file", audioBlob, "voice-query.webm");
+  formData.append("file", audioBlob, getAudioUploadFilename(audioBlob));
 
   const res = await api.post(`/api/v1/interviews/${id}/chat/voice`, formData);
   const data = unwrapData<ApiChatResponse>(res.data);
@@ -740,6 +740,26 @@ function createFallbackMessageId(prefix = "msg"): string {
     globalThis.crypto?.randomUUID?.() ??
     `${prefix}-${Date.now()}-${Math.random().toString(36).slice(2)}`
   );
+}
+
+const AUDIO_EXTENSION_BY_MIME_TYPE: Record<string, string> = {
+  "audio/webm": "webm",
+  "audio/ogg": "ogg",
+  "audio/mp4": "m4a",
+  "audio/mpeg": "mp3",
+  "audio/mp3": "mp3",
+  "audio/wav": "wav",
+  "audio/x-wav": "wav",
+  "audio/flac": "flac",
+};
+
+function getAudioUploadFilename(audioBlob: Blob): string {
+  const mimeType = audioBlob.type.split(";")[0]?.toLowerCase();
+  const extension = mimeType
+    ? (AUDIO_EXTENSION_BY_MIME_TYPE[mimeType] ?? "webm")
+    : "webm";
+
+  return `voice-query.${extension}`;
 }
 
 function mapApiToChatMessage(raw: ApiChatResponse): ChatMessage {
