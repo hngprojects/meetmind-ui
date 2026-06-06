@@ -11,8 +11,10 @@ import type {
   InterviewSession,
   InterviewSessionStatus,
   TranscriptMessage,
+  TranscriptResponse,
+  TranscriptStatus,
 } from "@/types/interview";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { FiSquare } from "react-icons/fi";
 import {
   HiOutlineArrowDownTray,
@@ -21,6 +23,7 @@ import {
 
 type Props = {
   interview: InterviewDetail;
+  transcript?: TranscriptResponse;
   messages: TranscriptMessage[];
   session?: InterviewSession;
   onRejoin?: () => Promise<void>;
@@ -40,6 +43,7 @@ const SESSION_ONLY: InterviewSessionStatus[] = [
 // ==================== 🧩Main Component ====================
 export default function TranscriptTab({
   interview,
+  transcript,
   messages,
   session,
   onRejoin,
@@ -48,11 +52,42 @@ export default function TranscriptTab({
   const [isStopping, setIsStopping] = useState(false);
   const [isDownloading, setIsDownloading] = useState(false);
   const [rejoinError, setRejoinError] = useState<string | null>(null);
+  const scrollContainerRef = useRef<HTMLDivElement>(null);
+  const shouldStickToBottomRef = useRef(true);
   const visibleSession =
     session ??
     (interview.status === "in_progress" ? getFallbackSession(interview) : null);
+  const transcriptStatus = transcript?.status;
+  const shouldShowRecoveryCard =
+    visibleSession?.session_status === "connection_lost" ||
+    (messages.length === 0 &&
+      visibleSession?.session_status === "reconnecting" &&
+      transcriptStatus !== "transcribing");
   const showSessionCard =
-    !!visibleSession && SESSION_ONLY.includes(visibleSession.session_status);
+    !!visibleSession &&
+    SESSION_ONLY.includes(visibleSession.session_status) &&
+    shouldShowRecoveryCard;
+
+  useEffect(() => {
+    const scrollContainer = scrollContainerRef.current;
+    if (!scrollContainer || !shouldStickToBottomRef.current) return;
+
+    scrollContainer.scrollTo({
+      top: scrollContainer.scrollHeight,
+      behavior: "smooth",
+    });
+  }, [messages.length, transcriptStatus]);
+
+  const handleTranscriptScroll = () => {
+    const scrollContainer = scrollContainerRef.current;
+    if (!scrollContainer) return;
+
+    const distanceFromBottom =
+      scrollContainer.scrollHeight -
+      scrollContainer.scrollTop -
+      scrollContainer.clientHeight;
+    shouldStickToBottomRef.current = distanceFromBottom < 96;
+  };
 
   // ── Stop transcribing ──────────────────────────────────────────────────────
   // POST /api/v1/interviews/{interview_id}/transcript/stop
@@ -118,6 +153,22 @@ export default function TranscriptTab({
   // ── Live transcript / completed view ──────────────────────────────────────
   const isLive = interview.status === "in_progress";
   const liveElapsed = session?.elapsed_display ?? interview.elapsed;
+  const statusLabel = getTranscriptStatusLabel(transcriptStatus);
+  const statusMessage = getTranscriptStatusMessage(
+    transcriptStatus,
+    transcript?.message,
+    isLive,
+    messages.length,
+  );
+  const shouldShowStatusBanner =
+    Boolean(statusMessage) &&
+    (messages.length === 0 ||
+      transcriptStatus === "interrupted" ||
+      transcriptStatus === "failed");
+  const emptyTranscriptMessage = shouldShowStatusBanner
+    ? "Transcript turns will appear here."
+    : (statusMessage ??
+      (isLive ? "Waiting for transcript..." : "No transcript available."));
 
   return (
     <div className="flex h-full min-h-[32.5rem] flex-col">
@@ -169,10 +220,23 @@ export default function TranscriptTab({
       </div>
 
       {/* Messages */}
-      <div className="flex-1 space-y-4 overflow-y-auto px-6 py-6">
+      <div
+        ref={scrollContainerRef}
+        onScroll={handleTranscriptScroll}
+        className="flex-1 space-y-4 overflow-y-auto px-6 py-6"
+      >
+        {shouldShowStatusBanner && (
+          <TranscriptStatusBanner
+            status={transcriptStatus}
+            title={statusLabel}
+            message={statusMessage}
+            partialSaved={transcript?.partialSaved ?? null}
+          />
+        )}
+
         {messages.length === 0 ? (
           <div className="flex h-full items-center justify-center text-sm text-[var(--color-text-secondary)]">
-            {isLive ? "Waiting for transcript…" : "No transcript available."}
+            {emptyTranscriptMessage}
           </div>
         ) : (
           messages.map((msg) => (
@@ -224,6 +288,11 @@ export default function TranscriptTab({
                 {liveElapsed}
               </span>
             )}
+            {transcriptStatus && (
+              <span className="text-sm text-[var(--color-text-secondary)]">
+                {statusLabel}
+              </span>
+            )}
           </div>
           <button
             type="button"
@@ -239,6 +308,85 @@ export default function TranscriptTab({
       )}
     </div>
   );
+}
+
+function TranscriptStatusBanner({
+  status,
+  title,
+  message,
+  partialSaved,
+}: {
+  status?: TranscriptStatus;
+  title: string;
+  message: string | null;
+  partialSaved: boolean | null;
+}) {
+  const isProblemStatus = status === "interrupted" || status === "failed";
+
+  return (
+    <div
+      className={cn(
+        "rounded-xl border px-4 py-3 text-sm",
+        isProblemStatus
+          ? "border-[var(--color-error)] bg-[var(--color-error-bg)] text-[var(--color-error)]"
+          : "border-[var(--color-card-border)] bg-[var(--color-bg-secondary)] text-[var(--color-text-secondary)]",
+      )}
+    >
+      <p className="font-semibold">{title}</p>
+      {message && <p className="mt-1">{message}</p>}
+      {partialSaved && (
+        <p className="mt-2 font-medium">
+          Partial transcript has been saved and remains available.
+        </p>
+      )}
+    </div>
+  );
+}
+
+function getTranscriptStatusLabel(status?: TranscriptStatus) {
+  switch (status) {
+    case "idle":
+      return "Transcript idle";
+    case "connecting":
+      return "Connecting transcript";
+    case "transcribing":
+      return "Live transcription";
+    case "interrupted":
+      return "Transcript interrupted";
+    case "failed":
+      return "Transcript failed";
+    case "completed":
+      return "Transcript complete";
+    default:
+      return "Transcript";
+  }
+}
+
+function getTranscriptStatusMessage(
+  status: TranscriptStatus | undefined,
+  message: string | null | undefined,
+  isLive: boolean,
+  messagesCount: number,
+) {
+  if (message?.trim()) return message.trim();
+
+  switch (status) {
+    case "idle":
+      return "Live transcription will appear here when an interview begins.";
+    case "connecting":
+      return "Connecting to live transcript stream...";
+    case "interrupted":
+      return "Live transcript stream was interrupted.";
+    case "failed":
+      return "Transcript failed to load.";
+    default:
+      if (messagesCount === 0) {
+        return isLive
+          ? "Waiting for transcript..."
+          : "No transcript available.";
+      }
+      return null;
+  }
 }
 
 function getFallbackSession(interview: InterviewDetail): InterviewSession {

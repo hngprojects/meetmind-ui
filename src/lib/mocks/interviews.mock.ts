@@ -6,6 +6,7 @@ import type {
   InterviewSessionStatus,
   ScorecardCategory,
   TranscriptMessage,
+  TranscriptResponse,
 } from "@/types/interview";
 
 export const MOCK_INTERVIEW_LIST: InterviewListItem[] = [
@@ -177,6 +178,17 @@ export const MOCK_TRANSCRIPT: TranscriptMessage[] = [
     sequenceNo: 4,
   },
 ];
+
+export const MOCK_TRANSCRIPT_RESPONSE: TranscriptResponse = {
+  interviewId: "1",
+  totalTurns: MOCK_TRANSCRIPT.length,
+  turns: MOCK_TRANSCRIPT,
+  isLive: true,
+  status: "transcribing",
+  message: null,
+  error: null,
+  partialSaved: null,
+};
 
 export const MOCK_CHAT: ChatMessage[] = [
   {

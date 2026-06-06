@@ -17,7 +17,7 @@ import {
   useScorecard,
   useTranscript,
 } from "@/hooks/useInterviews";
-import type { InterviewTab } from "@/types/interview";
+import type { InterviewTab, TranscriptMessage } from "@/types/interview";
 import { useState } from "react";
 import { HiOutlineArrowLeft, HiOutlineBars3 } from "react-icons/hi2";
 
@@ -46,10 +46,11 @@ export default function InterviewsWorkspace() {
     currentSelectedId,
     interview?.status,
   );
-  const { data: transcript = [] } = useTranscript(
+  const { data: transcript } = useTranscript(
     currentSelectedId,
     interview?.status,
   );
+  const transcriptTurns = transcript?.turns ?? [];
   const {
     data: scorecard,
     isLoading: scorecardLoading,
@@ -146,6 +147,7 @@ export default function InterviewsWorkspace() {
     renderEmptyState,
     chat,
     transcript,
+    transcriptTurns,
     scorecard,
     scorecardLoading,
     scorecardError,
@@ -236,6 +238,7 @@ type DetailsPanelProps = {
   renderEmptyState: () => React.ReactNode;
   chat: ReturnType<typeof useChatHistory>["data"];
   transcript: ReturnType<typeof useTranscript>["data"];
+  transcriptTurns: TranscriptMessage[];
   scorecard: ReturnType<typeof useScorecard>["data"];
   scorecardLoading: boolean;
   scorecardError: Error | null;
@@ -254,6 +257,7 @@ function DetailsPanel({
   renderEmptyState,
   chat,
   transcript,
+  transcriptTurns,
   scorecard,
   scorecardLoading,
   scorecardError,
@@ -281,7 +285,8 @@ function DetailsPanel({
             {activeTab === "transcript" && (
               <TranscriptTab
                 interview={interview}
-                messages={transcript ?? []}
+                transcript={transcript}
+                messages={transcriptTurns}
                 session={session}
                 onRejoin={onRejoinSession}
                 isRejoining={isRejoiningSession}
@@ -292,7 +297,7 @@ function DetailsPanel({
               <ScorecardTab
                 interview={interview}
                 scorecard={scorecard}
-                transcript={transcript ?? []}
+                transcript={transcriptTurns}
                 isLoading={scorecardLoading}
                 error={scorecardError}
               />
