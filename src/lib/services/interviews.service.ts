@@ -784,7 +784,15 @@ function normalizeTranscriptStatus(value: unknown): TranscriptStatus {
     return value as TranscriptStatus;
   }
 
-  return "completed";
+  if (value !== undefined && value !== null) {
+    console.warn("Unknown transcript status received from API", {
+      value,
+      type: typeof value,
+      fallback: "connecting",
+    });
+  }
+
+  return "connecting";
 }
 
 function normalizeNonNegativeInteger(value: unknown, fallback: number) {
