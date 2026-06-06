@@ -80,7 +80,7 @@ export default function HeroSection() {
             />
             <div className="flex flex-col items-center gap-6">
               <Link
-                href="/sign-up"
+                href="/waitlist"
                 className="flex justify-center items-center w-86.25 h-14 px-4 py-2.5 
                   bg-[#02505E] text-[#FEFEFF] font-semibold rounded-lg text-base 
                   hover:bg-[#F7F9FB] hover:text-[#013A44] hover:border 

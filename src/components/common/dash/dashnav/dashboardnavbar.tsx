@@ -14,7 +14,7 @@ import {
   getCurrentUserEmail,
 } from "@/lib/api/currentUser";
 import { UserAvatar } from "@/components/common/UserAvatar";
-import { MdKeyboardArrowDown, MdOutlineCancel } from "react-icons/md";
+import { MdKeyboardArrowDown } from "react-icons/md";
 import {
   LuUser,
   LuSettings,
@@ -24,10 +24,9 @@ import {
   LuMenu,
   LuX,
 } from "react-icons/lu";
-import { IoIosMenu } from "react-icons/io";
+// import { IoIosMenu } from "react-icons/io";
 
 const Dashboardnavbar = () => {
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [isSignOutModalOpen, setIsSignOutModalOpen] = useState(false);
@@ -214,7 +213,7 @@ const Dashboardnavbar = () => {
           </div>
 
           {/* Mobile Hamburger Button */}
-          <button
+          {/* <button
             className="lg:hidden text-[#0F172A] w-[10%]"
             onClick={() => setIsMobileMenuOpen((prev) => !prev)}
             aria-label="Toggle menu"
@@ -224,7 +223,7 @@ const Dashboardnavbar = () => {
             ) : (
               <IoIosMenu size={24} />
             )}
-          </button>
+          </button> */}
         </div>
       </div>
 
