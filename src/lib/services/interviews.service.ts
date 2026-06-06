@@ -17,6 +17,8 @@ import {
   type ScorecardSection,
   type ScorecardSubRubric,
   type TranscriptMessage,
+  type TranscriptResponse,
+  type TranscriptStatus,
 } from "@/types/interview";
 import {
   getMockInterviewById,
@@ -24,7 +26,7 @@ import {
   MOCK_INTERVIEW_SESSION,
   MOCK_INTERVIEW_LIST,
   MOCK_SCORECARD,
-  MOCK_TRANSCRIPT,
+  MOCK_TRANSCRIPT_RESPONSE,
 } from "@/lib/mocks/interviews.mock";
 
 const MOCKS_ENABLED = process.env.NEXT_PUBLIC_USE_MOCKS === "true";
@@ -97,6 +99,7 @@ type ApiChatResponse = ApiChatTurn & {
 type ApiTranscriptTurn = {
   id?: string;
   speaker?: "meet_mind" | "candidate";
+  speaker_type?: string;
   speaker_label?: string;
   speakerLabel?: string;
   timestamp?: string;
@@ -105,6 +108,19 @@ type ApiTranscriptTurn = {
   sequence_no?: number;
   is_typing?: boolean;
   is_active?: boolean;
+};
+
+type ApiTranscriptResponse = {
+  interview_id?: string;
+  total_turns?: number;
+  turns?: ApiTranscriptTurn[];
+  transcript?: ApiTranscriptTurn[];
+  data?: ApiTranscriptTurn[];
+  is_live?: boolean;
+  status?: string;
+  message?: string | null;
+  error?: string | null;
+  partial_saved?: boolean | null;
 };
 
 type ApiScorecardEvidence = {
@@ -250,18 +266,37 @@ export async function askQuestion(
 // ── Transcript ─────────────────────────────────────────────────────────────────
 // GET /api/v1/interviews/{interview_id}/transcript
 
-export async function getTranscript(id: string): Promise<TranscriptMessage[]> {
-  if (MOCKS_ENABLED) return MOCK_TRANSCRIPT;
+export type GetTranscriptOptions = {
+  live?: boolean;
+  afterSequenceNo?: number;
+};
 
-  const res = await api.get(`/api/v1/interviews/${id}/transcript`);
-  const data = unwrapData<{
-    turns?: ApiTranscriptTurn[];
-    transcript?: ApiTranscriptTurn[];
-    data?: ApiTranscriptTurn[];
-  }>(res.data);
+export async function getTranscript(
+  id: string,
+  options: GetTranscriptOptions = {},
+): Promise<TranscriptResponse> {
+  if (MOCKS_ENABLED) {
+    return { ...MOCK_TRANSCRIPT_RESPONSE, interviewId: id };
+  }
 
-  const raw = data.turns ?? data.transcript ?? data.data ?? [];
-  return raw.map(mapApiToTranscriptMessage);
+  const params: Record<string, boolean | number> = {};
+  if (options.live) params.live = true;
+  if (
+    typeof options.afterSequenceNo === "number" &&
+    Number.isFinite(options.afterSequenceNo) &&
+    options.afterSequenceNo >= 0
+  ) {
+    params.after_sequence_no = Math.floor(options.afterSequenceNo);
+  }
+
+  const res = await api.get(`/api/v1/interviews/${id}/transcript`, {
+    params,
+  });
+  const data = unwrapData<ApiTranscriptResponse | ApiTranscriptTurn[]>(
+    res.data,
+  );
+
+  return mapApiToTranscriptResponse(data, id);
 }
 
 // ── Scorecard ─────────────────────────────────────────────────────────────────
@@ -659,11 +694,58 @@ function mapApiToChatMessage(raw: ApiChatResponse): ChatMessage {
   };
 }
 
+const TRANSCRIPT_STATUSES: readonly TranscriptStatus[] = [
+  "idle",
+  "connecting",
+  "transcribing",
+  "interrupted",
+  "completed",
+  "failed",
+];
+
+function mapApiToTranscriptResponse(
+  raw: ApiTranscriptResponse | ApiTranscriptTurn[],
+  fallbackId: string,
+): TranscriptResponse {
+  const envelope: ApiTranscriptResponse = Array.isArray(raw)
+    ? { turns: raw }
+    : raw;
+  const turns = (envelope.turns ?? envelope.transcript ?? envelope.data ?? [])
+    .map(mapApiToTranscriptMessage)
+    .sort(compareTranscriptMessages);
+
+  return {
+    interviewId: normalizeText(envelope.interview_id, fallbackId),
+    totalTurns: normalizeNonNegativeInteger(envelope.total_turns, turns.length),
+    turns,
+    isLive: Boolean(envelope.is_live),
+    status: normalizeTranscriptStatus(envelope.status),
+    message:
+      typeof envelope.message === "string" && envelope.message.trim()
+        ? envelope.message.trim()
+        : null,
+    error:
+      typeof envelope.error === "string" && envelope.error.trim()
+        ? envelope.error.trim()
+        : null,
+    partialSaved:
+      typeof envelope.partial_saved === "boolean"
+        ? envelope.partial_saved
+        : null,
+  };
+}
+
 function mapApiToTranscriptMessage(raw: ApiTranscriptTurn): TranscriptMessage {
+  const speaker =
+    raw.speaker === "meet_mind" || raw.speaker_type === "meet_mind"
+      ? "meet_mind"
+      : "candidate";
+
   return {
     id: raw.id ?? crypto.randomUUID(),
-    speaker: raw.speaker ?? "candidate",
-    speakerLabel: raw.speaker_label ?? raw.speakerLabel ?? raw.speaker ?? "",
+    speaker,
+    speakerLabel:
+      raw.speaker_label ?? raw.speakerLabel ?? raw.speaker ?? speaker,
     timestamp: raw.timestamp ?? "",
     content: raw.content ?? raw.text ?? "",
     sequenceNo:
@@ -675,6 +757,40 @@ function mapApiToTranscriptMessage(raw: ApiTranscriptTurn): TranscriptMessage {
     isTyping: raw.is_typing ?? false,
     isActive: raw.is_active ?? false,
   };
+}
+
+function compareTranscriptMessages(
+  first: TranscriptMessage,
+  second: TranscriptMessage,
+) {
+  const firstSequence = first.sequenceNo;
+  const secondSequence = second.sequenceNo;
+
+  if (firstSequence !== undefined && secondSequence !== undefined) {
+    return firstSequence - secondSequence;
+  }
+
+  if (firstSequence !== undefined) return -1;
+  if (secondSequence !== undefined) return 1;
+
+  return 0;
+}
+
+function normalizeTranscriptStatus(value: unknown): TranscriptStatus {
+  if (
+    typeof value === "string" &&
+    (TRANSCRIPT_STATUSES as readonly string[]).includes(value)
+  ) {
+    return value as TranscriptStatus;
+  }
+
+  return "completed";
+}
+
+function normalizeNonNegativeInteger(value: unknown, fallback: number) {
+  return typeof value === "number" && Number.isFinite(value) && value >= 0
+    ? Math.floor(value)
+    : fallback;
 }
 
 function mapApiToScorecard(
