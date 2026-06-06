@@ -70,6 +70,8 @@ export type InterviewSessionRejoinResponse = {
   interview_id: string;
 };
 
+export type InterviewSummaryExportFormat = "pdf" | "markdown";
+
 // ── Session phase ──────────────────────────────────────────────────────────────
 // Backend-driven statuses plus legacy transcript-only local states.
 
@@ -151,6 +153,7 @@ export type TranscriptMessage = {
   speakerLabel: string;
   timestamp: string;
   content: string;
+  sequenceNo?: number;
   isTyping?: boolean;
   isActive?: boolean;
 };
@@ -166,14 +169,37 @@ export type ChatMessage = {
 };
 
 // ── Scorecard ──────────────────────────────────────────────────────────────────
-// No scorecard endpoint in spec yet
 
-export type ScorecardCategory = {
+export type ScorecardEvidence = {
+  questionTurnId: string;
+  responseTurnId: string;
+  reason: string;
+};
+
+export type ScorecardSubRubric = {
   id: string;
   title: string;
   score: number;
-  color: "green" | "orange" | "gray";
-  questions?: string[];
-  signals?: string[];
+  confidence: number;
+  scoreBarPercent: number;
+  strengths: string[];
+  weaknesses: string[];
+  justification: string | null;
+  evidence: ScorecardEvidence[];
   expanded?: boolean;
 };
+
+export type ScorecardSection = ScorecardSubRubric & {
+  questionsAsked: string[];
+  signalsDetected: string[];
+  subRubrics: ScorecardSubRubric[];
+};
+
+export type ScorecardResponse = {
+  interviewId: string;
+  totalScore: number;
+  overallConfidence: number;
+  sections: ScorecardSection[];
+};
+
+export type ScorecardCategory = ScorecardSection;

@@ -6,7 +6,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useState } from "react";
 import { FiArrowLeft, FiCheck } from "react-icons/fi";
 import { useSearchParams } from "next/navigation";
-import api from "@/lib/api";
+import { useResetPassword } from "@/api/auth";
 import Link from "next/link";
 import Image from "next/image";
 
@@ -76,30 +76,28 @@ export default function ResetPasswordForm({ setStep }: Props) {
     setSubmitAttempted(true);
   };
 
+  const resetPasswordMutation = useResetPassword({
+    onSuccess: () => {
+      reset();
+      setStep("success");
+    },
+    onError: (err) => {
+      const status = err.status;
+      if (status === 400 || status === 401 || status === 410) {
+        setStep("invalid-link");
+      } else {
+        setStep("error");
+      }
+    },
+  });
+
   async function onValid(data: ResetPasswordFormData) {
     if (!token) {
       setStep("invalid-link");
       return;
     }
 
-    const dataSentToApi = { token, password: data.password };
-
-    try {
-      await api.post("/api/v1/auth/reset-password", dataSentToApi);
-
-      reset();
-
-      setStep("success");
-    } catch (error: unknown) {
-      const status = (error as { response?: { status?: number } }).response
-        ?.status;
-      if (status === 400 || status === 401 || status === 410) {
-        setStep("invalid-link");
-        return;
-      } else {
-        setStep("error");
-      }
-    }
+    resetPasswordMutation.mutate({ token, password: data.password });
   }
 
   return (
@@ -250,14 +248,16 @@ export default function ResetPasswordForm({ setStep }: Props) {
             </label>
 
             <button
-              disabled={isSubmitting}
+              disabled={isSubmitting || resetPasswordMutation.isPending}
               className={`w-full text-white bg-[#02505E] rounded-xl p-2 transition-all ${
-                isSubmitting
+                isSubmitting || resetPasswordMutation.isPending
                   ? "bg-[#02505E]/70 cursor-not-allowed opacity-70"
                   : "bg-[#02505E] hover:bg-[#013f4a] cursor-pointer"
               } `}
             >
-              {isSubmitting ? "Resetting..." : "Reset password"}
+              {isSubmitting || resetPasswordMutation.isPending
+                ? "Resetting..."
+                : "Reset password"}
             </button>
 
             <Link

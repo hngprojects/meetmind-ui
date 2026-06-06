@@ -3,8 +3,8 @@ import { Signupschema, type SignUpType } from "@/schemas/signUpSchema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { useState } from "react";
-import axios from "axios";
 import api from "@/lib/api";
+import { useSignup } from "@/api/auth";
 import { useSignupStore } from "@/store/signupStore";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
@@ -58,21 +58,18 @@ const Signform = () => {
     return "border-[#B5B7BD]";
   };
 
-  // submit data to backend
-  const SubmitData = async (data: SignUpType) => {
-    try {
+  const signupMutation = useSignup({
+    onMutate: () => {
       setIsLoading(true);
       setServerError(null);
       setIsSuccess(false);
-      const response = await api.post("/api/v1/auth/signup", data);
-
-      const responseData = response.data.data ?? response.data;
+    },
+    onSuccess: async (response, variables) => {
+      const responseData = response.data ?? response;
       const { access_token, next_step } = responseData;
 
-      setFormData(data);
-
       if (next_step === "verify_email") {
-        useVerifyStore.getState().setPendingEmail(data.email);
+        useVerifyStore.getState().setPendingEmail(variables.email);
         setIsSuccess(true);
         router.push("/verify-email");
         return;
@@ -84,39 +81,35 @@ const Signform = () => {
       }
 
       localStorage.setItem("token", access_token);
-      const meRes = await api.get("/api/v1/users/me");
-      const user = meRes.data.data;
+      try {
+        const meRes = await api.get("/api/v1/users/me");
+        const user = meRes.data.data;
+        const authUser = normalizeCurrentUser(user);
 
-      const authUser = normalizeCurrentUser(user);
-
-      setAuth(authUser, access_token);
-      setIsSuccess(true);
-
-      router.push("/onboarding");
-    } catch (error) {
+        setAuth(authUser, access_token);
+        setIsSuccess(true);
+        router.push("/onboarding");
+      } catch {
+        setServerError("Account created! Redirecting to sign in...");
+        setTimeout(() => router.push("/sign-in"), 1500);
+      }
+    },
+    onError: (error) => {
       localStorage.removeItem("token");
       localStorage.removeItem("user");
       localStorage.removeItem("refresh_token");
       localStorage.removeItem("access_token_expires_at");
-
-      if (axios.isAxiosError(error)) {
-        const responseData = error.response?.data;
-        const message =
-          responseData?.error?.details?.[0]?.msg ||
-          responseData?.message ||
-          error.message ||
-          "Something went wrong. Try again.";
-        setServerError(message);
-      } else {
-        setServerError(
-          error instanceof Error
-            ? error.message
-            : "Unexpected error. Please try again.",
-        );
-      }
-    } finally {
+      setServerError(error.message);
+    },
+    onSettled: () => {
       setIsLoading(false);
-    }
+    },
+  });
+
+  // submit data to backend
+  const SubmitData = async (data: SignUpType) => {
+    setFormData(data);
+    signupMutation.mutate(data);
   };
 
   return (

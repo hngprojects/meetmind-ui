@@ -1,10 +1,13 @@
 "use client";
 
+import { useState } from "react";
 import {
   askQuestion,
+  exportInterviewSummary,
   getChatHistory,
   getInterview,
   getInterviewSession,
+  getScorecard,
   getTranscript,
   listInterviews,
   rejoinInterviewSession,
@@ -13,6 +16,7 @@ import type {
   ChatMessage,
   InterviewSession,
   InterviewSessionStatus,
+  InterviewSummaryExportFormat,
   InterviewStatus,
 } from "@/types/interview";
 import {
@@ -130,6 +134,15 @@ export function useTranscript(id: string | null, status?: InterviewStatus) {
   });
 }
 
+export function useScorecard(id: string | null) {
+  return useQuery({
+    queryKey: ["interviews", id, "scorecard"],
+    queryFn: () => getScorecard(id!),
+    enabled: !!id,
+    staleTime: 1000 * 60 * 5,
+  });
+}
+
 export function useInterviewSession(
   id: string | null,
   status?: InterviewStatus,
@@ -193,6 +206,26 @@ export function useRejoinInterviewSession(id: string | null) {
       }
     },
   });
+}
+
+export function useExportInterviewSummary(id: string | null) {
+  const [exportingFormat, setExportingFormat] =
+    useState<InterviewSummaryExportFormat | null>(null);
+
+  const mutation = useMutation({
+    mutationFn: (format: InterviewSummaryExportFormat) => {
+      if (!id) throw new Error("Interview id is required to export a summary.");
+      return exportInterviewSummary(id, format);
+    },
+    onMutate: (format) => {
+      setExportingFormat(format);
+    },
+    onSettled: () => {
+      setExportingFormat(null);
+    },
+  });
+
+  return { ...mutation, exportingFormat };
 }
 
 function isActiveSessionStatus(status?: InterviewSessionStatus): boolean {
