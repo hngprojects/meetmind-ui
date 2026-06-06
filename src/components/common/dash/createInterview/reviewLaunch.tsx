@@ -4,6 +4,7 @@ import { useState } from "react";
 import api from "@/lib/api";
 import { getErrorMessage } from "@/lib/api-response";
 import Buttons from "@/components/reuseable-component/buttons";
+import { useQueryClient } from "@tanstack/react-query";
 import { useResumeStore } from "@/store/ResumeStore";
 import {
   useCreateStep1,
@@ -29,6 +30,7 @@ export default function ReviewLaunch() {
   const { setStep2 } = useCreateStep2();
   const { setStep3 } = useCreateStep3();
   const { setStep4 } = useCreateStep4();
+  const queryClient = useQueryClient();
 
   const {
     buildPayload,
@@ -79,9 +81,12 @@ export default function ReviewLaunch() {
         console.error("Unexpected interview creation response:", res.data);
         throw new Error("Interview created but no session ID was returned.");
       }
-      await api.post(`api/v1/interviews/${sessionId}/send-link`);
+      await api.post(`api/v1/interviews/${sessionId}/send-link`, null, {
+        params: { email: candidate.email },
+      });
 
       notifySuccess("Interview scheduled and invites sent successfully!");
+      queryClient.invalidateQueries({ queryKey: ["interviews"] });
       resetAll();
 
       // router.push(`/call/interview/${encodeURIComponent(sessionId)}`);

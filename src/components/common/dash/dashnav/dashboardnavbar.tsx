@@ -8,13 +8,13 @@ import SignOutModal from "./SignOutModal";
 import { useUnreadNotificationsCount } from "@/hooks/useNotifications";
 import { useCurrentUserProfile } from "@/hooks/useCurrentUserProfile";
 import { useAuthStore } from "@/store/authStore";
-import { revokeAllSessions } from "@/lib/auth";
+import { useRevokeAllSessions } from "@/api/auth";
 import {
   getCurrentUserDisplayName,
   getCurrentUserEmail,
 } from "@/lib/api/currentUser";
 import { UserAvatar } from "@/components/common/UserAvatar";
-import { MdKeyboardArrowDown } from "react-icons/md";
+import { MdKeyboardArrowDown, MdOutlineCancel } from "react-icons/md";
 import {
   LuUser,
   LuSettings,
@@ -24,8 +24,10 @@ import {
   LuMenu,
   LuX,
 } from "react-icons/lu";
+import { IoIosMenu } from "react-icons/io";
 
 const Dashboardnavbar = () => {
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [isSignOutModalOpen, setIsSignOutModalOpen] = useState(false);
@@ -35,6 +37,7 @@ const Dashboardnavbar = () => {
   const { data: unreadNotificationCount = 0 } = useUnreadNotificationsCount();
   const { data: currentUser } = useCurrentUserProfile();
   const logout = useAuthStore((state) => state.logout);
+  const revokeAllSessionsMutation = useRevokeAllSessions();
   const displayName = getCurrentUserDisplayName(currentUser);
   const displayEmail = getCurrentUserEmail(currentUser);
 
@@ -209,6 +212,19 @@ const Dashboardnavbar = () => {
               )}
             </div>
           </div>
+
+          {/* Mobile Hamburger Button */}
+          <button
+            className="lg:hidden text-[#0F172A] w-[10%]"
+            onClick={() => setIsMobileMenuOpen((prev) => !prev)}
+            aria-label="Toggle menu"
+          >
+            {isMobileMenuOpen ? (
+              <MdOutlineCancel size={24} />
+            ) : (
+              <IoIosMenu size={24} />
+            )}
+          </button>
         </div>
       </div>
 
@@ -220,7 +236,7 @@ const Dashboardnavbar = () => {
           if (signOutAllDevices) {
             setIsSigningOut(true);
             try {
-              await revokeAllSessions();
+              await revokeAllSessionsMutation.mutateAsync();
             } catch (error) {
               console.error("Failed to revoke all sessions:", error);
             } finally {

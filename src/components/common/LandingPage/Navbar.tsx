@@ -118,7 +118,7 @@ export default function Navbar() {
               </a>
             ))}
             <Link
-              href="/signup"
+              href="/sign-up"
               className="inline-block text-center px-4 py-2 bg-[#02505E] text-[#FEFEFF] font-semibold rounded-lg text-sm"
               onClick={() => setIsMobileMenuOpen(false)}
             >

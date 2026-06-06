@@ -1,11 +1,10 @@
 "use client";
 
-import React, { useState, useEffect, Suspense } from "react";
+import React, { useState, useEffect, Suspense, useRef } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useSignupStore } from "@/store/signupStore";
 import { Loader2, CheckCircle2, MailOpen } from "lucide-react";
-import axios from "axios";
-import api from "@/lib/api";
+import { useVerifyEmail, useResendVerificationEmail } from "@/api/auth";
 
 function VerifyEmailContent() {
   const router = useRouter();
@@ -13,70 +12,67 @@ function VerifyEmailContent() {
   const token = searchParams.get("token");
   const { formData } = useSignupStore();
 
-  const [isVerifying, setIsVerifying] = useState(false);
   const [isVerified, setIsVerified] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [isResending, setIsResending] = useState(false);
   const [resendMessage, setResendMessage] = useState<string | null>(null);
   const [resendError, setResendError] = useState<string | null>(null);
 
   const signupEmail = formData?.email;
   const emailToDisplay = signupEmail || "your email";
 
+  const verifyEmailMutation = useVerifyEmail({
+    onSuccess: () => {
+      setIsVerified(true);
+      setTimeout(() => router.push("/sign-in"), 2000);
+    },
+    onError: (err) => {
+      let code: unknown = undefined;
+      if (err.detail && typeof err.detail === "object") {
+        if (Array.isArray(err.detail)) {
+          const first = err.detail[0];
+          if (first && typeof first === "object" && "code" in first) {
+            code = (first as Record<string, unknown>).code;
+          }
+        } else if ("code" in err.detail) {
+          code = (err.detail as Record<string, unknown>).code;
+        }
+      }
+
+      if (code === "token_already_used") {
+        setError(
+          "This verification link has already been used. Please sign in.",
+        );
+      } else {
+        setError(
+          err.message ??
+            "Verification failed. The link may be invalid or expired.",
+        );
+      }
+    },
+  });
+
+  const isVerifying = verifyEmailMutation.isPending;
+
   // If there's a token in the URL, verify it automatically
+  const hasVerified = useRef(false);
   useEffect(() => {
     if (!token) return;
+    if (hasVerified.current) return;
+    hasVerified.current = true;
+    verifyEmailMutation.mutate({ token });
+  }, [token]);
+  const resendEmailMutation = useResendVerificationEmail({
+    onSuccess: () => {
+      setResendMessage(`Verification link resent to ${signupEmail}.`);
+    },
+    onError: (err) => {
+      setResendError(
+        err.message ?? "Unable to resend verification link. Please try again.",
+      );
+    },
+  });
 
-    let isMounted = true;
-    let redirectTimer: ReturnType<typeof setTimeout> | null = null;
-
-    const run = async () => {
-      if (isMounted) setIsVerifying(true);
-      if (isMounted) setError(null);
-
-      try {
-        //POST with token in body
-        await api.post(`/api/v1/auth/verify-email`, { token });
-
-        if (isMounted) {
-          setIsVerified(true);
-          redirectTimer = setTimeout(() => router.push("/sign-in"), 2000);
-        }
-      } catch (err) {
-        if (isMounted) {
-          if (axios.isAxiosError(err)) {
-            const code = err.response?.data?.error?.code;
-            const message = err.response?.data?.message;
-
-            // Handle specific error codes
-            if (code === "token_already_used") {
-              setError(
-                "This verification link has already been used. Please sign in.",
-              );
-            } else {
-              setError(
-                message ??
-                  "Verification failed. The link may be invalid or expired.",
-              );
-            }
-          } else {
-            setError(
-              "Verification failed. The link may be invalid or expired.",
-            );
-          }
-        }
-      } finally {
-        if (isMounted) setIsVerifying(false);
-      }
-    };
-
-    run();
-
-    return () => {
-      isMounted = false;
-      if (redirectTimer) clearTimeout(redirectTimer);
-    };
-  }, [token, router]);
+  const isResending = resendEmailMutation.isPending;
 
   const handleResend = async () => {
     setResendMessage(null);
@@ -89,29 +85,7 @@ function VerifyEmailContent() {
       return;
     }
 
-    try {
-      setIsResending(true);
-      await api.post("/api/v1/auth/resend-verification", {
-        email: signupEmail,
-      });
-      setResendMessage(`Verification link resent to ${signupEmail}.`);
-    } catch (error) {
-      console.error("Failed to resend verification email", error);
-
-      if (axios.isAxiosError(error)) {
-        const detail = error.response?.data?.detail;
-        const message =
-          (Array.isArray(detail) ? detail[0]?.msg : undefined) ||
-          (typeof detail === "string" ? detail : undefined) ||
-          error.response?.data?.message ||
-          "Unable to resend verification link. Please try again.";
-        setResendError(message);
-      } else {
-        setResendError("Unable to resend verification link. Please try again.");
-      }
-    } finally {
-      setIsResending(false);
-    }
+    resendEmailMutation.mutate({ email: signupEmail });
   };
 
   // State 1: We are verifying the token from the URL
@@ -141,13 +115,13 @@ function VerifyEmailContent() {
         </h1>
         <p className="text-[14px] leading-relaxed text-[#5E6470] max-w-[420px] mb-8">
           Your email has been successfully verified. You are being redirected to
-          your dashboard...
+          your sign in...
         </p>
         <button
-          onClick={() => router.push("/Dashboard")}
+          onClick={() => router.push("/sign-in")}
           className="w-full max-w-[360px] py-3.5 rounded-xl text-[15px] font-semibold transition-all duration-200 bg-[#02505E] text-white hover:bg-[#035A69]"
         >
-          Go to Dashboard Now
+          Go to Sign In
         </button>
       </div>
     );

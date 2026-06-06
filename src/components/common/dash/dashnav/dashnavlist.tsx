@@ -26,7 +26,7 @@ const Dashnavlist = ({ mobile, onLinkClick }: DashnavProps) => {
   const pathname = usePathname();
   return (
     <section
-      className={`flex ${mobile ? "flex-col gap-1" : "flex-row justify-around"} w-full`}
+      className={`flex flex-col gap-1 lg:flex-row lg:justify-around w-full`}
     >
       {dashnav.map((nav) => {
         const isActive =
