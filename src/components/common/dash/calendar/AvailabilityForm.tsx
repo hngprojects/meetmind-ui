@@ -192,9 +192,9 @@ const AvailabilityForm = ({
         <div className="px-5">
           <div className="space-y-5">
             {/* Time Inputs */}
-            <div className="flex items-center gap-3">
+            <div className="flex items-center gap-2">
               {/* Start Time */}
-              <div ref={startDropdownRef} className="relative">
+              <div ref={startDropdownRef} className="relative flex-1">
                 <Button
                   variant="outline"
                   type="button"
@@ -202,7 +202,7 @@ const AvailabilityForm = ({
                   aria-controls="start-time-dropdown"
                   onClick={() => setShowStartDropdown(!showStartDropdown)}
                   className="
-                    flex h-12 w-[150px] items-center justify-between
+                    flex h-12 w-full min-w-0 items-center justify-between
                     rounded-lg border border-calendar-border bg-white
                     px-4
                   "
@@ -229,7 +229,7 @@ const AvailabilityForm = ({
                 {showStartDropdown && (
                   <div
                     id="start-time-dropdown"
-                    className="absolute left-0 top-14 z-20 w-[150px] rounded-xl 
+                    className="absolute left-0 top-14 z-20 w-full min-w-[120px] rounded-xl 
                       border border-calendar-border bg-white p-2 shadow-md"
                   >
                     {availabilitySlots.map((slot, index) => (
@@ -256,10 +256,10 @@ const AvailabilityForm = ({
               </div>
 
               {/* Divider */}
-              <div className="h-px w-6 bg-text-divider" />
+              <div className="hidden sm:block h-px w-6 bg-text-divider" />
 
               {/* End Time */}
-              <div ref={endDropdownRef} className="relative">
+              <div ref={endDropdownRef} className="relative flex-1">
                 <Button
                   variant="outline"
                   type="button"
@@ -267,7 +267,7 @@ const AvailabilityForm = ({
                   aria-controls="end-time-dropdown"
                   onClick={() => setShowEndDropdown(!showEndDropdown)}
                   className="
-                    flex h-12 w-[150px] items-center justify-between
+                    flex h-12 w-full min-w-0 items-center justify-between
                     rounded-lg border border-calendar-border bg-white
                     px-4
                   "
@@ -294,7 +294,7 @@ const AvailabilityForm = ({
                 {showEndDropdown && (
                   <div
                     id="end-time-dropdown"
-                    className="absolute left-0 top-14 z-20 w-[150px] rounded-xl 
+                    className="absolute left-0 top-14 z-20 w-full min-w-[120px] rounded-xl 
                       border border-calendar-border bg-white p-2 shadow-md"
                   >
                     {availabilitySlots.map((slot, index) => (
