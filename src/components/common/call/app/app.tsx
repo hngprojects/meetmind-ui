@@ -47,8 +47,8 @@ export function App({ appConfig, sessionId, token }: AppProps) {
           let interviewRes;
           if (token) {
             // New public endpoint to fetch interview details with token, using direct axios to bypass redirection on 401/403
-            interviewRes = await axios.get(
-              `${API_BASE}/api/v1/interviews/call/${sessionId}`,
+            interviewRes = await api.get(
+              `/api/v1/interviews/call/${sessionId}`,
               {
                 params: { token },
               },

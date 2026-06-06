@@ -255,7 +255,7 @@ export default function NotificationsPage() {
           </div>
         </div>
 
-        <div className="mt-1 flex flex-col md:flex-rol shrink-0 items-center gap-3">
+        <div className="mt-1 flex flex-col md:flex-row shrink-0 items-center gap-3">
           <Button
             type="button"
             onClick={() => markAllMutation.mutate()}

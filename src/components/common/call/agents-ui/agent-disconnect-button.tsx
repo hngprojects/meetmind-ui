@@ -7,6 +7,7 @@ import { useSessionContext } from "@livekit/components-react";
 import { Button, buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { useRouter } from "next/navigation";
+import api from "@/lib/api";
 
 /**
  * Props for the AgentDisconnectButton component.
@@ -35,6 +36,7 @@ export interface AgentDisconnectButtonProps
    * The callback for when the button is clicked.
    */
   onClick?: (event: React.MouseEvent<HTMLButtonElement>) => void;
+  sessionId?: string;
 }
 
 /**
@@ -54,6 +56,7 @@ export function AgentDisconnectButton({
   variant = "destructive",
   children,
   onClick,
+  sessionId,
   ...props
 }: AgentDisconnectButtonProps) {
   const { end } = useSessionContext();
@@ -67,7 +70,8 @@ export function AgentDisconnectButton({
 
     if (typeof end === "function") {
       end();
-      router.push("/");
+      await api.post(`/api/v1/interviews/${sessionId}/complete`);
+      // router.push("/");
     }
   };
 
