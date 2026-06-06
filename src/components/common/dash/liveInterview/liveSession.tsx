@@ -26,7 +26,10 @@ function getElapsedSeconds(isoString: string | null): number {
 
 const LiveSession = () => {
   const router = useRouter();
-  const { interviews, interviewsLoading, getInterviews } = useDashboardStore();
+  // ── FIX: also destructure interviewsError so error states are handled
+  //    explicitly rather than falling through to the empty-state UI.
+  const { interviews, interviewsLoading, interviewsError, getInterviews } =
+    useDashboardStore();
 
   // Tick every second to keep elapsed timers up to date
   const [, setTick] = useState(0);
@@ -82,14 +85,31 @@ const LiveSession = () => {
         </button>
       </div>
 
-      {/* Empty State */}
-      {interviews.length === 0 && (
+      {/* ── FIX: Render an explicit error state when interviewsError is set,
+           instead of falling through to the "No live sessions" empty state.
+           The error is also logged for observability. */}
+      {interviewsError ? (
+        (() => {
+          console.error(
+            "[LiveSession] Failed to load interviews:",
+            interviewsError,
+          );
+          return (
+            <div className="flex items-center justify-center py-12 bg-red-50/50 rounded-2xl border border-dashed border-red-200">
+              <p className="text-sm text-red-400 font-medium">
+                Failed to load live sessions. Please try again later.
+              </p>
+            </div>
+          );
+        })()
+      ) : interviews.length === 0 ? (
+        /* Empty State */
         <div className="flex items-center justify-center py-12 bg-gray-50/50 rounded-2xl border border-dashed border-gray-200">
           <p className="text-sm text-gray-400 font-medium">
             No live sessions at the moment
           </p>
         </div>
-      )}
+      ) : null}
 
       {/* Cards Horizontal Responsive Grid Layout */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">

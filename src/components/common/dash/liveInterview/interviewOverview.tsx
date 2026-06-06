@@ -77,7 +77,7 @@ const InterviewOverview = () => {
     {
       label: "Need Attention",
       value: overview.stats.needs_attention,
-      className: "text-[var(--color-error)]",
+      className: "text-(--color-error)",
     },
   ];
 
