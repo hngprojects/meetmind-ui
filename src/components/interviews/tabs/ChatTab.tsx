@@ -10,28 +10,48 @@ import { HiOutlinePlus } from "react-icons/hi2";
 type AttachmentPreview = {
   id: string;
   file: File;
-  url: string;
-  type: "image" | "file";
 };
 
 type Props = {
   messages: ChatMessage[];
   onSendMessage?: (content: string, attachments: File[]) => Promise<void>;
+  onVoiceMessage?: (audioBlob: Blob) => Promise<string | undefined>;
   isSendingMessage?: boolean;
-  onEditMessage?: (messageId: string, newContent: string) => Promise<void>;
 };
 
 // ─── Constants ────────────────────────────────────────────────────────────────
 
-const ACCEPTED_FILE_TYPES = "image/*,application/pdf,.doc,.docx,.txt";
+const ACCEPTED_FILE_TYPES =
+  ".pdf,.docx,.txt,application/pdf,text/plain,application/vnd.openxmlformats-officedocument.wordprocessingml.document";
+const ALLOWED_DOCUMENT_EXTENSIONS = new Set(["pdf", "docx", "txt"]);
+const MAX_DOCUMENT_SIZE_BYTES = 10 * 1024 * 1024;
+const MAX_DOCUMENT_SIZE_LABEL = "10 MB";
 const COPY_CHECKMARK_DURATION_MS = 2000;
-const ATTACHMENT_ONLY_MESSAGE =
-  "Add a message before sending an attachment. " +
-  "Document-only chat is not connected yet.";
+const DOCUMENT_FORMAT_MESSAGE =
+  "Only PDF, DOCX, and TXT documents are supported.";
 const MICROPHONE_BLOCKED_MESSAGE =
   "Microphone access was not granted. Check Chrome site permissions and Windows microphone privacy settings, then reload and try again.";
 const SEND_FAILURE_MESSAGE =
   "We could not send your message. Please try again.";
+const VOICE_SUCCESS_MESSAGE = "Voice query sent.";
+
+function getFileExtension(file: File): string {
+  return file.name.split(".").pop()?.toLowerCase() ?? "";
+}
+
+function validateDocumentFile(file: File): string | null {
+  const extension = getFileExtension(file);
+
+  if (!ALLOWED_DOCUMENT_EXTENSIONS.has(extension)) {
+    return DOCUMENT_FORMAT_MESSAGE;
+  }
+
+  if (file.size > MAX_DOCUMENT_SIZE_BYTES) {
+    return `Documents must be ${MAX_DOCUMENT_SIZE_LABEL} or smaller.`;
+  }
+
+  return null;
+}
 
 // ─── Sub-components ───────────────────────────────────────────────────────────
 
@@ -73,7 +93,7 @@ function CopyButton({ content }: { content: string }) {
           <Image src="/icons/copy.svg" alt="" width={14} height={14} />
         </span>
         <span
-          className="absolute inset-0 flex items-center justify-center transition-all duration-300"
+          className="absolute inset-0 flex items-center justify-center text-[var(--color-text-success)] transition-all duration-300"
           style={{
             opacity: copied ? 1 : 0,
             transform: copied ? "scale(1)" : "scale(0.7)",
@@ -82,7 +102,7 @@ function CopyButton({ content }: { content: string }) {
           <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
             <path
               d="M2 7L5.5 10.5L12 3.5"
-              stroke="#22c55e"
+              stroke="currentColor"
               strokeWidth="1.8"
               strokeLinecap="round"
               strokeLinejoin="round"
@@ -94,107 +114,15 @@ function CopyButton({ content }: { content: string }) {
   );
 }
 
-function EditableUserMessage({
+function UserMessage({
   msg,
-  onEditMessage,
+  canEdit,
+  onUseAsDraft,
 }: {
   msg: ChatMessage;
-  onEditMessage?: Props["onEditMessage"];
+  canEdit: boolean;
+  onUseAsDraft: (content: string) => void;
 }) {
-  const [isEditing, setIsEditing] = useState(false);
-  const [draft, setDraft] = useState(msg.content);
-  const [isSaving, setIsSaving] = useState(false);
-  const textareaRef = useRef<HTMLTextAreaElement>(null);
-
-  useEffect(() => {
-    if (isEditing && textareaRef.current) {
-      textareaRef.current.style.height = "auto";
-      textareaRef.current.style.height = `${textareaRef.current.scrollHeight}px`;
-      textareaRef.current.focus();
-    }
-  }, [isEditing, draft]);
-
-  const handleEditClick = () => {
-    setDraft(msg.content);
-    setIsEditing(true);
-  };
-
-  const handleCancel = () => {
-    setIsEditing(false);
-    setDraft(msg.content);
-  };
-
-  const handleSave = async () => {
-    if (!draft.trim() || draft.trim() === msg.content.trim()) {
-      setIsEditing(false);
-      return;
-    }
-    setIsSaving(true);
-    try {
-      await onEditMessage?.(msg.id, draft.trim());
-      setIsEditing(false);
-    } finally {
-      setIsSaving(false);
-    }
-  };
-
-  if (isEditing) {
-    return (
-      <div className="flex flex-col items-end gap-2">
-        {/* Warning banner — amber is a one-off semantic color, kept as-is */}
-        <div className="flex w-full max-w-lg items-start gap-2 rounded-xl border border-amber-200 bg-amber-50 px-4 py-2.5 text-xs text-amber-700">
-          <svg
-            className="mt-0.5 h-3.5 w-3.5 shrink-0"
-            viewBox="0 0 16 16"
-            fill="currentColor"
-          >
-            <path d="M8 1a7 7 0 100 14A7 7 0 008 1zm.75 4a.75.75 0 00-1.5 0v3.5a.75.75 0 001.5 0V5zm-.75 6a.875.875 0 110-1.75.875.875 0 010 1.75z" />
-          </svg>
-          <span>
-            Editing this message will remove all replies that came after it.
-            This cannot be undone.
-          </span>
-        </div>
-
-        {/* Editable bubble */}
-        <div className="w-full max-w-lg rounded-2xl bg-[var(--color-scrollbar-track)] px-5 py-3">
-          <textarea
-            ref={textareaRef}
-            value={draft}
-            onChange={(e) => setDraft(e.target.value)}
-            onKeyDown={(e) => {
-              if (e.key === "Enter" && (e.metaKey || e.ctrlKey)) handleSave();
-              if (e.key === "Escape") handleCancel();
-            }}
-            rows={1}
-            className="w-full resize-none bg-transparent text-sm text-[var(--color-text-color-primary)] outline-none"
-          />
-        </div>
-
-        {/* Actions */}
-        <div className="flex gap-2">
-          <button
-            type="button"
-            onClick={handleCancel}
-            className="rounded-full border border-[var(--color-card-border)] px-4 py-1.5 text-xs text-[var(--color-text-secondary)] 
-            transition-colors hover:bg-[var(--color-scrollbar-track)]"
-          >
-            Cancel
-          </button>
-          <button
-            type="button"
-            onClick={handleSave}
-            disabled={isSaving || !draft.trim()}
-            className="rounded-full bg-[var(--color-text-color-primary)] px-4 py-1.5 text-xs text-[var(--color-text-white-primary)] transition-opacity 
-            disabled:opacity-50 hover:opacity-80"
-          >
-            {isSaving ? "Saving…" : "Save"}
-          </button>
-        </div>
-      </div>
-    );
-  }
-
   return (
     <div className="flex flex-col items-end">
       <div className="max-w-lg rounded-2xl bg-[var(--color-scrollbar-track)] px-5 py-3 text-sm text-[var(--color-text-color-primary)]">
@@ -202,14 +130,17 @@ function EditableUserMessage({
       </div>
       <div className="mt-2 flex justify-end gap-3 text-[var(--color-card-text)]">
         <CopyButton content={msg.content} />
-        <button
-          type="button"
-          aria-label="Edit"
-          onClick={handleEditClick}
-          className="transition-opacity hover:opacity-70"
-        >
-          <Image src="/icons/pencil.svg" alt="Edit" width={13} height={13} />
-        </button>
+        {canEdit && (
+          <button
+            type="button"
+            aria-label="Edit last message"
+            onClick={() => onUseAsDraft(msg.content)}
+            className="transition-opacity hover:opacity-70"
+            title="Edit last message as a new query"
+          >
+            <Image src="/icons/pencil.svg" alt="Edit" width={13} height={13} />
+          </button>
+        )}
       </div>
     </div>
   );
@@ -224,6 +155,25 @@ function isLocalhost(): boolean {
 }
 
 function getErrorMessage(error: unknown, fallback: string): string {
+  if (
+    typeof error === "object" &&
+    error !== null &&
+    "response" in error &&
+    typeof error.response === "object" &&
+    error.response !== null &&
+    "data" in error.response &&
+    typeof error.response.data === "object" &&
+    error.response.data !== null
+  ) {
+    const data = error.response.data as {
+      message?: string;
+      detail?: string;
+      error?: string;
+    };
+    const message = data.message ?? data.detail ?? data.error;
+    if (message?.trim()) return message;
+  }
+
   if (error instanceof Error && error.message.trim()) return error.message;
   return fallback;
 }
@@ -250,7 +200,7 @@ function getMicrophoneErrorMessage(error: unknown): string {
 
 function useVoiceRecorder(
   onTranscript: (text: string) => void,
-  transcribeAudio?: (audioBlob: Blob) => Promise<string>,
+  transcribeAudio?: (audioBlob: Blob) => Promise<string | undefined>,
 ) {
   const [state, setState] = useState<RecordingState>("idle");
   const [error, setError] = useState<string | null>(null);
@@ -277,7 +227,13 @@ function useVoiceRecorder(
 
     try {
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-      const recorder = new MediaRecorder(stream);
+      const mimeType = MediaRecorder.isTypeSupported("audio/webm")
+        ? "audio/webm"
+        : "";
+      const recorder = new MediaRecorder(
+        stream,
+        mimeType ? { mimeType } : undefined,
+      );
       chunksRef.current = [];
 
       recorder.ondataavailable = (e) => {
@@ -286,10 +242,12 @@ function useVoiceRecorder(
 
       recorder.onstop = async () => {
         stream.getTracks().forEach((t) => t.stop());
-        const blob = new Blob(chunksRef.current, { type: "audio/webm" });
+        const blob = new Blob(chunksRef.current, {
+          type: mimeType || "audio/webm",
+        });
 
         if (!transcribeAudio) {
-          onTranscript("[Voice transcription not connected yet]");
+          setError("Voice input is not connected yet.");
           setState("idle");
           return;
         }
@@ -297,9 +255,14 @@ function useVoiceRecorder(
         setState("transcribing");
         try {
           const text = await transcribeAudio(blob);
-          onTranscript(text);
-        } catch {
-          onTranscript("[Transcription failed — please try again]");
+          onTranscript(text?.trim() || VOICE_SUCCESS_MESSAGE);
+        } catch (transcriptionError) {
+          setError(
+            getErrorMessage(
+              transcriptionError,
+              "We could not send your voice query. Please try again.",
+            ),
+          );
         } finally {
           setState("idle");
         }
@@ -339,8 +302,8 @@ function useVoiceRecorder(
 export default function ChatTab({
   messages,
   onSendMessage,
+  onVoiceMessage,
   isSendingMessage = false,
-  onEditMessage,
 }: Props) {
   const [inputValue, setInputValue] = useState("");
   const [attachments, setAttachments] = useState<AttachmentPreview[]>([]);
@@ -349,24 +312,15 @@ export default function ChatTab({
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const [composerError, setComposerError] = useState<string | null>(null);
-  const attachmentsRef = useRef<AttachmentPreview[]>([]);
-
-  useEffect(() => {
-    attachmentsRef.current = attachments;
-  }, [attachments]);
+  const [composerNotice, setComposerNotice] = useState<string | null>(null);
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
 
-  // Revoke all object URLs on unmount to prevent memory leaks
-  useEffect(() => {
-    return () => {
-      attachmentsRef.current.forEach((a) => {
-        if (a.url) URL.revokeObjectURL(a.url);
-      });
-    };
-  }, []);
+  const lastUserMessageId = [...messages]
+    .reverse()
+    .find((message) => message.role === "user")?.id;
 
   const {
     state: recordingState,
@@ -374,8 +328,8 @@ export default function ChatTab({
     toggle: toggleRecording,
     clearError: clearRecordingError,
   } = useVoiceRecorder((text) => {
-    setInputValue((prev) => (prev ? `${prev} ${text}` : text));
-  }, undefined);
+    setComposerNotice(text);
+  }, onVoiceMessage);
 
   const handleSend = useCallback(async () => {
     const text = inputValue.trim();
@@ -385,27 +339,25 @@ export default function ChatTab({
     setIsSending(true);
     try {
       setComposerError(null);
+      setComposerNotice(null);
 
       if (!onSendMessage) {
         setComposerError("Chat sending is not available yet.");
         return;
       }
 
-      if (!text && attachments.length > 0) {
-        setComposerError(ATTACHMENT_ONLY_MESSAGE);
-        inputRef.current?.focus();
+      const invalidAttachment = attachments.find((attachment) =>
+        validateDocumentFile(attachment.file),
+      );
+      if (invalidAttachment) {
+        setComposerError(validateDocumentFile(invalidAttachment.file));
         return;
       }
 
-      await onSendMessage?.(
+      await onSendMessage(
         text,
         attachments.map((a) => a.file),
       );
-
-      // ✅ Revoke all object URLs before clearing
-      attachments.forEach((a) => {
-        if (a.url) URL.revokeObjectURL(a.url);
-      });
 
       setInputValue("");
       setAttachments([]);
@@ -426,23 +378,28 @@ export default function ChatTab({
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = Array.from(e.target.files ?? []);
-    const previews: AttachmentPreview[] = files.map((file) => ({
-      id: `${file.name}-${Date.now()}`,
-      file,
-      url: file.type.startsWith("image/") ? URL.createObjectURL(file) : "",
-      type: file.type.startsWith("image/") ? "image" : "file",
-    }));
     setComposerError(null);
+
+    const invalidFile = files.find((file) => validateDocumentFile(file));
+    if (invalidFile) {
+      setComposerError(validateDocumentFile(invalidFile));
+      e.target.value = "";
+      return;
+    }
+
+    const timestamp = Date.now();
+    const previews: AttachmentPreview[] = files.map((file, index) => ({
+      id: `${file.name}-${timestamp}-${index}`,
+      file,
+    }));
+
+    setComposerNotice(null);
     setAttachments((prev) => [...prev, ...previews]);
     e.target.value = "";
   };
 
   const removeAttachment = (id: string) => {
-    setAttachments((prev) => {
-      const item = prev.find((a) => a.id === id);
-      if (item?.url) URL.revokeObjectURL(item.url);
-      return prev.filter((a) => a.id !== id);
-    });
+    setAttachments((prev) => prev.filter((a) => a.id !== id));
   };
 
   const micLabel =
@@ -460,14 +417,38 @@ export default function ChatTab({
         {messages.map((msg) =>
           msg.role === "user" ? (
             <div key={msg.id} className="flex justify-end">
-              <EditableUserMessage msg={msg} onEditMessage={onEditMessage} />
+              <UserMessage
+                msg={msg}
+                canEdit={msg.id === lastUserMessageId}
+                onUseAsDraft={(content) => {
+                  setInputValue(content);
+                  setComposerError(null);
+                  setComposerNotice(
+                    "Edit the draft and send it as a new query.",
+                  );
+                  inputRef.current?.focus();
+                }}
+              />
             </div>
           ) : (
             <div key={msg.id} className="max-w-2xl">
               <div className="rounded-xl border border-[var(--color-card-border)] bg-[var(--color-card-bg)] p-5">
-                <p className="mb-3 text-sm text-[var(--color-text-secondary)]">
-                  Here is a brief of what was captured in that conversation
-                </p>
+                <div className="mb-3 flex items-start justify-between gap-3">
+                  <p className="text-sm text-[var(--color-text-secondary)]">
+                    Here is a brief of what was captured in that conversation
+                  </p>
+                  {msg.content && <CopyButton content={msg.content} />}
+                </div>
+                {msg.transcription && (
+                  <p className="mb-3 rounded-lg bg-[var(--color-bg-secondary)] px-3 py-2 text-xs text-[var(--color-text-secondary)]">
+                    Voice query: {msg.transcription}
+                  </p>
+                )}
+                {msg.documentTextPreview && (
+                  <p className="mb-3 rounded-lg bg-[var(--color-bg-secondary)] px-3 py-2 text-xs text-[var(--color-text-secondary)]">
+                    Document context: {msg.documentTextPreview}
+                  </p>
+                )}
                 {msg.title && (
                   <h4 className="font-semibold text-[var(--color-text-color-primary)]">
                     {msg.title}
@@ -503,22 +484,13 @@ export default function ChatTab({
                 className="group relative flex items-center gap-2 rounded-xl border border-[var(--color-card-border)] bg-[var(--color-bg-secondary)] 
                 px-3 py-2 text-xs text-[var(--color-text-subtext)]"
               >
-                {a.type === "image" ? (
-                  // eslint-disable-next-line @next/next/no-img-element
-                  <img
-                    src={a.url}
-                    alt={a.file.name}
-                    className="h-8 w-8 rounded object-cover"
-                  />
-                ) : (
-                  <svg
-                    className="h-4 w-4 text-[var(--color-card-text)]"
-                    viewBox="0 0 16 16"
-                    fill="currentColor"
-                  >
-                    <path d="M4 0a2 2 0 00-2 2v12a2 2 0 002 2h8a2 2 0 002-2V5.414A2 2 0 0013.414 4L10 .586A2 2 0 008.586 0H4zm4 1.5V5h3.5L8 1.5z" />
-                  </svg>
-                )}
+                <svg
+                  className="h-4 w-4 text-[var(--color-card-text)]"
+                  viewBox="0 0 16 16"
+                  fill="currentColor"
+                >
+                  <path d="M4 0a2 2 0 00-2 2v12a2 2 0 002 2h8a2 2 0 002-2V5.414A2 2 0 0013.414 4L10 .586A2 2 0 008.586 0H4zm4 1.5V5h3.5L8 1.5z" />
+                </svg>
                 <span className="max-w-[100px] truncate">{a.file.name}</span>
                 <button
                   type="button"
@@ -550,6 +522,11 @@ export default function ChatTab({
             {inlineError}
           </p>
         )}
+        {composerNotice && !inlineError && (
+          <p className="mb-3 rounded-xl border border-[var(--color-card-border)] bg-[var(--color-bg-secondary)] px-4 py-2 text-xs font-medium text-[var(--color-text-secondary)]">
+            {composerNotice}
+          </p>
+        )}
 
         <div className="flex items-center gap-3 rounded-full border border-[var(--color-card-border)] bg-[var(--color-card-bg)] px-4 py-3">
           <input
@@ -566,7 +543,10 @@ export default function ChatTab({
             type="button"
             className="text-[var(--color-card-text)] transition-colors hover:text-[var(--color-text-color-primary)]"
             aria-label="Attach file"
-            onClick={() => fileInputRef.current?.click()}
+            onClick={() => {
+              setComposerNotice(null);
+              fileInputRef.current?.click();
+            }}
           >
             <HiOutlinePlus className="h-5 w-5" />
           </button>
@@ -580,6 +560,7 @@ export default function ChatTab({
             onChange={(e) => {
               setInputValue(e.target.value);
               setComposerError(null);
+              setComposerNotice(null);
             }}
             onKeyDown={handleKeyDown}
             disabled={isSending || isSendingMessage}
@@ -600,6 +581,7 @@ export default function ChatTab({
             aria-label={micLabel}
             onClick={() => {
               clearRecordingError();
+              setComposerNotice(null);
               toggleRecording();
             }}
             disabled={

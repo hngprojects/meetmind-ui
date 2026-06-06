@@ -185,6 +185,10 @@ export type ChatMessage = {
   content: string;
   title?: string;
   bullets?: string[];
+  sentAt?: string;
+  sequenceNo?: number;
+  transcription?: string;
+  documentTextPreview?: string;
 };
 
 // ── Scorecard ──────────────────────────────────────────────────────────────────
