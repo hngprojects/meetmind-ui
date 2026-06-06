@@ -1,10 +1,7 @@
 "use client";
 
 import SessionStateCard from "@/components/interviews/session/SessionStateCard";
-import {
-  exportTranscript,
-  stopTranscript,
-} from "@/lib/services/interviews.service";
+import { exportTranscript } from "@/lib/services/interviews.service";
 import { cn } from "@/lib/utils";
 import type {
   InterviewDetail,
@@ -15,7 +12,6 @@ import type {
   TranscriptStatus,
 } from "@/types/interview";
 import { useEffect, useRef, useState } from "react";
-import { FiSquare } from "react-icons/fi";
 import {
   HiOutlineArrowDownTray,
   HiOutlineEllipsisVertical,
@@ -49,7 +45,6 @@ export default function TranscriptTab({
   onRejoin,
   isRejoining = false,
 }: Props) {
-  const [isStopping, setIsStopping] = useState(false);
   const [isDownloading, setIsDownloading] = useState(false);
   const [rejoinError, setRejoinError] = useState<string | null>(null);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
@@ -87,20 +82,6 @@ export default function TranscriptTab({
       scrollContainer.scrollTop -
       scrollContainer.clientHeight;
     shouldStickToBottomRef.current = distanceFromBottom < 96;
-  };
-
-  // ── Stop transcribing ──────────────────────────────────────────────────────
-  // POST /api/v1/interviews/{interview_id}/transcript/stop
-  const handleStopTranscript = async () => {
-    if (isStopping) return;
-    setIsStopping(true);
-    try {
-      await stopTranscript(interview.id);
-    } catch {
-      // Surface error visually if needed — for now just re-enable the button
-    } finally {
-      setIsStopping(false);
-    }
   };
 
   // ── Download transcript ────────────────────────────────────────────────────
@@ -277,7 +258,7 @@ export default function TranscriptTab({
 
       {/* Footer — only shown when interview is live */}
       {isLive && (
-        <div className="flex items-center justify-between border-t border-[var(--color-card-border)] px-6 py-4">
+        <div className="flex items-center border-t border-[var(--color-card-border)] px-6 py-4">
           <div className="flex items-center gap-2">
             <span className="h-2 w-2 animate-pulse rounded-full bg-[var(--color-brand-accent)]" />
             <span className="text-sm font-medium text-[var(--color-brand-accent)]">
@@ -294,16 +275,6 @@ export default function TranscriptTab({
               </span>
             )}
           </div>
-          <button
-            type="button"
-            onClick={handleStopTranscript}
-            disabled={isStopping}
-            className="flex items-center gap-2 rounded-lg bg-[var(--color-error-bg)] px-4 py-2 text-sm font-medium text-[var(--color-error)] 
-            transition-opacity hover:opacity-80 disabled:opacity-50"
-          >
-            <FiSquare className="h-3 w-3" />
-            {isStopping ? "Stopping…" : "Stop Transcribing"}
-          </button>
         </div>
       )}
     </div>
