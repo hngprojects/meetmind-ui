@@ -1,6 +1,7 @@
 "use client";
 
 import { useMemo } from "react";
+import axios from "axios";
 import { TokenSource } from "livekit-client";
 import { useSession } from "@livekit/components-react";
 import { WarningIcon } from "@phosphor-icons/react/dist/ssr";
@@ -13,7 +14,6 @@ import { useAgentErrors } from "@/hooks/call/useAgentErrors";
 import { useDebugMode } from "@/hooks/call/useDebug";
 import api from "@/lib/api";
 import { getSandboxTokenSource } from "@/lib/call/utils";
-import axios from "axios";
 
 const IN_DEVELOPMENT = process.env.NODE_ENV !== "production";
 
@@ -46,12 +46,13 @@ export function App({ appConfig, sessionId, token }: AppProps) {
         try {
           let interviewRes;
           if (token) {
-            // New public endpoint to fetch interview details with token, using direct axios to bypass redirection on 401/403
-            interviewRes = await api.get(
-              `/api/v1/interviews/call/${sessionId}`,
-              {
-                params: { token },
-              },
+            // Use a raw axios instance (not the shared api instance) to avoid
+            // the auth interceptor in src/lib/api.ts redirecting unauthenticated
+            // candidates to /sign-in on a 401 response from this public,
+            // token-authenticated endpoint.
+            interviewRes = await axios.get(
+              `${API_BASE}/api/v1/interviews/call/${sessionId}`,
+              { params: { token } },
             );
           } else {
             // Fallback for authenticated users / testing

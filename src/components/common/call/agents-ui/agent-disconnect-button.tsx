@@ -70,8 +70,14 @@ export function AgentDisconnectButton({
 
     if (typeof end === "function") {
       end();
-      await api.post(`/api/v1/interviews/${sessionId}/complete`);
-      // router.push("/");
+      if (sessionId) {
+        try {
+          await api.post(`/api/v1/interviews/${sessionId}/complete`);
+          router.push("/");
+        } catch (err) {
+          console.error("Failed to mark interview as complete:", err);
+        }
+      }
     }
   };
 
