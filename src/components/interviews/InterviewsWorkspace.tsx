@@ -12,7 +12,9 @@ import {
   useInterview,
   useInterviewSession,
   useInterviewsList,
+  useSendChatDocument,
   useSendChatMessage,
+  useSendChatVoice,
   useRejoinInterviewSession,
   useScorecard,
   useTranscript,
@@ -61,6 +63,8 @@ export default function InterviewsWorkspace() {
   );
   const rejoinSession = useRejoinInterviewSession(currentSelectedId);
   const sendChatMessage = useSendChatMessage(currentSelectedId);
+  const sendChatDocument = useSendChatDocument(currentSelectedId);
+  const sendChatVoice = useSendChatVoice(currentSelectedId);
 
   const handleRejoinSession = async () => {
     await rejoinSession.mutateAsync();
@@ -152,10 +156,25 @@ export default function InterviewsWorkspace() {
     session,
     onRejoinSession: handleRejoinSession,
     isRejoiningSession: rejoinSession.isPending,
-    onSendChatMessage: async (content: string) => {
-      await sendChatMessage.mutateAsync(content);
+    onSendChatMessage: async (content: string, attachments: File[]) => {
+      const text = content.trim();
+
+      if (text) {
+        await sendChatMessage.mutateAsync(text);
+      }
+
+      for (const file of attachments) {
+        await sendChatDocument.mutateAsync(file);
+      }
     },
-    isSendingChatMessage: sendChatMessage.isPending,
+    onSendVoiceMessage: async (audioBlob: Blob) => {
+      const response = await sendChatVoice.mutateAsync(audioBlob);
+      return response.transcription;
+    },
+    isSendingChatMessage:
+      sendChatMessage.isPending ||
+      sendChatDocument.isPending ||
+      sendChatVoice.isPending,
   };
 
   return (
@@ -242,7 +261,8 @@ type DetailsPanelProps = {
   session: ReturnType<typeof useInterviewSession>["data"];
   onRejoinSession: () => Promise<void>;
   isRejoiningSession: boolean;
-  onSendChatMessage: (content: string) => Promise<void>;
+  onSendChatMessage: (content: string, attachments: File[]) => Promise<void>;
+  onSendVoiceMessage: (audioBlob: Blob) => Promise<string | undefined>;
   isSendingChatMessage: boolean;
 };
 
@@ -261,6 +281,7 @@ function DetailsPanel({
   onRejoinSession,
   isRejoiningSession,
   onSendChatMessage,
+  onSendVoiceMessage,
   isSendingChatMessage,
 }: DetailsPanelProps) {
   return (
@@ -275,6 +296,7 @@ function DetailsPanel({
               <ChatTab
                 messages={chat ?? []}
                 onSendMessage={onSendChatMessage}
+                onVoiceMessage={onSendVoiceMessage}
                 isSendingMessage={isSendingChatMessage}
               />
             )}

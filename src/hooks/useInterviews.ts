@@ -3,6 +3,8 @@
 import { useState } from "react";
 import {
   askQuestion,
+  askQuestionWithDocument,
+  askQuestionWithVoice,
   exportInterviewSummary,
   getChatHistory,
   getInterview,
@@ -113,6 +115,51 @@ export function useSendChatMessage(id: string | null) {
       if (context?.previousMessages) {
         queryClient.setQueryData(chatQueryKey, context.previousMessages);
       }
+    },
+    onSettled: () => {
+      if (id) {
+        return queryClient.invalidateQueries({ queryKey: chatQueryKey });
+      }
+    },
+  });
+}
+
+export function useSendChatDocument(id: string | null) {
+  const queryClient = useQueryClient();
+  const chatQueryKey = ["interviews", id, "chat"] as const;
+
+  return useMutation({
+    mutationFn: (file: File) => {
+      if (!id)
+        throw new Error("Interview id is required to upload a document.");
+      return askQuestionWithDocument(id, file);
+    },
+    onSuccess: (assistantMessage) => {
+      queryClient.setQueryData<ChatMessage[]>(chatQueryKey, (current = []) =>
+        mergeChatMessages(current, [assistantMessage]),
+      );
+    },
+    onSettled: () => {
+      if (id) {
+        return queryClient.invalidateQueries({ queryKey: chatQueryKey });
+      }
+    },
+  });
+}
+
+export function useSendChatVoice(id: string | null) {
+  const queryClient = useQueryClient();
+  const chatQueryKey = ["interviews", id, "chat"] as const;
+
+  return useMutation({
+    mutationFn: (audioBlob: Blob) => {
+      if (!id) throw new Error("Interview id is required to send voice query.");
+      return askQuestionWithVoice(id, audioBlob);
+    },
+    onSuccess: (assistantMessage) => {
+      queryClient.setQueryData<ChatMessage[]>(chatQueryKey, (current = []) =>
+        mergeChatMessages(current, [assistantMessage]),
+      );
     },
     onSettled: () => {
       if (id) {
