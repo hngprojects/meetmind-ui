@@ -12,7 +12,9 @@ import {
   useInterview,
   useInterviewSession,
   useInterviewsList,
+  useSendChatDocument,
   useSendChatMessage,
+  useSendChatVoice,
   useRejoinInterviewSession,
   useScorecard,
   useTranscript,
@@ -20,6 +22,11 @@ import {
 import type { InterviewTab, TranscriptMessage } from "@/types/interview";
 import { useState } from "react";
 import { HiOutlineArrowLeft, HiOutlineBars3 } from "react-icons/hi2";
+
+type SendChatMessageResult = {
+  failedAttachments?: File[];
+  errorMessage?: string;
+};
 
 // ==================== 🧩Main Component ====================
 export default function InterviewsWorkspace() {
@@ -62,6 +69,8 @@ export default function InterviewsWorkspace() {
   );
   const rejoinSession = useRejoinInterviewSession(currentSelectedId);
   const sendChatMessage = useSendChatMessage(currentSelectedId);
+  const sendChatDocument = useSendChatDocument(currentSelectedId);
+  const sendChatVoice = useSendChatVoice(currentSelectedId);
 
   const handleRejoinSession = async () => {
     await rejoinSession.mutateAsync();
@@ -154,10 +163,48 @@ export default function InterviewsWorkspace() {
     session,
     onRejoinSession: handleRejoinSession,
     isRejoiningSession: rejoinSession.isPending,
-    onSendChatMessage: async (content: string) => {
-      await sendChatMessage.mutateAsync(content);
+    onSendChatMessage: async (
+      content: string,
+      attachments: File[],
+    ): Promise<SendChatMessageResult | void> => {
+      const text = content.trim();
+
+      if (text) {
+        await sendChatMessage.mutateAsync(text);
+      }
+
+      if (attachments.length === 0) {
+        return;
+      }
+
+      const uploadResults = await Promise.allSettled(
+        attachments.map((file) => sendChatDocument.mutateAsync(file)),
+      );
+      const failedAttachments = uploadResults.flatMap((result, index) =>
+        result.status === "rejected" ? [attachments[index]] : [],
+      );
+
+      if (failedAttachments.length > 0) {
+        const successCount = attachments.length - failedAttachments.length;
+        const plural = failedAttachments.length === 1 ? "" : "s";
+
+        return {
+          failedAttachments,
+          errorMessage:
+            successCount > 0
+              ? `Uploaded ${successCount} of ${attachments.length} documents. Retry the remaining document${plural}.`
+              : `Document upload failed. Retry the selected document${plural}.`,
+        };
+      }
     },
-    isSendingChatMessage: sendChatMessage.isPending,
+    onSendVoiceMessage: async (audioBlob: Blob) => {
+      const response = await sendChatVoice.mutateAsync(audioBlob);
+      return response.transcription;
+    },
+    isSendingChatMessage:
+      sendChatMessage.isPending ||
+      sendChatDocument.isPending ||
+      sendChatVoice.isPending,
   };
 
   return (
@@ -245,7 +292,11 @@ type DetailsPanelProps = {
   session: ReturnType<typeof useInterviewSession>["data"];
   onRejoinSession: () => Promise<void>;
   isRejoiningSession: boolean;
-  onSendChatMessage: (content: string) => Promise<void>;
+  onSendChatMessage: (
+    content: string,
+    attachments: File[],
+  ) => Promise<SendChatMessageResult | void>;
+  onSendVoiceMessage: (audioBlob: Blob) => Promise<string | undefined>;
   isSendingChatMessage: boolean;
 };
 
@@ -265,6 +316,7 @@ function DetailsPanel({
   onRejoinSession,
   isRejoiningSession,
   onSendChatMessage,
+  onSendVoiceMessage,
   isSendingChatMessage,
 }: DetailsPanelProps) {
   return (
@@ -279,6 +331,7 @@ function DetailsPanel({
               <ChatTab
                 messages={chat ?? []}
                 onSendMessage={onSendChatMessage}
+                onVoiceMessage={onSendVoiceMessage}
                 isSendingMessage={isSendingChatMessage}
               />
             )}
