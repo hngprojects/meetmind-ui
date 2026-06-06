@@ -4,7 +4,7 @@ import Link from "next/link";
 
 export default function HeroSection() {
   const demoVideoUrl =
-    "https://drive.google.com/file/d/13ZfVH1ZoDJ88CkV9DX-GhylkTwf_4HAs/view";
+    "https://drive.google.com/file/d/13ZfVH1ZoDJ88CkV9DX-GhylkTwf_4HAs/preview";
 
   return (
     <section id="hero" className="bg-[#F7F9FB] pt-24 pb-14 lg:pb-8">

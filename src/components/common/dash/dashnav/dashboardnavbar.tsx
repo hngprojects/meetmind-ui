@@ -21,10 +21,13 @@ import {
   LuCreditCard,
   LuCircleHelp,
   LuLogOut,
+  LuMenu,
+  LuX,
 } from "react-icons/lu";
 
 const Dashboardnavbar = () => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [isSignOutModalOpen, setIsSignOutModalOpen] = useState(false);
   const [isSigningOut, setIsSigningOut] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
@@ -53,7 +56,7 @@ const Dashboardnavbar = () => {
     <section className="border-b border-[#E5E7EB] bg-white sticky top-0 z-50">
       <div className="flex flex-row justify-between py-4 px-4 lg:px-16 items-center">
         {/* Logo + Brand Name */}
-        <div className="flex gap-3 w-[30%]">
+        <div className="flex gap-3 items-center">
           <Link href="/" className="flex items-center gap-2">
             <Image
               src="/icons/meetmind-logo.svg"
@@ -68,14 +71,26 @@ const Dashboardnavbar = () => {
           </p>
         </div>
 
-        <div className="flex items-center justify-end h-10 w-[70%] gap-8">
+        <div className="flex items-center justify-end h-10 gap-4 lg:w-[70%] lg:gap-8">
           {/* navlist */}
           <div className="hidden lg:flex h-10 bg-card rounded-lg items-center justify-center w-[50%]">
             <Dashnavlist />
           </div>
 
+          <div className="lg:hidden">
+            <button
+              type="button"
+              onClick={() => setMobileMenuOpen(true)}
+              className="flex h-10 w-10 items-center justify-center rounded-lg border 
+              border-gray-200 cursor-pointer"
+              aria-label="Open navigation menu"
+            >
+              <LuMenu className="text-xl" />
+            </button>
+          </div>
+
           {/* icons & profile dropdown */}
-          <div className="flex flex-row items-center justify-end gap-6 w-[40%]">
+          <div className="flex flex-row items-center justify-end gap-3 lg:gap-6">
             <button
               type="button"
               className="p-1 hover:bg-gray-50 rounded-full transition-colors cursor-pointer"
@@ -217,6 +232,36 @@ const Dashboardnavbar = () => {
           router.push("/sign-in");
         }}
       />
+
+      {mobileMenuOpen && (
+        <>
+          <div
+            className="fixed inset-0 bg-black/40 z-40 lg:hidden"
+            onClick={() => setMobileMenuOpen(false)}
+          />
+
+          <div className="fixed top-0 left-0 h-screen w-[280px] bg-white z-50 lg:hidden shadow-xl">
+            <div className="flex items-center justify-between px-4 py-4 border-b">
+              <p className="font-semibold">Menu</p>
+
+              <button
+                type="button"
+                onClick={() => setMobileMenuOpen(false)}
+                className="flex h-8 w-8 items-center justify-center"
+              >
+                <LuX className="text-xl" />
+              </button>
+            </div>
+
+            <div className="p-3">
+              <Dashnavlist
+                mobile
+                onLinkClick={() => setMobileMenuOpen(false)}
+              />
+            </div>
+          </div>
+        </>
+      )}
     </section>
   );
 };
