@@ -7,8 +7,7 @@ import { HireRadioGroup, type HireOption } from "../onboarding/RadioCard";
 import Input from "../onboarding/Input";
 import Select from "../onboarding/Select";
 import { GoArrowLeft } from "react-icons/go";
-import { onboardingAPI } from "@/lib/api/onboarding";
-import { useMutation } from "@tanstack/react-query";
+import { useSetRole } from "@/api/onboarding";
 
 const hireOptions: HireOption[] = [
   {
@@ -43,8 +42,7 @@ const Step2 = () => {
     data.role.trim() !== "" &&
     data.hires.trim() !== "";
 
-  const mutation = useMutation({
-    mutationFn: onboardingAPI.setRole,
+  const mutation = useSetRole({
     onSuccess: () => {
       nextStep();
     },

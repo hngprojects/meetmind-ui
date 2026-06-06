@@ -78,7 +78,7 @@ export default function SettingsForm() {
             </div>
           </div>
 
-          <div className="flex flex-col gap-2">
+          {/* <div className="flex flex-col gap-2">
             <label className="text-sm font-semibold text-[#0F172A]">
               Default duration
             </label>
@@ -108,7 +108,7 @@ export default function SettingsForm() {
                 </svg>
               </div>
             </div>
-          </div>
+          </div> */}
         </div>
 
         <div className="flex flex-col gap-2">

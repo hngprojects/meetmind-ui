@@ -5,8 +5,7 @@ import Link from "next/link";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { signInSchema, type SignInFormData } from "@/schemas/signInSchema";
 import AuthInput from "@/components/common/SignIn/AuthInput";
-import { loginUser } from "@/lib/auth";
-import axios from "axios";
+import { useLogin } from "@/api/auth";
 import { useState } from "react";
 import AuthDivider from "@/components/common/SignIn/AuthDivider";
 import GoogleAuthButton from "./GoogleAuthButton";
@@ -41,11 +40,8 @@ const SignInForm = () => {
     if (serverError) setServerError("");
   };
 
-  const onSubmit = async (data: SignInFormData) => {
-    setServerError("");
-    try {
-      const response = await loginUser(data);
-
+  const loginMutation = useLogin({
+    onSuccess: async (response) => {
       if (!response.success) {
         setServerError(response.message || "Invalid credentials");
         return;
@@ -61,36 +57,39 @@ const SignInForm = () => {
       // Save access token before calling /users/me so the API interceptor can attach it.
       localStorage.setItem("token", access_token);
 
-      const meRes = await api.get("/api/v1/users/me");
-      const user = meRes.data.data;
-      const authUser = normalizeCurrentUser({ ...response.data, ...user });
+      try {
+        const meRes = await api.get("/api/v1/users/me");
+        const user = meRes.data.data;
+        const authUser = normalizeCurrentUser({ ...response.data, ...user });
 
-      setAuth(authUser, access_token, refresh_token, access_token_expires_at);
+        setAuth(authUser, access_token, refresh_token, access_token_expires_at);
 
-      if (!user.onboarding_completed) {
-        router.push("/onboarding");
-      } else {
-        router.push("/dashboard");
+        if (!user.onboarding_completed) {
+          router.push("/onboarding");
+        } else {
+          router.push("/dashboard");
+        }
+      } catch (error) {
+        console.error("Failed to fetch user profile:", error);
+        setServerError("Failed to retrieve user profile. Please try again.");
+        localStorage.removeItem("token");
+        localStorage.removeItem("user");
+        localStorage.removeItem("refresh_token");
+        localStorage.removeItem("access_token_expires_at");
       }
-    } catch (error) {
+    },
+    onError: (error) => {
       localStorage.removeItem("token");
       localStorage.removeItem("user");
       localStorage.removeItem("refresh_token");
       localStorage.removeItem("access_token_expires_at");
+      setServerError(error.message);
+    },
+  });
 
-      if (axios.isAxiosError(error)) {
-        const detail = error.response?.data?.detail;
-        const errorMessage =
-          (Array.isArray(detail) ? detail[0]?.msg : undefined) ||
-          (typeof detail === "string" ? detail : undefined) ||
-          error.response?.data?.message ||
-          "Invalid email or password";
-
-        setServerError(errorMessage);
-      } else {
-        setServerError("Something went wrong");
-      }
-    }
+  const onSubmit = async (data: SignInFormData) => {
+    setServerError("");
+    loginMutation.mutate(data);
   };
 
   return (
@@ -148,12 +147,14 @@ const SignInForm = () => {
           {/* Submit Button */}
           <button
             type="submit"
-            disabled={isSubmitting}
+            disabled={isSubmitting || loginMutation.isPending}
             className="h-[48px] w-full rounded-[8px] bg-button-primary-bg text-[18px] 
           font-semibold text-white transition-all hover:opacity-80 cursor-pointer 
           disabled:cursor-not-allowed disabled:opacity-50"
           >
-            {isSubmitting ? "Signing In..." : "Sign In"}
+            {isSubmitting || loginMutation.isPending
+              ? "Signing In..."
+              : "Sign In"}
           </button>
         </form>
       </div>
