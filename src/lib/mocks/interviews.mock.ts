@@ -141,29 +141,40 @@ export const MOCK_INTERVIEW_SESSION = MOCK_INTERVIEW_SESSION_STATES.listening;
 
 export const MOCK_TRANSCRIPT: TranscriptMessage[] = [
   {
-    id: "1",
+    id: "019e976f-4baf-76c1-9440-352220ddd789",
     speaker: "meet_mind",
     speakerLabel: "Meet Mind",
-    timestamp: "05:46",
+    timestamp: "00:00:00",
     content:
-      "Walk me through one product design decision in your portfolio where the first solution did not work.",
+      "Can you tell me a little bit about your background as a backend developer?",
+    sequenceNo: 1,
   },
   {
-    id: "2",
+    id: "019e9770-428f-70e3-b90e-c76fefdc7574",
     speaker: "candidate",
     speakerLabel: "Temitope Balogun",
-    timestamp: "05:47",
+    timestamp: "00:01:03",
     content:
-      "The onboarding flow looked clean, but users still skipped setup. We found that the first screen asked for too much information before showing value.",
+      "I built a retry engine with background worker processing requests asynchronously.",
+    sequenceNo: 2,
   },
   {
-    id: "3",
+    id: "019e9770-b5eb-71f9-b223-8bd9c8c39f15",
     speaker: "meet_mind",
     speakerLabel: "Meet Mind",
-    timestamp: "05:48",
-    content: "What changed after you revised that flow?",
-    isTyping: true,
-    isActive: true,
+    timestamp: "00:01:32",
+    content:
+      "Can you tell me what programming languages and frameworks you used to build this retry engine, and how you ensured scalability and reliability?",
+    sequenceNo: 3,
+  },
+  {
+    id: "019e9770-e832-71df-bfa4-b9c4d1540852",
+    speaker: "candidate",
+    speakerLabel: "Temitope Balogun",
+    timestamp: "00:01:45",
+    content:
+      "In my retry engine, the request is stored in SQLite3, and the background worker pulls pending requests and retries retryable responses.",
+    sequenceNo: 4,
   },
 ];
 
@@ -187,34 +198,87 @@ export const MOCK_CHAT: ChatMessage[] = [
 
 export const MOCK_SCORECARD: ScorecardCategory[] = [
   {
-    id: "1",
-    title: "Problem Solving",
-    score: 85,
-    color: "green",
-    expanded: true,
-    questions: [
-      "Walk me through a complex technical challenge you've faced.",
-      "How did you break down the problem?",
-    ],
-    signals: [
-      "Structured thinking",
-      "Root cause analysis",
-      "Clear articulation",
-    ],
-  },
-  {
-    id: "2",
-    title: "Communication",
+    id: "technical_depth",
+    title: "Technical Depth",
     score: 60,
-    color: "orange",
-    expanded: false,
+    confidence: 80,
+    scoreBarPercent: 60,
+    expanded: true,
+    questionsAsked: [
+      "Can you tell me a little bit about your background as a backend developer?",
+      "Can you tell me what programming languages and frameworks you used to build this retry engine?",
+    ],
+    signalsDetected: [
+      "built a retry engine",
+      "used SQLite3 and background workers",
+      "struggled with edge cases",
+    ],
+    strengths: ["built a retry engine", "used SQLite3 and background workers"],
+    weaknesses: ["lacked concrete examples", "struggled with edge cases"],
+    justification:
+      "The candidate demonstrated some knowledge of software engineering concepts, but struggled to provide detailed explanations.",
+    evidence: [
+      {
+        questionTurnId: "019e976f-4baf-76c1-9440-352220ddd789",
+        responseTurnId: "019e9770-428f-70e3-b90e-c76fefdc7574",
+        reason:
+          "Candidate mentioned building a retry engine, but did not provide details.",
+      },
+      {
+        questionTurnId: "019e9770-b5eb-71f9-b223-8bd9c8c39f15",
+        responseTurnId: "019e9770-e832-71df-bfa4-b9c4d1540852",
+        reason: "Candidate mentioned SQLite3 and background workers.",
+      },
+    ],
+    subRubrics: [
+      {
+        id: "programming_languages_and_frameworks",
+        title: "Programming Languages and Frameworks",
+        score: 70,
+        confidence: 90,
+        scoreBarPercent: 70,
+        strengths: [],
+        weaknesses: [],
+        justification:
+          "The candidate mentioned using SQLite3 and background workers, but did not provide details on other frameworks.",
+        evidence: [
+          {
+            questionTurnId: "019e9770-b5eb-71f9-b223-8bd9c8c39f15",
+            responseTurnId: "019e9770-e832-71df-bfa4-b9c4d1540852",
+            reason: "Candidate mentioned using SQLite3.",
+          },
+        ],
+        expanded: false,
+      },
+    ],
   },
   {
-    id: "3",
-    title: "Technical depth",
-    score: 0,
-    color: "gray",
+    id: "communication",
+    title: "Communication",
+    score: 40,
+    confidence: 80,
+    scoreBarPercent: 40,
     expanded: false,
+    questionsAsked: [
+      "Can you tell me a little bit about your background as a backend developer?",
+    ],
+    signalsDetected: [
+      "enthusiastic and willing to learn",
+      "struggled to provide clear explanations",
+    ],
+    strengths: ["enthusiastic and willing to learn"],
+    weaknesses: ["struggled to provide clear explanations"],
+    justification:
+      "The candidate showed enthusiasm but struggled to provide a clear, structured explanation.",
+    evidence: [
+      {
+        questionTurnId: "019e976f-4baf-76c1-9440-352220ddd789",
+        responseTurnId: "019e9770-428f-70e3-b90e-c76fefdc7574",
+        reason:
+          "Candidate struggled to provide a clear explanation of their background.",
+      },
+    ],
+    subRubrics: [],
   },
 ];
 
