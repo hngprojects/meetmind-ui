@@ -62,7 +62,7 @@ const InterviewOverview = () => {
     {
       label: "In Progress",
       value: overview.stats.in_progress,
-      className: "text-[var(--color-session-purple-text-dark)]",
+      className: "text-(--color-session-purple-text-dark)",
     },
     {
       label: "Scheduled",

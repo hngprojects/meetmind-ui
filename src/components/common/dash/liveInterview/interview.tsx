@@ -4,7 +4,7 @@ import CreatePage1 from "../createInterview/createPage1";
 import InterviewOverview from "./interviewOverview";
 import LiveSession from "./liveSession";
 import Schedule from "./schedule";
-import NeedAttention from "./needAttenstion";
+// import NeedAttention from "./needAttenstion";
 import Completed from "./completed";
 import { ToastContainer } from "react-toastify";
 
@@ -20,7 +20,7 @@ const Interview = () => {
           <Schedule />
         </div>
         <div className="flex flex-col gap-6">
-          <NeedAttention />
+          {/* <NeedAttention /> */}
           <Completed />
         </div>
       </div>

@@ -1,8 +1,9 @@
-import { useDashboardStore } from "@/store/dashboardInterview";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { GoDotFill } from "react-icons/go";
 import { MdKeyboardArrowRight } from "react-icons/md";
 import { Skeleton } from "@/components/ui/skeleton";
+import { useRouter } from "next/navigation";
+import { useDashboardStore } from "@/store/dashboardInterview";
 
 // ── Helper to convert seconds into HH:MM:SS ──────────────────────────────────
 function formatDuration(totalSeconds: number): string {
@@ -14,14 +15,32 @@ function formatDuration(totalSeconds: number): string {
   return [hrs, mins, secs].map((v) => (v < 10 ? "0" + v : v)).join(":");
 }
 
+// ── Helper to get elapsed seconds from an ISO datetime string ─────────────────
+function getElapsedSeconds(isoString: string | null): number {
+  if (!isoString) return 0;
+  const startMs = new Date(isoString).getTime();
+  if (isNaN(startMs)) return 0;
+  const elapsed = Math.floor((Date.now() - startMs) / 1000);
+  return elapsed < 0 ? 0 : elapsed;
+}
+
 const LiveSession = () => {
-  const { getSessions, sessions, sessionsLoading } = useDashboardStore();
+  const router = useRouter();
+  const { interviews, interviewsLoading, getInterviews } = useDashboardStore();
+
+  // Tick every second to keep elapsed timers up to date
+  const [, setTick] = useState(0);
 
   useEffect(() => {
-    getSessions();
-  }, [getSessions]);
+    getInterviews();
+  }, [getInterviews]);
 
-  if (sessionsLoading) {
+  useEffect(() => {
+    const timer = setInterval(() => setTick((t) => t + 1), 1000);
+    return () => clearInterval(timer);
+  }, []);
+
+  if (interviewsLoading) {
     return (
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
         {Array.from({ length: 3 }).map((_, index) => (
@@ -53,13 +72,18 @@ const LiveSession = () => {
         <h1 className="text-2xl text-gray-900 font-bold tracking-tight">
           Live Now
         </h1>
-        <button className="flex flex-row items-center gap-1 text-[var(--color-accent-teal-dark)] font-semibold text-sm hover:opacity-80 transition-opacity">
+        <button
+          onClick={() => router.push("/candidates")}
+          className="flex flex-row items-center gap-1
+         text-[var(--color-accent-teal-dark)] font-semibold
+         text-sm hover:opacity-80 transition-opacity hover:cursor-pointer"
+        >
           See all <MdKeyboardArrowRight className="text-xl" />
         </button>
       </div>
 
       {/* Empty State */}
-      {sessions.length === 0 && (
+      {interviews.length === 0 && (
         <div className="flex items-center justify-center py-12 bg-gray-50/50 rounded-2xl border border-dashed border-gray-200">
           <p className="text-sm text-gray-400 font-medium">
             No live sessions at the moment
@@ -69,16 +93,16 @@ const LiveSession = () => {
 
       {/* Cards Horizontal Responsive Grid Layout */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
-        {sessions.slice(0, 3).map((session) => (
+        {interviews.slice(0, 3).map((interview) => (
           <div
-            key={session.interview_id}
+            key={interview.interview_id}
             className="bg-white rounded-2xl p-5 border border-gray-100 shadow-sm hover:shadow-md transition-shadow flex flex-col justify-between min-h-[200px]"
           >
             {/* Top Row: Name, Live Pill and Arrow Action Button */}
             <div className="flex flex-row justify-between items-start w-full">
               <div className="flex flex-row items-center gap-2 flex-wrap">
                 <h3 className="text-lg font-bold text-gray-900 leading-none">
-                  {session.candidate_name || "Marcus Lee"}
+                  {interview.candidate_name || "Marcus Lee"}
                 </h3>
                 <span className="text-[11px] font-bold text-[var(--color-session-purple-text-dark)] bg-[var(--color-session-purple-bg)] rounded-full flex flex-row items-center gap-1 py-0.5 px-2">
                   <GoDotFill className="text-[10px] animate-pulse" /> Live
@@ -100,20 +124,13 @@ const LiveSession = () => {
             {/* Middle Row: Meta Information Area */}
             <div className="flex flex-col gap-2 mt-2">
               <p className="text-sm font-medium text-gray-400">
-                {session.role_title || "Product Manager"}
+                {interview.role_title || "Product Manager"}
+              </p>
+              <p className="text-sm font-medium text-gray-400">
+                {interview.platform || "Product Manager"}
               </p>
               <p className="text-3xl font-extrabold text-[var(--color-brand-accent)] tracking-tight font-mono">
-                {formatDuration(session.elapsed_seconds || 55330)}
-              </p>
-            </div>
-
-            {/* Bottom Row: Quote/Question context block */}
-            <div className="mt-4 border-t border-gray-50 pt-3">
-              <p className="text-sm text-gray-500 font-medium line-clamp-1 italic">
-                &ldquo;
-                {session.questions_asked ||
-                  "Explain a complex data project you led."}
-                &rdquo;
+                {formatDuration(getElapsedSeconds(interview.scheduled_start))}
               </p>
             </div>
           </div>

@@ -45,7 +45,6 @@ function ScoreRing({ score }: { score: number | null }) {
   const circumference = 2 * Math.PI * radius;
   const progress = (value / 100) * circumference;
 
-  // Color based on score
   const color =
     value >= 70
       ? "var(--color-success)"
@@ -56,7 +55,6 @@ function ScoreRing({ score }: { score: number | null }) {
   return (
     <div className="relative w-14 h-14 flex items-center justify-center flex-shrink-0">
       <svg width="56" height="56" viewBox="0 0 56 56" className="-rotate-90">
-        {/* Background ring */}
         <circle
           cx="28"
           cy="28"
@@ -65,7 +63,6 @@ function ScoreRing({ score }: { score: number | null }) {
           stroke="var(--color-card-border)"
           strokeWidth="4"
         />
-        {/* Progress ring */}
         <circle
           cx="28"
           cy="28"
@@ -77,7 +74,6 @@ function ScoreRing({ score }: { score: number | null }) {
           strokeLinecap="round"
         />
       </svg>
-      {/* Score text */}
       <span className="absolute text-sm font-bold" style={{ color }}>
         {score ?? "—"}
       </span>
@@ -98,11 +94,13 @@ function CompletedCard({
   score: number | null;
 }) {
   return (
-    <div className="bg-white border border-gray-100 rounded-xl p-4 flex flex-col gap-3 flex-1">
+    <div className="bg-white border border-gray-100 rounded-xl p-4 flex flex-col gap-3 flex-1 min-w-0">
       {/* Name + arrow */}
       <div className="flex justify-between items-center">
-        <p className="font-semibold text-sm text-gray-900">{candidateName}</p>
-        <button className="text-gray-400 hover:text-gray-600">
+        <p className="font-semibold text-sm text-gray-900 truncate pr-2">
+          {candidateName}
+        </p>
+        <button className="text-gray-400 hover:text-gray-600 flex-shrink-0">
           <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
             <path
               d="M3 13L13 3M13 3H6M13 3V10"
@@ -117,8 +115,8 @@ function CompletedCard({
 
       {/* Role + score */}
       <div className="flex justify-between items-end">
-        <div className="flex flex-col gap-1">
-          <p className="text-sm text-gray-500">{role}</p>
+        <div className="flex flex-col gap-1 min-w-0">
+          <p className="text-sm text-gray-500 truncate">{role}</p>
           <p className="text-xs text-gray-400">{formatDate(completedAt)}</p>
         </div>
         <ScoreRing score={score} />
@@ -156,7 +154,7 @@ export default function Completed() {
 
       {/* Content */}
       {completedLoading ? (
-        <div className="flex flex-row gap-3">
+        <div className="flex flex-col sm:flex-row gap-3">
           {Array.from({ length: 2 }).map((_, index) => (
             <div
               key={index}
@@ -185,7 +183,7 @@ export default function Completed() {
           <p className="text-sm text-gray-400">No completed interviews yet</p>
         </div>
       ) : (
-        <div className="flex flex-row gap-3">
+        <div className="flex flex-col sm:flex-row gap-3">
           {completed.slice(0, 2).map((item) => (
             <CompletedCard
               key={item.interview_id}
