@@ -12,9 +12,17 @@ type AttachmentPreview = {
   file: File;
 };
 
+type SendMessageResult = {
+  failedAttachments?: File[];
+  errorMessage?: string;
+};
+
 type Props = {
   messages: ChatMessage[];
-  onSendMessage?: (content: string, attachments: File[]) => Promise<void>;
+  onSendMessage?: (
+    content: string,
+    attachments: File[],
+  ) => Promise<SendMessageResult | void>;
   onVoiceMessage?: (audioBlob: Blob) => Promise<string | undefined>;
   isSendingMessage?: boolean;
 };
@@ -34,6 +42,15 @@ const MICROPHONE_BLOCKED_MESSAGE =
 const SEND_FAILURE_MESSAGE =
   "We could not send your message. Please try again.";
 const VOICE_SUCCESS_MESSAGE = "Voice query sent.";
+const SUPPORTED_AUDIO_MIME_TYPES = [
+  "audio/webm;codecs=opus",
+  "audio/webm",
+  "audio/ogg;codecs=opus",
+  "audio/ogg",
+  "audio/mp4",
+  "audio/mpeg",
+  "audio/wav",
+];
 
 function getFileExtension(file: File): string {
   return file.name.split(".").pop()?.toLowerCase() ?? "";
@@ -51,6 +68,14 @@ function validateDocumentFile(file: File): string | null {
   }
 
   return null;
+}
+
+function getSupportedAudioMimeType(): string {
+  return (
+    SUPPORTED_AUDIO_MIME_TYPES.find((type) =>
+      MediaRecorder.isTypeSupported(type),
+    ) ?? ""
+  );
 }
 
 // ─── Sub-components ───────────────────────────────────────────────────────────
@@ -227,9 +252,7 @@ function useVoiceRecorder(
 
     try {
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-      const mimeType = MediaRecorder.isTypeSupported("audio/webm")
-        ? "audio/webm"
-        : "";
+      const mimeType = getSupportedAudioMimeType();
       const recorder = new MediaRecorder(
         stream,
         mimeType ? { mimeType } : undefined,
@@ -242,8 +265,9 @@ function useVoiceRecorder(
 
       recorder.onstop = async () => {
         stream.getTracks().forEach((t) => t.stop());
+        const recordingMimeType = recorder.mimeType || mimeType || "audio/webm";
         const blob = new Blob(chunksRef.current, {
-          type: mimeType || "audio/webm",
+          type: recordingMimeType,
         });
 
         if (!transcribeAudio) {
@@ -318,9 +342,15 @@ export default function ChatTab({
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
 
-  const lastUserMessageId = [...messages]
-    .reverse()
-    .find((message) => message.role === "user")?.id;
+  let lastUserMessageId: ChatMessage["id"] | undefined;
+
+  for (let index = messages.length - 1; index >= 0; index -= 1) {
+    const message = messages[index];
+    if (message.role === "user") {
+      lastUserMessageId = message.id;
+      break;
+    }
+  }
 
   const {
     state: recordingState,
@@ -354,10 +384,25 @@ export default function ChatTab({
         return;
       }
 
-      await onSendMessage(
+      const result = await onSendMessage(
         text,
         attachments.map((a) => a.file),
       );
+      const failedAttachments = result?.failedAttachments ?? [];
+
+      if (failedAttachments.length > 0) {
+        setComposerError(
+          result?.errorMessage ??
+            "Some documents failed to upload. Retry the remaining files.",
+        );
+        setInputValue("");
+        setAttachments((current) =>
+          current.filter((attachment) =>
+            failedAttachments.includes(attachment.file),
+          ),
+        );
+        return;
+      }
 
       setInputValue("");
       setAttachments([]);
