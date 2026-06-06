@@ -13,6 +13,7 @@ import { useAgentErrors } from "@/hooks/call/useAgentErrors";
 import { useDebugMode } from "@/hooks/call/useDebug";
 import api from "@/lib/api";
 import { getSandboxTokenSource } from "@/lib/call/utils";
+import axios from "axios";
 
 const IN_DEVELOPMENT = process.env.NODE_ENV !== "production";
 
@@ -27,9 +28,10 @@ interface AppProps {
   appConfig: AppConfig;
   /** Interview session id — when set, the call joins room === sessionId. */
   sessionId?: string;
+  token?: string;
 }
 
-export function App({ appConfig, sessionId }: AppProps) {
+export function App({ appConfig, sessionId, token }: AppProps) {
   const tokenSource = useMemo(() => {
     const API_BASE =
       process.env.NEXT_PUBLIC_API_BASE_URL ||
@@ -39,10 +41,22 @@ export function App({ appConfig, sessionId }: AppProps) {
       // Custom token source: pin the room name to the interview session id so
       // the agent loads that session's config.
       return TokenSource.custom(async () => {
-        // 1. Fetch interview details using the authenticated api client (includes JWT)
+        // 1. Fetch interview details
         let participantName = "Candidate";
         try {
-          const interviewRes = await api.get(`/api/v1/interviews/${sessionId}`);
+          let interviewRes;
+          if (token) {
+            // New public endpoint to fetch interview details with token, using direct axios to bypass redirection on 401/403
+            interviewRes = await axios.get(
+              `${API_BASE}/api/v1/interviews/call/${sessionId}`,
+              {
+                params: { token },
+              },
+            );
+          } else {
+            // Fallback for authenticated users / testing
+            interviewRes = await api.get(`/api/v1/interviews/${sessionId}`);
+          }
           const interviewData = interviewRes.data;
           const payload = interviewData?.data ?? interviewData;
           participantName =
@@ -74,7 +88,7 @@ export function App({ appConfig, sessionId }: AppProps) {
     return typeof process.env.NEXT_PUBLIC_CONN_DETAILS_ENDPOINT === "string"
       ? getSandboxTokenSource(appConfig)
       : TokenSource.endpoint(`${API_BASE}/api/v1/token`);
-  }, [appConfig, sessionId]);
+  }, [appConfig, sessionId, token]);
 
   const session = useSession(
     tokenSource,
