@@ -12,7 +12,7 @@ export default function DashboardLayout({
     <ProtectedRoute>
       <div className="min-h-screen bg-background">
         <Dashboardnavbar />
-        <main className="">{children}</main>
+        <main>{children}</main>
       </div>
     </ProtectedRoute>
   );

@@ -8,13 +8,13 @@ import SignOutModal from "./SignOutModal";
 import { useUnreadNotificationsCount } from "@/hooks/useNotifications";
 import { useCurrentUserProfile } from "@/hooks/useCurrentUserProfile";
 import { useAuthStore } from "@/store/authStore";
-import { revokeAllSessions } from "@/lib/auth";
+import { useRevokeAllSessions } from "@/api/auth";
 import {
   getCurrentUserDisplayName,
   getCurrentUserEmail,
 } from "@/lib/api/currentUser";
 import { UserAvatar } from "@/components/common/UserAvatar";
-import { MdKeyboardArrowDown } from "react-icons/md";
+import { MdKeyboardArrowDown, MdOutlineCancel } from "react-icons/md";
 import {
   LuUser,
   LuSettings,
@@ -22,8 +22,10 @@ import {
   LuCircleHelp,
   LuLogOut,
 } from "react-icons/lu";
+import { IoIosMenu } from "react-icons/io";
 
 const Dashboardnavbar = () => {
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [isSignOutModalOpen, setIsSignOutModalOpen] = useState(false);
   const [isSigningOut, setIsSigningOut] = useState(false);
@@ -32,6 +34,7 @@ const Dashboardnavbar = () => {
   const { data: unreadNotificationCount = 0 } = useUnreadNotificationsCount();
   const { data: currentUser } = useCurrentUserProfile();
   const logout = useAuthStore((state) => state.logout);
+  const revokeAllSessionsMutation = useRevokeAllSessions();
   const displayName = getCurrentUserDisplayName(currentUser);
   const displayEmail = getCurrentUserEmail(currentUser);
 
@@ -50,8 +53,8 @@ const Dashboardnavbar = () => {
   }, []);
 
   return (
-    <section className="border-b border-[#E5E7EB] bg-white sticky top-0 z-50">
-      <div className="flex flex-row justify-between py-6 px-16 items-center">
+    <section className="sticky border-b border-[#E5E7EB] bg-white top-0 z-50">
+      <div className="flex flex-row justify-between py-6 px-6 lg:px-16 items-center">
         {/* Logo + Brand Name */}
         <div className="flex gap-3 w-[30%]">
           <Link href="/" className="flex items-center gap-2">
@@ -68,9 +71,9 @@ const Dashboardnavbar = () => {
           </p>
         </div>
 
-        <div className="flex items-center justify-end h-10 w-[70%] gap-8">
+        <div className="flex items-center justify-end h-10 w-[70%] gap-4 md:gap-8">
           {/* navlist */}
-          <div className="h-10 bg-card flex rounded-lg items-center justify-center w-[50%]">
+          <div className="hidden lg:flex h-10 bg-card rounded-lg items-center justify-center lg:w-[50%]">
             <Dashnavlist />
           </div>
 
@@ -194,6 +197,19 @@ const Dashboardnavbar = () => {
               )}
             </div>
           </div>
+
+          {/* Mobile Hamburger Button */}
+          <button
+            className="lg:hidden text-[#0F172A] w-[10%]"
+            onClick={() => setIsMobileMenuOpen((prev) => !prev)}
+            aria-label="Toggle menu"
+          >
+            {isMobileMenuOpen ? (
+              <MdOutlineCancel size={24} />
+            ) : (
+              <IoIosMenu size={24} />
+            )}
+          </button>
         </div>
       </div>
 
@@ -205,7 +221,7 @@ const Dashboardnavbar = () => {
           if (signOutAllDevices) {
             setIsSigningOut(true);
             try {
-              await revokeAllSessions();
+              await revokeAllSessionsMutation.mutateAsync();
             } catch (error) {
               console.error("Failed to revoke all sessions:", error);
             } finally {
@@ -217,6 +233,12 @@ const Dashboardnavbar = () => {
           router.push("/sign-in");
         }}
       />
+
+      {isMobileMenuOpen && (
+        <div className="absolute bg-white w-full p-3">
+          <Dashnavlist />
+        </div>
+      )}
     </section>
   );
 };

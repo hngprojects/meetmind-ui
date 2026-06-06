@@ -1,7 +1,7 @@
 "use client";
 
 import { FiChevronDown, FiArrowLeft } from "react-icons/fi";
-import api from "@/lib/api";
+import { useForgotPassword } from "@/api/auth";
 import * as z from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -14,7 +14,7 @@ interface Props {
 }
 
 const forgotPasswordSchema = z.object({
-  email: z.string().email("Email address is required"),
+  email: z.email("Email address is required"),
 });
 
 type ForgotPasswordFormData = z.infer<typeof forgotPasswordSchema>;
@@ -31,19 +31,19 @@ export default function EnterEmailForm({ setStep, setEmail }: Props) {
     defaultValues: { email: "" },
   });
 
-  async function onSubmit(data: ForgotPasswordFormData) {
-    // setStep("enter-email");
-
-    try {
-      await api.post("/api/v1/auth/forgot-password", data);
-
+  const forgotPasswordMutation = useForgotPassword({
+    onSuccess: (_, variables) => {
       reset();
-
-      setEmail(data.email);
+      setEmail(variables.email);
       setStep("email-sent");
-    } catch {
+    },
+    onError: () => {
       setStep("enter-email");
-    }
+    },
+  });
+
+  async function onSubmit(data: ForgotPasswordFormData) {
+    forgotPasswordMutation.mutate(data);
   }
 
   return (
@@ -97,11 +97,13 @@ export default function EnterEmailForm({ setStep, setEmail }: Props) {
               <p className="text-[#EF4444] text-sm">{errors.email.message}</p>
             )}
             <button
-              disabled={isSubmitting}
+              disabled={isSubmitting || forgotPasswordMutation.isPending}
               className="text-white font-semibold bg-[#02505E] rounded-md w-full p-2 mt-4 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
               type="submit"
             >
-              {isSubmitting ? "Sending..." : "Send reset link"}
+              {isSubmitting || forgotPasswordMutation.isPending
+                ? "Sending..."
+                : "Send reset link"}
             </button>
 
             <Link

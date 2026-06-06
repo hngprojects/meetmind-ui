@@ -2,9 +2,8 @@
 
 import { Button } from "@/components/ui/button";
 import { onboardingStore } from "../../../../store/onboardingStore";
-import { useMutation } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
-import { onboardingAPI } from "@/lib/api/onboarding";
+import { useCompleteOnboarding } from "@/api/onboarding";
 import Card from "../onboarding/Card";
 import Image from "next/image";
 import { GoArrowLeft, GoZap } from "react-icons/go";
@@ -19,8 +18,7 @@ const Step5 = () => {
 
   const addToast = onboardingStore((s) => s.addToast);
 
-  const mutation = useMutation({
-    mutationFn: onboardingAPI.completeOnboarding,
+  const mutation = useCompleteOnboarding({
     onSuccess: () => {
       addToast("Onboarding completed successfully", "success");
       router.push("/dashboard");
