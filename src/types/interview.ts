@@ -147,6 +147,14 @@ export type InterviewDetail = {
 
 // ── Transcript message ─────────────────────────────────────────────────────────
 
+export type TranscriptStatus =
+  | "idle"
+  | "connecting"
+  | "transcribing"
+  | "interrupted"
+  | "completed"
+  | "failed";
+
 export type TranscriptMessage = {
   id: string;
   speaker: "meet_mind" | "candidate";
@@ -156,6 +164,17 @@ export type TranscriptMessage = {
   sequenceNo?: number;
   isTyping?: boolean;
   isActive?: boolean;
+};
+
+export type TranscriptResponse = {
+  interviewId: string;
+  totalTurns: number;
+  turns: TranscriptMessage[];
+  isLive: boolean;
+  status: TranscriptStatus;
+  message: string | null;
+  error: string | null;
+  partialSaved: boolean | null;
 };
 
 // ── Chat message ───────────────────────────────────────────────────────────────

@@ -18,6 +18,9 @@ import type {
   InterviewSessionStatus,
   InterviewSummaryExportFormat,
   InterviewStatus,
+  TranscriptMessage,
+  TranscriptResponse,
+  TranscriptStatus,
 } from "@/types/interview";
 import {
   REJOIN_SESSION_MESSAGE,
@@ -35,6 +38,11 @@ const ACTIVE_SESSION_STATUSES: InterviewSessionStatus[] = [
   "connection_lost",
   "reconnecting",
   "processing",
+];
+const ACTIVE_TRANSCRIPT_STATUSES: TranscriptStatus[] = [
+  "connecting",
+  "transcribing",
+  "interrupted",
 ];
 
 export function useInterviewsList(page = 1, pageSize = 20) {
@@ -123,14 +131,40 @@ export function useSendChatMessage(id: string | null) {
 }
 
 export function useTranscript(id: string | null, status?: InterviewStatus) {
-  const isLive = status ? LIVE_STATUSES.includes(status) : false;
+  const queryClient = useQueryClient();
+  const queryKey = ["interviews", id, "transcript"] as const;
+  const isLiveInterview = status ? LIVE_STATUSES.includes(status) : false;
+
   return useQuery({
-    queryKey: ["interviews", id, "transcript"],
-    queryFn: () => getTranscript(id!),
+    queryKey,
+    queryFn: async () => {
+      const previous = queryClient.getQueryData<TranscriptResponse>(queryKey);
+      const shouldUseLivePolling =
+        !isTerminalTranscriptStatus(previous?.status) &&
+        (isLiveInterview || isActiveTranscriptStatus(previous?.status));
+      const afterSequenceNo = shouldUseLivePolling
+        ? getHighestTranscriptSequenceNo(previous?.turns ?? [])
+        : undefined;
+      const next = await getTranscript(id!, {
+        live: shouldUseLivePolling,
+        afterSequenceNo,
+      });
+
+      return previous && shouldUseLivePolling
+        ? mergeTranscriptResponses(previous, next)
+        : next;
+    },
     enabled: !!id,
-    // Poll more frequently for live transcript, not at all for completed
-    refetchInterval: isLive ? 3000 : false,
-    refetchOnWindowFocus: isLive,
+    placeholderData: (previousData) => previousData,
+    refetchInterval: (query) => {
+      const transcript = query.state.data as TranscriptResponse | undefined;
+      if (isTerminalTranscriptStatus(transcript?.status)) return false;
+
+      return isLiveInterview || isActiveTranscriptStatus(transcript?.status)
+        ? 3000
+        : false;
+    },
+    refetchOnWindowFocus: isLiveInterview,
   });
 }
 
@@ -230,6 +264,63 @@ export function useExportInterviewSummary(id: string | null) {
 
 function isActiveSessionStatus(status?: InterviewSessionStatus): boolean {
   return status ? ACTIVE_SESSION_STATUSES.includes(status) : false;
+}
+
+function isActiveTranscriptStatus(status?: TranscriptStatus): boolean {
+  return status ? ACTIVE_TRANSCRIPT_STATUSES.includes(status) : false;
+}
+
+function isTerminalTranscriptStatus(status?: TranscriptStatus): boolean {
+  return status === "completed" || status === "failed" || status === "idle";
+}
+
+function getHighestTranscriptSequenceNo(messages: TranscriptMessage[]) {
+  const sequenceNumbers = messages
+    .map((message) => message.sequenceNo)
+    .filter(
+      (sequenceNo): sequenceNo is number =>
+        typeof sequenceNo === "number" &&
+        Number.isFinite(sequenceNo) &&
+        sequenceNo >= 0,
+    );
+
+  return sequenceNumbers.length > 0 ? Math.max(...sequenceNumbers) : undefined;
+}
+
+function mergeTranscriptResponses(
+  previous: TranscriptResponse,
+  next: TranscriptResponse,
+): TranscriptResponse {
+  const mergedTurns = new Map<string, TranscriptMessage>();
+
+  [...previous.turns, ...next.turns].forEach((turn) => {
+    mergedTurns.set(getTranscriptTurnKey(turn), turn);
+  });
+
+  return {
+    ...next,
+    turns: [...mergedTurns.values()].sort(compareTranscriptTurns),
+  };
+}
+
+function getTranscriptTurnKey(turn: TranscriptMessage) {
+  return typeof turn.sequenceNo === "number"
+    ? `sequence:${turn.sequenceNo}`
+    : `id:${turn.id}`;
+}
+
+function compareTranscriptTurns(
+  first: TranscriptMessage,
+  second: TranscriptMessage,
+) {
+  if (first.sequenceNo !== undefined && second.sequenceNo !== undefined) {
+    return first.sequenceNo - second.sequenceNo;
+  }
+
+  if (first.sequenceNo !== undefined) return -1;
+  if (second.sequenceNo !== undefined) return 1;
+
+  return 0;
 }
 
 function mergeChatMessages(

@@ -1,6 +1,7 @@
 // components/common/dash/dashboard/Completed.tsx
 "use client";
 import { useDashboardStore } from "@/store/dashboardInterview";
+import { Skeleton } from "@/components/ui/skeleton";
 import { useEffect } from "react";
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
@@ -44,22 +45,24 @@ function ScoreRing({ score }: { score: number | null }) {
   const circumference = 2 * Math.PI * radius;
   const progress = (value / 100) * circumference;
 
-  // Color based on score
-  const color = value >= 70 ? "#1D9E75" : value >= 40 ? "#F59E0B" : "#EF4444";
+  const color =
+    value >= 70
+      ? "var(--color-success)"
+      : value >= 40
+        ? "var(--color-warning)"
+        : "var(--color-error)";
 
   return (
     <div className="relative w-14 h-14 flex items-center justify-center flex-shrink-0">
       <svg width="56" height="56" viewBox="0 0 56 56" className="-rotate-90">
-        {/* Background ring */}
         <circle
           cx="28"
           cy="28"
           r={radius}
           fill="none"
-          stroke="#E5E7EB"
+          stroke="var(--color-card-border)"
           strokeWidth="4"
         />
-        {/* Progress ring */}
         <circle
           cx="28"
           cy="28"
@@ -71,7 +74,6 @@ function ScoreRing({ score }: { score: number | null }) {
           strokeLinecap="round"
         />
       </svg>
-      {/* Score text */}
       <span className="absolute text-sm font-bold" style={{ color }}>
         {score ?? "—"}
       </span>
@@ -92,11 +94,13 @@ function CompletedCard({
   score: number | null;
 }) {
   return (
-    <div className="bg-white border border-gray-100 rounded-xl p-4 flex flex-col gap-3 flex-1">
+    <div className="bg-white border border-gray-100 rounded-xl p-4 flex flex-col gap-3 flex-1 min-w-0">
       {/* Name + arrow */}
       <div className="flex justify-between items-center">
-        <p className="font-semibold text-sm text-gray-900">{candidateName}</p>
-        <button className="text-gray-400 hover:text-gray-600">
+        <p className="font-semibold text-sm text-gray-900 truncate pr-2">
+          {candidateName}
+        </p>
+        <button className="text-gray-400 hover:text-gray-600 flex-shrink-0">
           <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
             <path
               d="M3 13L13 3M13 3H6M13 3V10"
@@ -111,8 +115,8 @@ function CompletedCard({
 
       {/* Role + score */}
       <div className="flex justify-between items-end">
-        <div className="flex flex-col gap-1">
-          <p className="text-sm text-gray-500">{role}</p>
+        <div className="flex flex-col gap-1 min-w-0">
+          <p className="text-sm text-gray-500 truncate">{role}</p>
           <p className="text-xs text-gray-400">{formatDate(completedAt)}</p>
         </div>
         <ScoreRing score={score} />
@@ -150,11 +154,28 @@ export default function Completed() {
 
       {/* Content */}
       {completedLoading ? (
-        <div className="flex items-center justify-center py-8">
-          <p className="text-sm text-gray-400">Loading...</p>
+        <div className="flex flex-col sm:flex-row gap-3">
+          {Array.from({ length: 2 }).map((_, index) => (
+            <div
+              key={index}
+              className="bg-white border border-gray-100 rounded-xl p-4 flex-1"
+            >
+              <div className="flex items-center justify-between">
+                <Skeleton className="h-4 w-24" />
+                <Skeleton className="h-6 w-6 rounded-full" />
+              </div>
+              <div className="mt-6 flex items-end justify-between">
+                <div className="space-y-2">
+                  <Skeleton className="h-4 w-32" />
+                  <Skeleton className="h-3 w-20" />
+                </div>
+                <Skeleton className="h-14 w-14 rounded-full" />
+              </div>
+            </div>
+          ))}
         </div>
       ) : completedError ? (
-        <p className="text-sm text-[#C0392B] text-center py-4">
+        <p className="text-sm text-[var(--color-error-dark)] text-center py-4">
           {completedError}
         </p>
       ) : completed.length === 0 ? (
@@ -162,7 +183,7 @@ export default function Completed() {
           <p className="text-sm text-gray-400">No completed interviews yet</p>
         </div>
       ) : (
-        <div className="flex flex-row gap-3">
+        <div className="flex flex-col sm:flex-row gap-3">
           {completed.slice(0, 2).map((item) => (
             <CompletedCard
               key={item.interview_id}
