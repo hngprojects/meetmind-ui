@@ -24,8 +24,8 @@ const InterviewOverview = () => {
     <div className="px-2 md:px-10 lg:px-20  flex flex-col gap-4">
       <h1 className=" text-2xl lg:text-3xl text-text-color-primary font-bold">
         {!candidate.full_name
-          ? "Good morning"
-          : `Good morning, ${candidate.full_name}`}
+          ? "Welcome back"
+          : `Welcome back, ${candidate.full_name}`}
       </h1>
 
       <div className="bg-white p-7 flex flex-col gap-8 rounded-2xl">

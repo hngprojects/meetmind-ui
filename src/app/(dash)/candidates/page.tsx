@@ -2,7 +2,7 @@ import Candidates from "@/components/common/Candidates/Candidates";
 
 function page() {
   return (
-    <div>
+    <div className="px-3">
       <Candidates />
     </div>
   );

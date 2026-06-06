@@ -58,8 +58,13 @@ export function AgentDisconnectButton({
 }: AgentDisconnectButtonProps) {
   const { end } = useSessionContext();
   const router = useRouter();
-  const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
-    onClick?.(event);
+  const handleClick = async (event: React.MouseEvent<HTMLButtonElement>) => {
+    try {
+      await onClick?.(event);
+    } catch (err) {
+      console.error("Error during disconnect callback:", err);
+    }
+
     if (typeof end === "function") {
       end();
       router.push("/");
