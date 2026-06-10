@@ -7,7 +7,9 @@ const api = axios.create({
   headers: {
     "Content-Type": "application/json",
   },
-  timeout: 10_000,
+  // 60s — long enough for interview scheduling (workspace + scorecard creation)
+  // and other multi-step backend operations without causing false timeout errors.
+  timeout: 60_000,
 });
 
 // ── Request interceptor ───────────────────────────────────────────────────────
