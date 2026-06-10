@@ -17,7 +17,7 @@ export interface LoginResponseData {
    * "onboarding"   → email verified but onboarding not yet completed.
    * "dashboard"    → fully set up; go straight to the app.
    */
-  next_step?: "verify_email" | "onboarding" | "dashboard" | string;
+  next_step?: "verify_email" | "onboarding" | "dashboard";
 }
 
 export type LoginResponse = ApiResponse<LoginResponseData>;

@@ -8,7 +8,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import api from "@/lib/api";
+import api, { LONG_REQUEST_TIMEOUT } from "@/lib/api";
 import type {
   Question,
   RubricCriterion,
@@ -96,9 +96,15 @@ export function SessionForm({ initial }: { initial?: SessionDTO }) {
     };
 
     try {
+      // Interview creation/update involves multi-step backend ops — use a longer
+      // per-request timeout so it isn't cut short by the 15s global default.
       const response = editing
-        ? await api.patch(`/api/v1/interviews/${initial!.id}`, payload)
-        : await api.post(`/api/v1/interviews`, payload);
+        ? await api.patch(`/api/v1/interviews/${initial!.id}`, payload, {
+            timeout: LONG_REQUEST_TIMEOUT,
+          })
+        : await api.post(`/api/v1/interviews`, payload, {
+            timeout: LONG_REQUEST_TIMEOUT,
+          });
 
       const session = response.data as SessionDTO;
       // Redirect to the interview route instead of sessions

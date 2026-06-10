@@ -56,21 +56,22 @@ const SignInForm = () => {
         access_token_expires_at,
         next_step,
       } = response.data;
-      if (!access_token || !refresh_token || !access_token_expires_at) {
-        setServerError("Invalid authentication response. Please try again.");
-        return;
-      }
 
       // ── Email verification gate ──────────────────────────────────────────
-      // The backend signals that this account's email hasn't been confirmed.
-      // Redirect the user to the verify-email page and store the submitted
-      // email so that page can display it and offer a resend link.
+      // Check next_step BEFORE token validation: the backend may legitimately
+      // omit tokens for unverified accounts. Redirecting first avoids showing
+      // a misleading "Invalid authentication response" error in that case.
       if (next_step === "verify_email") {
         const submittedEmail = getValues("email");
         // Populate signupStore so VerifyEmailContent can show & resend to the
         // correct address even though this is a login (not a signup) flow.
         setFormData({ email: submittedEmail, name: "", password: "" });
         router.push("/verify-email");
+        return;
+      }
+
+      if (!access_token || !refresh_token || !access_token_expires_at) {
+        setServerError("Invalid authentication response. Please try again.");
         return;
       }
 
