@@ -80,6 +80,10 @@ type ApiChatTurn = {
   content?: string;
   title?: string;
   bullets?: string[];
+  sent_at?: string;
+  sequence_no?: number;
+  transcription?: string;
+  document_text_preview?: string;
 };
 
 type ApiChatAnswer = {
@@ -223,20 +227,27 @@ export async function getInterview(id: string): Promise<InterviewDetail> {
 }
 
 // ── Chat history ───────────────────────────────────────────────────────────────
-// GET /api/v1/interviews/{interview_id}/chat/history
+// GET /api/v1/interviews/{interview_id}/chat
 
 export async function getChatHistory(id: string): Promise<ChatMessage[]> {
   if (MOCKS_ENABLED) return MOCK_CHAT;
 
-  const res = await api.get(`/api/v1/interviews/${id}/chat/history`);
-  const data = unwrapData<{
-    messages?: ApiChatTurn[];
-    turns?: ApiChatTurn[];
-    data?: ApiChatTurn[];
-  }>(res.data);
+  const res = await api.get(`/api/v1/interviews/${id}/chat`);
+  const data = unwrapData<
+    | {
+        interview_id?: string;
+        total_messages?: number;
+        messages?: ApiChatTurn[];
+        turns?: ApiChatTurn[];
+        data?: ApiChatTurn[];
+      }
+    | ApiChatTurn[]
+  >(res.data);
 
-  const raw = data.messages ?? data.turns ?? data.data ?? [];
-  return raw.map(mapApiToChatMessage);
+  const raw = Array.isArray(data)
+    ? data
+    : (data.messages ?? data.turns ?? data.data ?? []);
+  return raw.map(mapApiToChatMessage).sort(compareChatMessages);
 }
 
 // ── Ask MeetMind a question about the interview (sends a chat message) ─────────
@@ -250,7 +261,7 @@ export async function askQuestion(
   if (MOCKS_ENABLED) {
     // Return a mock assistant response
     return {
-      id: globalThis.crypto?.randomUUID?.(),
+      id: createFallbackMessageId("mock-chat"),
       role: "assistant",
       content: `Mock response to: ${query}`,
       title: undefined,
@@ -259,6 +270,58 @@ export async function askQuestion(
   }
 
   const res = await api.post(`/api/v1/interviews/${id}/chat`, { query });
+  const data = unwrapData<ApiChatResponse>(res.data);
+  return mapApiToChatMessage(data);
+}
+
+// ── Ask MeetMind with a recorded voice query ──────────────────────────────────
+// POST /api/v1/interviews/{interview_id}/chat/voice
+
+export async function askQuestionWithVoice(
+  id: string,
+  audioBlob: Blob,
+): Promise<ChatMessage> {
+  if (MOCKS_ENABLED) {
+    return {
+      id: createFallbackMessageId("mock-voice"),
+      role: "assistant",
+      content:
+        "Mock voice response: the candidate demonstrated strong technical problem solving.",
+      transcription: "How did the candidate perform technically?",
+    };
+  }
+
+  const formData = new FormData();
+  formData.append("file", audioBlob, getAudioUploadFilename(audioBlob));
+
+  const res = await api.post(`/api/v1/interviews/${id}/chat/voice`, formData);
+  const data = unwrapData<ApiChatResponse>(res.data);
+  return mapApiToChatMessage(data);
+}
+
+// ── Ask MeetMind with document context ────────────────────────────────────────
+// POST /api/v1/interviews/{interview_id}/chat/document
+
+export async function askQuestionWithDocument(
+  id: string,
+  file: File,
+): Promise<ChatMessage> {
+  if (MOCKS_ENABLED) {
+    return {
+      id: createFallbackMessageId("mock-document"),
+      role: "assistant",
+      content: `Mock document response based on ${file.name}.`,
+      documentTextPreview: file.name,
+    };
+  }
+
+  const formData = new FormData();
+  formData.append("file", file);
+
+  const res = await api.post(
+    `/api/v1/interviews/${id}/chat/document`,
+    formData,
+  );
   const data = unwrapData<ApiChatResponse>(res.data);
   return mapApiToChatMessage(data);
 }
@@ -672,6 +735,33 @@ function mapApiToDetail(raw: ApiInterview, id: string): InterviewDetail {
   };
 }
 
+function createFallbackMessageId(prefix = "msg"): string {
+  return (
+    globalThis.crypto?.randomUUID?.() ??
+    `${prefix}-${Date.now()}-${Math.random().toString(36).slice(2)}`
+  );
+}
+
+const AUDIO_EXTENSION_BY_MIME_TYPE: Record<string, string> = {
+  "audio/webm": "webm",
+  "audio/ogg": "ogg",
+  "audio/mp4": "m4a",
+  "audio/mpeg": "mp3",
+  "audio/mp3": "mp3",
+  "audio/wav": "wav",
+  "audio/x-wav": "wav",
+  "audio/flac": "flac",
+};
+
+function getAudioUploadFilename(audioBlob: Blob): string {
+  const mimeType = audioBlob.type.split(";")[0]?.toLowerCase();
+  const extension = mimeType
+    ? (AUDIO_EXTENSION_BY_MIME_TYPE[mimeType] ?? "webm")
+    : "webm";
+
+  return `voice-query.${extension}`;
+}
+
 function mapApiToChatMessage(raw: ApiChatResponse): ChatMessage {
   const answerPoints = raw.answer?.points
     ?.map((point) => {
@@ -682,15 +772,20 @@ function mapApiToChatMessage(raw: ApiChatResponse): ChatMessage {
     .filter(Boolean);
 
   return {
-    id:
-      raw.id ??
-      raw.message_id ??
-      globalThis.crypto?.randomUUID?.() ??
-      String(Date.now()),
+    id: raw.id ?? raw.message_id ?? createFallbackMessageId("chat"),
     role: raw.role ?? "assistant",
     content: raw.content ?? raw.answer?.summary ?? "",
     title: raw.title ?? raw.answer?.title,
     bullets: raw.bullets ?? answerPoints,
+    sentAt: raw.sent_at,
+    sequenceNo:
+      typeof raw.sequence_no === "number" &&
+      Number.isFinite(raw.sequence_no) &&
+      raw.sequence_no >= 0
+        ? Math.floor(raw.sequence_no)
+        : undefined,
+    transcription: raw.transcription,
+    documentTextPreview: raw.document_text_preview,
   };
 }
 
@@ -733,6 +828,21 @@ function mapApiToTranscriptResponse(
         ? envelope.partial_saved
         : null,
   };
+}
+
+function compareChatMessages(first: ChatMessage, second: ChatMessage) {
+  if (first.sequenceNo !== undefined && second.sequenceNo !== undefined) {
+    return first.sequenceNo - second.sequenceNo;
+  }
+
+  if (first.sequenceNo !== undefined) return -1;
+  if (second.sequenceNo !== undefined) return 1;
+
+  if (first.sentAt && second.sentAt) {
+    return first.sentAt.localeCompare(second.sentAt);
+  }
+
+  return 0;
 }
 
 function mapApiToTranscriptMessage(raw: ApiTranscriptTurn): TranscriptMessage {

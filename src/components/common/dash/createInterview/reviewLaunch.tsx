@@ -1,7 +1,7 @@
 "use client";
 import { useState } from "react";
 // import { useRouter } from "next/navigation";
-import api from "@/lib/api";
+import api, { LONG_REQUEST_TIMEOUT } from "@/lib/api";
 import { getErrorMessage } from "@/lib/api-response";
 import Buttons from "@/components/reuseable-component/buttons";
 import { useQueryClient } from "@tanstack/react-query";
@@ -72,7 +72,11 @@ export default function ReviewLaunch() {
       setServerError(null);
 
       const payload = buildPayload(candidateId);
-      const res = await api.post(`/api/v1/interviews`, payload);
+      // Interview creation is a multi-step backend operation — use a longer
+      // per-request timeout so it isn't cut short by the 15s global default.
+      const res = await api.post(`/api/v1/interviews`, payload, {
+        timeout: LONG_REQUEST_TIMEOUT,
+      });
 
       const sessionId =
         res.data?.id ?? res.data?.data?.id ?? res.data?.data?.data?.id;
@@ -83,6 +87,7 @@ export default function ReviewLaunch() {
       }
       await api.post(`api/v1/interviews/${sessionId}/send-link`, null, {
         params: { email: candidate.email },
+        timeout: LONG_REQUEST_TIMEOUT,
       });
 
       notifySuccess("Interview scheduled and invites sent successfully!");

@@ -12,6 +12,7 @@ import GoogleAuthButton from "./GoogleAuthButton";
 import AuthFooter from "@/components/common/SignIn/AuthFooter";
 import { useRouter } from "next/navigation";
 import { useAuthStore } from "@/store/authStore";
+import { useSignupStore } from "@/store/signupStore";
 import api from "@/lib/api";
 import { normalizeCurrentUser } from "@/lib/api/currentUser";
 
@@ -19,11 +20,13 @@ const SignInForm = () => {
   const [serverError, setServerError] = useState("");
   const router = useRouter();
   const setAuth = useAuthStore((state) => state.setAuth);
+  const setFormData = useSignupStore((state) => state.setFormData);
 
   const {
     register,
     handleSubmit,
     clearErrors,
+    getValues,
     formState: { errors, isSubmitting },
   } = useForm<SignInFormData>({
     resolver: zodResolver(signInSchema),
@@ -47,14 +50,33 @@ const SignInForm = () => {
         return;
       }
 
-      const { access_token, refresh_token, access_token_expires_at } =
-        response.data;
+      const {
+        access_token,
+        refresh_token,
+        access_token_expires_at,
+        next_step,
+      } = response.data;
+
+      // ── Email verification gate ──────────────────────────────────────────
+      // Check next_step BEFORE token validation: the backend may legitimately
+      // omit tokens for unverified accounts. Redirecting first avoids showing
+      // a misleading "Invalid authentication response" error in that case.
+      if (next_step === "verify_email") {
+        const submittedEmail = getValues("email");
+        // Populate signupStore so VerifyEmailContent can show & resend to the
+        // correct address even though this is a login (not a signup) flow.
+        setFormData({ email: submittedEmail, name: "", password: "" });
+        router.push("/verify-email");
+        return;
+      }
+
       if (!access_token || !refresh_token || !access_token_expires_at) {
         setServerError("Invalid authentication response. Please try again.");
         return;
       }
 
-      // Save access token before calling /users/me so the API interceptor can attach it.
+      // Save access token before calling /users/me so the API interceptor
+      // can attach it as a Bearer header.
       localStorage.setItem("token", access_token);
 
       try {
