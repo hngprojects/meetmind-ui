@@ -6,9 +6,18 @@ export interface LoginPayload {
 }
 
 export interface LoginResponseData {
+  id?: string;
+  email?: string;
   access_token: string;
   refresh_token: string;
   access_token_expires_at: string;
+  /**
+   * Guidance from the server on what the user should do next.
+   * "verify_email" → user registered but never confirmed their address.
+   * "onboarding"   → email verified but onboarding not yet completed.
+   * "dashboard"    → fully set up; go straight to the app.
+   */
+  next_step?: "verify_email" | "onboarding" | "dashboard";
 }
 
 export type LoginResponse = ApiResponse<LoginResponseData>;
